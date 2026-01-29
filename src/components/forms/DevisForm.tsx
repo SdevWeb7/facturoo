@@ -4,6 +4,11 @@ import { useActionState, useState } from "react";
 import type { ActionResult } from "@/lib/action-utils";
 import { LineItemsEditor, type LineItem } from "./LineItemsEditor";
 import { TVA_RATES, computeTotals, formatCurrency } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 interface Client {
   id: string;
@@ -38,22 +43,20 @@ export function DevisForm({
   return (
     <form action={formAction} className="space-y-6">
       {state && !state.success && (
-        <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-          {state.error}
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>{state.error}</AlertDescription>
+        </Alert>
       )}
 
       {/* Client */}
-      <div>
-        <label htmlFor="clientId" className="mb-1 block text-sm font-medium text-gray-700">
-          Client *
-        </label>
+      <div className="space-y-2">
+        <Label htmlFor="clientId">Client *</Label>
         <select
           id="clientId"
           name="clientId"
           defaultValue={defaultValues?.clientId ?? ""}
           required
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           <option value="" disabled>
             Sélectionner un client
@@ -67,16 +70,14 @@ export function DevisForm({
       </div>
 
       {/* TVA Rate */}
-      <div>
-        <label htmlFor="tvaRate" className="mb-1 block text-sm font-medium text-gray-700">
-          Taux de TVA
-        </label>
+      <div className="space-y-2">
+        <Label htmlFor="tvaRate">Taux de TVA</Label>
         <select
           id="tvaRate"
           name="tvaRate"
           value={tvaRate}
           onChange={(e) => setTvaRate(Number(e.target.value))}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           {TVA_RATES.map((rate) => (
             <option key={rate} value={rate}>
@@ -90,32 +91,29 @@ export function DevisForm({
       <LineItemsEditor items={items} onChange={setItems} />
 
       {/* Totals */}
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <div className="space-y-1 text-sm">
+      <Card>
+        <CardContent className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-600">Total HT</span>
+            <span className="text-muted-foreground">Total HT</span>
             <span className="font-medium">{formatCurrency(totals.totalHT)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">TVA ({tvaRate}%)</span>
+            <span className="text-muted-foreground">TVA ({tvaRate}%)</span>
             <span className="font-medium">{formatCurrency(totals.totalTVA)}</span>
           </div>
-          <div className="flex justify-between border-t border-gray-200 pt-1">
-            <span className="font-semibold text-gray-900">Total TTC</span>
-            <span className="font-semibold text-gray-900">
+          <Separator />
+          <div className="flex justify-between pt-1">
+            <span className="font-semibold">Total TTC</span>
+            <span className="font-semibold">
               {formatCurrency(totals.totalTTC)}
             </span>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 disabled:opacity-50"
-      >
+      <Button type="submit" disabled={pending} className="w-full">
         {pending ? "Envoi..." : submitLabel}
-      </button>
+      </Button>
     </form>
   );
 }

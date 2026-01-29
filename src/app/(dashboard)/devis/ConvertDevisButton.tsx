@@ -2,6 +2,7 @@
 
 import { convertDevisToFacture } from "@/actions/factures";
 import { useTransition } from "react";
+import { Button } from "@/components/ui/button";
 
 export function ConvertDevisButton({ devisId }: { devisId: string }) {
   const [pending, startTransition] = useTransition();
@@ -14,12 +15,14 @@ export function ConvertDevisButton({ devisId }: { devisId: string }) {
   }
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleConvert}
       disabled={pending}
-      className="ml-4 font-medium text-green-600 hover:text-green-500 disabled:opacity-50"
+      className="text-green-600 hover:text-green-500"
     >
       {pending ? "..." : "Facturer"}
-    </button>
+    </Button>
   );
 }

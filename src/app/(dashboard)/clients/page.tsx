@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { DeleteClientButton } from "./DeleteClientButton";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function ClientsPage() {
   const session = await auth();
@@ -17,68 +26,56 @@ export default async function ClientsPage() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Clients</h1>
-        <Link
-          href="/clients/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
-        >
-          Nouveau client
-        </Link>
+        <Button asChild>
+          <Link href="/clients/new">Nouveau client</Link>
+        </Button>
       </div>
 
       {clients.length === 0 ? (
         <div className="mt-8 text-center">
-          <p className="text-gray-500">Aucun client pour le moment.</p>
+          <p className="text-muted-foreground">Aucun client pour le moment.</p>
           <Link
             href="/clients/new"
-            className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-500"
+            className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary/80"
           >
             Créer votre premier client
           </Link>
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-lg border border-gray-200 bg-white">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Nom
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Téléphone
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
+        <div className="mt-6 overflow-hidden rounded-lg border bg-card">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nom</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Téléphone</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {clients.map((client) => (
-                <tr key={client.id}>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                <TableRow key={client.id}>
+                  <TableCell className="font-medium">
                     {client.name}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {client.email}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {client.phone || "—"}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
-                    <Link
-                      href={`/clients/${client.id}/edit`}
-                      className="font-medium text-blue-600 hover:text-blue-500"
-                    >
-                      Modifier
-                    </Link>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/clients/${client.id}/edit`}>
+                        Modifier
+                      </Link>
+                    </Button>
                     <DeleteClientButton clientId={client.id} />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

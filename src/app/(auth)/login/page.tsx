@@ -4,6 +4,11 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { login } from "@/actions/auth";
 import { signIn } from "next-auth/react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState(login, null);
@@ -12,77 +17,67 @@ export default function LoginPage() {
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold">Connexion</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-muted-foreground">
           Connectez-vous à votre compte Facturoo
         </p>
       </div>
 
       <form action={action} className="space-y-4">
         {state?.success === false && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-            {state.error}
-          </p>
+          <Alert variant="destructive">
+            <AlertDescription>{state.error}</AlertDescription>
+          </Alert>
         )}
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
             id="email"
             name="email"
             type="email"
             required
             autoComplete="email"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Mot de passe
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="password">Mot de passe</Label>
+          <Input
             id="password"
             name="password"
             type="password"
             required
             autoComplete="current-password"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
         <div className="flex items-center justify-end">
           <Link
             href="/forgot-password"
-            className="text-sm text-blue-600 hover:text-blue-500"
+            className="text-sm text-primary hover:text-primary/80"
           >
             Mot de passe oublié ?
           </Link>
         </div>
 
-        <button
-          type="submit"
-          disabled={pending}
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Connexion..." : "Se connecter"}
-        </button>
+        </Button>
       </form>
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300" />
+          <Separator />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-gray-50 px-2 text-gray-500">ou</span>
+          <span className="bg-muted px-2 text-muted-foreground">ou</span>
         </div>
       </div>
 
-      <button
-        type="button"
+      <Button
+        variant="outline"
+        className="w-full"
         onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-        className="flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path
@@ -103,11 +98,11 @@ export default function LoginPage() {
           />
         </svg>
         Continuer avec Google
-      </button>
+      </Button>
 
-      <p className="text-center text-sm text-gray-600">
+      <p className="text-center text-sm text-muted-foreground">
         Pas encore de compte ?{" "}
-        <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
+        <Link href="/register" className="font-medium text-primary hover:text-primary/80">
           Créer un compte
         </Link>
       </p>

@@ -2,6 +2,7 @@
 
 import { deleteClient } from "@/actions/clients";
 import { useTransition } from "react";
+import { Button } from "@/components/ui/button";
 
 export function DeleteClientButton({ clientId }: { clientId: string }) {
   const [pending, startTransition] = useTransition();
@@ -16,12 +17,14 @@ export function DeleteClientButton({ clientId }: { clientId: string }) {
   }
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleDelete}
       disabled={pending}
-      className="ml-4 font-medium text-red-600 hover:text-red-500 disabled:opacity-50"
+      className="text-destructive hover:text-destructive"
     >
       {pending ? "..." : "Supprimer"}
-    </button>
+    </Button>
   );
 }

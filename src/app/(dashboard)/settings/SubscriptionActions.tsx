@@ -3,6 +3,9 @@
 import { createCheckoutSession, createPortalSession } from "@/actions/subscription";
 import { useTransition } from "react";
 import { PLANS } from "@/lib/stripe";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface SubscriptionActionsProps {
   hasSubscription: boolean;
@@ -30,42 +33,43 @@ export function SubscriptionActions({
   return (
     <div className="mt-4">
       {hasSubscription ? (
-        <button
+        <Button
           onClick={handlePortal}
           disabled={pending}
-          className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:opacity-50"
         >
           {pending ? "Redirection..." : "Gérer mon abonnement"}
-        </button>
+        </Button>
       ) : (
         <div className="space-y-3">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Choisissez votre formule :
           </p>
           <div className="flex gap-3">
-            <button
-              onClick={() => handleCheckout("monthly")}
-              disabled={pending}
-              className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-3 text-center shadow-sm hover:bg-gray-50 disabled:opacity-50"
+            <Card
+              className="flex-1 cursor-pointer transition-colors hover:bg-muted/50"
+              onClick={() => !pending && handleCheckout("monthly")}
             >
-              <p className="text-sm font-semibold">{PLANS.monthly.name}</p>
-              <p className="mt-1 text-lg font-bold text-blue-600">
-                {PLANS.monthly.price}
-              </p>
-            </button>
-            <button
-              onClick={() => handleCheckout("yearly")}
-              disabled={pending}
-              className="flex-1 rounded-md border-2 border-blue-600 bg-blue-50 px-4 py-3 text-center shadow-sm hover:bg-blue-100 disabled:opacity-50"
+              <CardContent className="text-center">
+                <p className="text-sm font-semibold">{PLANS.monthly.name}</p>
+                <p className="mt-1 text-lg font-bold text-primary">
+                  {PLANS.monthly.price}
+                </p>
+              </CardContent>
+            </Card>
+            <Card
+              className="flex-1 cursor-pointer border-2 border-primary bg-primary/5 transition-colors hover:bg-primary/10"
+              onClick={() => !pending && handleCheckout("yearly")}
             >
-              <p className="text-sm font-semibold">{PLANS.yearly.name}</p>
-              <p className="mt-1 text-lg font-bold text-blue-600">
-                {PLANS.yearly.price}
-              </p>
-              <p className="mt-1 text-xs text-green-600 font-medium">
-                2 mois offerts
-              </p>
-            </button>
+              <CardContent className="text-center">
+                <p className="text-sm font-semibold">{PLANS.yearly.name}</p>
+                <p className="mt-1 text-lg font-bold text-primary">
+                  {PLANS.yearly.price}
+                </p>
+                <Badge variant="invoiced" className="mt-1">
+                  2 mois offerts
+                </Badge>
+              </CardContent>
+            </Card>
           </div>
         </div>
       )}

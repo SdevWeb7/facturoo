@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface SendEmailButtonProps {
   type: "devis" | "facture";
@@ -39,19 +40,18 @@ export function SendEmailButton({ type, id, className }: SendEmailButtonProps) {
   }
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleSend}
       disabled={status === "sending" || status === "sent"}
-      className={
-        className ??
-        "ml-4 font-medium text-purple-600 hover:text-purple-500 disabled:opacity-50"
-      }
+      className={className ?? "text-purple-600 hover:text-purple-500"}
     >
       {status === "sending"
         ? "Envoi..."
         : status === "sent"
           ? "Envoyé"
           : "Envoyer"}
-    </button>
+    </Button>
   );
 }

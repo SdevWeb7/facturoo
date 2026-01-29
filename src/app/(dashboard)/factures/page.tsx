@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { formatCurrency, computeTotals } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function FacturesPage() {
   const session = await auth();
@@ -22,40 +31,30 @@ export default async function FacturesPage() {
 
       {factures.length === 0 ? (
         <div className="mt-8 text-center">
-          <p className="text-gray-500">Aucune facture pour le moment.</p>
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="text-muted-foreground">Aucune facture pour le moment.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
             Les factures sont créées à partir des devis envoyés.
           </p>
           <Link
             href="/devis"
-            className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-500"
+            className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary/80"
           >
             Voir les devis
           </Link>
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-lg border border-gray-200 bg-white">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Numéro
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Client
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Total TTC
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
+        <div className="mt-6 overflow-hidden rounded-lg border bg-card">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Numéro</TableHead>
+                <TableHead>Client</TableHead>
+                <TableHead className="text-right">Total TTC</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {factures.map((facture) => {
                 const itemsForCalc = facture.items.map((item) => ({
                   quantity: Number(item.quantity),
@@ -64,40 +63,37 @@ export default async function FacturesPage() {
                 const totals = computeTotals(itemsForCalc, Number(facture.tvaRate));
 
                 return (
-                  <tr key={facture.id}>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                  <TableRow key={facture.id}>
+                    <TableCell className="font-medium">
                       {facture.number}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
                       {facture.client.name}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium text-gray-900">
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
                       {formatCurrency(totals.totalTTC)}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
                       {new Date(facture.date).toLocaleDateString("fr-FR")}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
-                      <Link
-                        href={`/factures/${facture.id}`}
-                        className="font-medium text-blue-600 hover:text-blue-500"
-                      >
-                        Voir
-                      </Link>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/factures/${facture.id}`}>Voir</Link>
+                      </Button>
                       <a
                         href={`/api/pdf/facture/${facture.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="ml-4 font-medium text-gray-600 hover:text-gray-500"
+                        className="ml-2 font-medium text-muted-foreground hover:text-foreground"
                       >
                         PDF
                       </a>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

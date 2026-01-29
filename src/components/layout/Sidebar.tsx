@@ -10,6 +10,7 @@ import {
   Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -23,9 +24,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
-      <div className="flex h-16 items-center border-b border-gray-200 px-6">
-        <Link href="/dashboard" className="text-xl font-bold text-blue-600">
+    <aside className="flex h-screen w-64 flex-col border-r bg-card">
+      <div className="flex h-16 items-center border-b px-6">
+        <Link href="/dashboard" className="text-xl font-bold text-primary">
           Facturoo
         </Link>
       </div>
@@ -35,19 +36,20 @@ export function Sidebar() {
           const isActive =
             pathname === item.href || pathname.startsWith(item.href + "/");
           return (
-            <Link
+            <Button
               key={item.href}
-              href={item.href}
+              variant="ghost"
+              asChild
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-700 hover:bg-gray-100"
+                "w-full justify-start gap-3",
+                isActive && "bg-primary/10 text-primary hover:bg-primary/10"
               )}
             >
-              <item.icon className="h-5 w-5" />
-              {item.label}
-            </Link>
+              <Link href={item.href}>
+                <item.icon className="h-5 w-5" />
+                {item.label}
+              </Link>
+            </Button>
           );
         })}
       </nav>

@@ -2,6 +2,7 @@
 
 import { deleteDevis } from "@/actions/devis";
 import { useTransition } from "react";
+import { Button } from "@/components/ui/button";
 
 export function DeleteDevisButton({ devisId }: { devisId: string }) {
   const [pending, startTransition] = useTransition();
@@ -14,12 +15,14 @@ export function DeleteDevisButton({ devisId }: { devisId: string }) {
   }
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleDelete}
       disabled={pending}
-      className="ml-4 font-medium text-red-600 hover:text-red-500 disabled:opacity-50"
+      className="text-destructive hover:text-destructive"
     >
       {pending ? "..." : "Supprimer"}
-    </button>
+    </Button>
   );
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function MarketingLayout({
   children,
@@ -6,32 +7,29 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Navbar */}
-      <header className="border-b border-gray-100">
+      <header className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-xl font-bold text-primary">
             Facturoo
           </Link>
           <nav className="flex items-center gap-6">
             <Link
               href="/pricing"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Tarifs
             </Link>
             <Link
               href="/login"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Connexion
             </Link>
-            <Link
-              href="/register"
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-            >
-              Essai gratuit
-            </Link>
+            <Button size="sm" asChild>
+              <Link href="/register">Essai gratuit</Link>
+            </Button>
           </nav>
         </div>
       </header>
@@ -39,28 +37,28 @@ export default function MarketingLayout({
       {children}
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-gray-50">
+      <footer className="border-t bg-muted/50">
         <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-bold text-gray-900">Facturoo</p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="text-lg font-bold">Facturoo</p>
+              <p className="mt-1 text-sm text-muted-foreground">
                 Devis et factures pour artisans.
               </p>
             </div>
-            <div className="flex gap-6 text-sm text-gray-500">
-              <Link href="/pricing" className="hover:text-gray-700">
+            <div className="flex gap-6 text-sm text-muted-foreground">
+              <Link href="/pricing" className="hover:text-foreground">
                 Tarifs
               </Link>
-              <Link href="/login" className="hover:text-gray-700">
+              <Link href="/login" className="hover:text-foreground">
                 Connexion
               </Link>
-              <Link href="/register" className="hover:text-gray-700">
+              <Link href="/register" className="hover:text-foreground">
                 Inscription
               </Link>
             </div>
           </div>
-          <p className="mt-8 text-center text-xs text-gray-400">
+          <p className="mt-8 text-center text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Facturoo. Tous droits
             r&eacute;serv&eacute;s.
           </p>

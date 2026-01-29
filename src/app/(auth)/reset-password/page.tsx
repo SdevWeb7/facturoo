@@ -5,6 +5,10 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 import { resetPassword } from "@/actions/auth";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -15,15 +19,12 @@ function ResetPasswordForm() {
     return (
       <div className="space-y-6 text-center">
         <h1 className="text-2xl font-bold">Mot de passe modifié</h1>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           Votre mot de passe a été réinitialisé avec succès.
         </p>
-        <Link
-          href="/login"
-          className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
-        >
-          Se connecter
-        </Link>
+        <Button asChild>
+          <Link href="/login">Se connecter</Link>
+        </Button>
       </div>
     );
   }
@@ -32,12 +33,12 @@ function ResetPasswordForm() {
     return (
       <div className="space-y-6 text-center">
         <h1 className="text-2xl font-bold">Lien invalide</h1>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           Ce lien de réinitialisation est invalide ou a expiré.
         </p>
         <Link
           href="/forgot-password"
-          className="inline-block text-sm font-medium text-blue-600 hover:text-blue-500"
+          className="inline-block text-sm font-medium text-primary hover:text-primary/80"
         >
           Demander un nouveau lien
         </Link>
@@ -49,7 +50,7 @@ function ResetPasswordForm() {
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold">Nouveau mot de passe</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-muted-foreground">
           Choisissez votre nouveau mot de passe
         </p>
       </div>
@@ -58,34 +59,27 @@ function ResetPasswordForm() {
         <input type="hidden" name="token" value={token} />
 
         {state?.success === false && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-            {state.error}
-          </p>
+          <Alert variant="destructive">
+            <AlertDescription>{state.error}</AlertDescription>
+          </Alert>
         )}
 
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Nouveau mot de passe
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="password">Nouveau mot de passe</Label>
+          <Input
             id="password"
             name="password"
             type="password"
             required
             minLength={8}
             autoComplete="new-password"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
-          <p className="mt-1 text-xs text-gray-500">8 caractères minimum</p>
+          <p className="text-xs text-muted-foreground">8 caractères minimum</p>
         </div>
 
-        <button
-          type="submit"
-          disabled={pending}
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Modification..." : "Modifier le mot de passe"}
-        </button>
+        </Button>
       </form>
     </div>
   );
@@ -95,7 +89,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="text-center text-sm text-gray-500">Chargement...</div>
+        <div className="text-center text-sm text-muted-foreground">Chargement...</div>
       }
     >
       <ResetPasswordForm />

@@ -2,6 +2,10 @@
 
 import { useActionState } from "react";
 import type { ActionResult } from "@/lib/action-utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ClientFormProps {
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
@@ -20,73 +24,57 @@ export function ClientForm({ action, defaultValues, submitLabel }: ClientFormPro
   return (
     <form action={formAction} className="space-y-4">
       {state?.success === false && (
-        <p className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-          {state.error}
-        </p>
+        <Alert variant="destructive">
+          <AlertDescription>{state.error}</AlertDescription>
+        </Alert>
       )}
 
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Nom *
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="name">Nom *</Label>
+        <Input
           id="name"
           name="name"
           type="text"
           required
           defaultValue={defaultValues?.name}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email *
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="email">Email *</Label>
+        <Input
           id="email"
           name="email"
           type="email"
           required
           defaultValue={defaultValues?.email}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
-      <div>
-        <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-          Adresse
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="address">Adresse</Label>
+        <Input
           id="address"
           name="address"
           type="text"
           defaultValue={defaultValues?.address}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
-      <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-          Téléphone
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="phone">Téléphone</Label>
+        <Input
           id="phone"
           name="phone"
           type="tel"
           defaultValue={defaultValues?.phone}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
       <div className="flex gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={pending}>
           {pending ? "Enregistrement..." : submitLabel}
-        </button>
+        </Button>
       </div>
     </form>
   );
