@@ -78,9 +78,13 @@ export async function login(
       password: parsed.data.password,
       redirectTo: "/dashboard",
     });
-  } catch (error) {
-    // signIn throws a NEXT_REDIRECT on success, which we need to re-throw
-    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+  } catch (error: unknown) {
+    // NextAuth signIn throws on redirect (success) and on auth failure.
+    // Re-throw redirect errors so Next.js handles the redirect.
+    if (
+      error instanceof Error &&
+      ("digest" in error || error.message.includes("NEXT_REDIRECT"))
+    ) {
       throw error;
     }
     return actionError("Email ou mot de passe incorrect");
