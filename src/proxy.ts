@@ -2,8 +2,18 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+const secureCookieName = "__Secure-authjs.session-token";
+const devCookieName = "authjs.session-token";
+
 export async function proxy(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const isSecure = req.nextUrl.protocol === "https:";
+  const cookieName = isSecure ? secureCookieName : devCookieName;
+
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+    cookieName,
+  });
   const isLoggedIn = !!token;
   const pathname = req.nextUrl.pathname;
 
