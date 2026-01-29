@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { formatCurrency, computeTotals } from "@/lib/utils";
+import { SendEmailButton } from "@/components/SendEmailButton";
 
 export default async function FactureDetailPage({
   params,
@@ -38,14 +39,21 @@ export default async function FactureDetailPage({
         </Link>
         <div className="mt-2 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Facture {facture.number}</h1>
-          <a
-            href={`/api/pdf/facture/${facture.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
-          >
-            Télécharger le PDF
-          </a>
+          <div className="flex gap-3">
+            <SendEmailButton
+              type="facture"
+              id={facture.id}
+              className="rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 disabled:opacity-50"
+            />
+            <a
+              href={`/api/pdf/facture/${facture.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+            >
+              Télécharger le PDF
+            </a>
+          </div>
         </div>
       </div>
 

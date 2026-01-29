@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { formatCurrency, computeTotals } from "@/lib/utils";
 import { DeleteDevisButton } from "./DeleteDevisButton";
 import { ConvertDevisButton } from "./ConvertDevisButton";
+import { SendEmailButton } from "@/components/SendEmailButton";
 
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
   DRAFT: { label: "Brouillon", className: "bg-gray-100 text-gray-700" },
@@ -108,6 +109,9 @@ export default async function DevisPage() {
                       >
                         PDF
                       </a>
+                      {devis.status !== "INVOICED" && (
+                        <SendEmailButton type="devis" id={devis.id} />
+                      )}
                       {devis.status !== "INVOICED" && (
                         <Link
                           href={`/devis/${devis.id}/edit`}
