@@ -19,15 +19,15 @@ const badgeVariants = cva(
         ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         link: "text-primary underline-offset-4 [a&]:hover:underline",
         draft:
-          "bg-gray-100 text-gray-700 border-gray-200",
+          "bg-muted text-muted-foreground border-border",
         sent:
-          "bg-blue-100 text-blue-700 border-blue-200",
+          "bg-primary/10 text-primary border-primary/20",
         invoiced:
-          "bg-green-100 text-green-700 border-green-200",
+          "bg-success/10 text-success border-success/20",
         paid:
-          "bg-emerald-100 text-emerald-700 border-emerald-200",
+          "bg-success/15 text-success border-success/25",
         overdue:
-          "bg-red-100 text-red-700 border-red-200",
+          "bg-destructive/10 text-destructive border-destructive/20",
       },
     },
     defaultVariants: {

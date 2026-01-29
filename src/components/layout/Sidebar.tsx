@@ -24,9 +24,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r bg-card">
-      <div className="flex h-16 items-center border-b px-6">
-        <Link href="/dashboard" className="text-xl font-bold text-primary">
+    <aside className="flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar">
+      <div className="flex h-16 items-center border-b border-sidebar-border px-6">
+        <Link href="/dashboard" className="text-xl font-bold text-sidebar-foreground font-display">
           Facturoo
         </Link>
       </div>
@@ -41,8 +41,8 @@ export function Sidebar() {
               variant="ghost"
               asChild
               className={cn(
-                "w-full justify-start gap-3",
-                isActive && "bg-primary/10 text-primary hover:bg-primary/10"
+                "w-full justify-start gap-3 text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                isActive && "bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-accent"
               )}
             >
               <Link href={item.href}>

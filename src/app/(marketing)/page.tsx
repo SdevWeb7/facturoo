@@ -54,12 +54,12 @@ export default function HomePage() {
     <main>
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 py-24 text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
+        <h1 className="animate-fade-in-up text-5xl font-extrabold tracking-tight sm:text-6xl">
           Vos devis et factures
           <br />
           <span className="text-primary">en 2 minutes</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+        <p className="animate-fade-in-up animate-stagger-2 mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
           L&apos;outil simple et efficace pour les artisans fran&ccedil;ais.
           Cr&eacute;ez vos devis, envoyez-les par email, convertissez-les en
           factures. Sans prise de t&ecirc;te.
@@ -89,11 +89,11 @@ export default function HomePage() {
           </p>
 
           <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <Card key={feature.title}>
+            {features.map((feature, i) => (
+              <Card key={feature.title} className={`card-hover animate-fade-in-up animate-stagger-${Math.min(i + 1, 5)}`}>
                 <CardContent>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <feature.icon className="h-5 w-5 text-primary" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20">
+                    <feature.icon className="h-5 w-5 text-accent-foreground" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold">
                     {feature.title}

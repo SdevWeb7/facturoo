@@ -45,7 +45,7 @@ export function SendEmailButton({ type, id, className }: SendEmailButtonProps) {
       size="sm"
       onClick={handleSend}
       disabled={status === "sending" || status === "sent"}
-      className={className ?? "text-purple-600 hover:text-purple-500"}
+      className={className ?? "text-primary hover:text-primary/80"}
     >
       {status === "sending"
         ? "Envoi..."

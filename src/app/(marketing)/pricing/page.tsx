@@ -62,8 +62,8 @@ export default function PricingPage() {
               key={plan.name}
               className={
                 plan.highlighted
-                  ? "relative border-2 border-primary bg-primary/5 shadow-lg"
-                  : "relative"
+                  ? "relative border-2 border-primary bg-primary/5 shadow-warm-lg card-hover"
+                  : "relative card-hover"
               }
             >
               {plan.badge && (
@@ -88,7 +88,7 @@ export default function PricingPage() {
                 <ul className="mt-8 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
-                      <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
+                      <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" />
                       <span className="text-sm">{feature}</span>
                     </li>
                   ))}

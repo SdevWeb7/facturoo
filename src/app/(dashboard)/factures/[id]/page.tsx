@@ -54,7 +54,7 @@ export default async function FactureDetailPage({
             <SendEmailButton
               type="facture"
               id={facture.id}
-              className="rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 disabled:opacity-50"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50"
             />
             <Button asChild>
               <a

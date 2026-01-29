@@ -11,7 +11,7 @@ export default function MarketingLayout({
       {/* Navbar */}
       <header className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-xl font-bold text-primary">
+          <Link href="/" className="text-xl font-bold text-primary font-display">
             Facturoo
           </Link>
           <nav className="flex items-center gap-6">
@@ -37,11 +37,11 @@ export default function MarketingLayout({
       {children}
 
       {/* Footer */}
-      <footer className="border-t bg-muted/50">
+      <footer className="border-t bg-muted/50 bg-texture">
         <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-bold">Facturoo</p>
+              <p className="text-lg font-bold font-display">Facturoo</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Devis et factures pour artisans.
               </p>
