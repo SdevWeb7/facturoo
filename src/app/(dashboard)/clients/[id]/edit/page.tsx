@@ -29,7 +29,7 @@ export default async function EditClientPage({
         <h1 className="mt-2 text-2xl font-bold">Modifier {client.name}</h1>
       </div>
 
-      <div className="mx-auto max-w-lg rounded-lg border bg-card p-6 lg:mx-0">
+      <div className="mx-auto max-w-lg rounded-lg border bg-card p-6">
         <EditClientForm
           clientId={client.id}
           defaultValues={{

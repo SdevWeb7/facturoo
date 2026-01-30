@@ -40,7 +40,7 @@ export default async function EditDevisPage({
         <h1 className="mt-2 text-2xl font-bold">Modifier {devis.number}</h1>
       </div>
 
-      <div className="mx-auto max-w-2xl rounded-lg border bg-card p-6 lg:mx-0">
+      <div className="mx-auto max-w-2xl rounded-lg border bg-card p-6">
         <EditDevisForm
           devisId={devis.id}
           clients={clients}
