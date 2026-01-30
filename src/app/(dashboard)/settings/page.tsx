@@ -24,6 +24,7 @@ export default async function SettingsPage() {
       stripeSubscriptionId: true,
       stripePriceId: true,
       stripeCurrentPeriodEnd: true,
+      stripeCancelAtPeriodEnd: true,
     },
   });
 
@@ -97,17 +98,31 @@ export default async function SettingsPage() {
             )}
 
             {user.stripeSubscriptionId && currentPlan && (
-              <Alert>
+              <Alert variant={user.stripeCancelAtPeriodEnd ? "destructive" : "default"}>
                 <AlertDescription>
-                  Abonnement <strong>{currentPlan.name}</strong> actif
-                  {user.stripeCurrentPeriodEnd && (
+                  {user.stripeCancelAtPeriodEnd ? (
                     <>
-                      {" "}— prochain renouvellement le{" "}
-                      <strong>
-                        {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString(
-                          "fr-FR"
-                        )}
-                      </strong>
+                      Abonnement <strong>{currentPlan.name}</strong> annulé
+                      {user.stripeCurrentPeriodEnd && (
+                        <>
+                          {" "}— actif jusqu&apos;au{" "}
+                          <strong>
+                            {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR")}
+                          </strong>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      Abonnement <strong>{currentPlan.name}</strong> actif
+                      {user.stripeCurrentPeriodEnd && (
+                        <>
+                          {" "}— prochain renouvellement le{" "}
+                          <strong>
+                            {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR")}
+                          </strong>
+                        </>
+                      )}
                     </>
                   )}
                 </AlertDescription>

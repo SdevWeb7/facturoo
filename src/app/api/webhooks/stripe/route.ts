@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
               ? new Date(periodEnd * 1000)
               : null,
             stripeCustomerId: session.customer as string,
+            stripeCancelAtPeriodEnd: false,
           },
         });
 
@@ -103,17 +104,53 @@ export async function POST(request: NextRequest) {
         break;
       }
 
+      case "customer.subscription.updated": {
+        const updatedSub = event.data.object as Stripe.Subscription;
+        const periodEnd =
+          updatedSub.items.data[0]?.current_period_end ?? null;
+
+        await prisma.user.updateMany({
+          where: { stripeSubscriptionId: updatedSub.id },
+          data: {
+            stripeCancelAtPeriodEnd: updatedSub.cancel_at_period_end,
+            stripePriceId: updatedSub.items.data[0]?.price.id,
+            stripeCurrentPeriodEnd: periodEnd
+              ? new Date(periodEnd * 1000)
+              : null,
+          },
+        });
+
+        console.log(
+          `[stripe] subscription updated for sub ${updatedSub.id} (cancel_at_period_end: ${updatedSub.cancel_at_period_end})`
+        );
+        break;
+      }
+
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
 
-        await prisma.user.updateMany({
+        // Try matching by subscription ID first, then by customer ID as fallback
+        const result = await prisma.user.updateMany({
           where: { stripeSubscriptionId: subscription.id },
           data: {
             stripeSubscriptionId: null,
             stripePriceId: null,
             stripeCurrentPeriodEnd: null,
+            stripeCancelAtPeriodEnd: false,
           },
         });
+
+        if (result.count === 0) {
+          await prisma.user.updateMany({
+            where: { stripeCustomerId: subscription.customer as string },
+            data: {
+              stripeSubscriptionId: null,
+              stripePriceId: null,
+              stripeCurrentPeriodEnd: null,
+              stripeCancelAtPeriodEnd: false,
+            },
+          });
+        }
 
         console.log(
           `[stripe] customer.subscription.deleted for sub ${subscription.id}`
