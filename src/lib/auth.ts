@@ -7,15 +7,18 @@ import bcrypt from "bcryptjs";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       credentials: {

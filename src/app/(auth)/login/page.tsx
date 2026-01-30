@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { Suspense, useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { login } from "@/actions/auth";
 import { signIn } from "next-auth/react";
@@ -9,6 +10,29 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+
+const oauthErrors: Record<string, string> = {
+  OAuthAccountNotLinked:
+    "Un compte existe déjà avec cet email. Connectez-vous avec votre mot de passe.",
+  OAuthCallbackError:
+    "Erreur lors de la connexion avec Google. Veuillez réessayer.",
+  Default: "Une erreur est survenue lors de la connexion.",
+};
+
+function OAuthError() {
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
+  if (!error) return null;
+
+  return (
+    <Alert variant="destructive">
+      <AlertDescription>
+        {oauthErrors[error] ?? oauthErrors.Default}
+      </AlertDescription>
+    </Alert>
+  );
+}
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState(login, null);
@@ -23,6 +47,9 @@ export default function LoginPage() {
       </div>
 
       <form action={action} className="space-y-4">
+        <Suspense>
+          <OAuthError />
+        </Suspense>
         {state?.success === false && (
           <Alert variant="destructive">
             <AlertDescription>{state.error}</AlertDescription>
@@ -102,7 +129,10 @@ export default function LoginPage() {
 
       <p className="text-center text-sm text-muted-foreground">
         Pas encore de compte ?{" "}
-        <Link href="/register" className="font-medium text-primary hover:text-primary/80">
+        <Link
+          href="/register"
+          className="font-medium text-primary hover:text-primary/80"
+        >
           Créer un compte
         </Link>
       </p>
