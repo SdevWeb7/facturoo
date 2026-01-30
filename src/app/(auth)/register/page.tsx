@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { register } from "@/actions/auth";
 import { signIn } from "next-auth/react";
@@ -10,8 +10,73 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 
+function MagicLinkRegister() {
+  const [email, setEmail] = useState("");
+  const [pending, setPending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setPending(true);
+    setError("");
+    try {
+      const result = await signIn("nodemailer", {
+        email,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("Erreur lors de l'envoi du lien. Veuillez réessayer.");
+      } else {
+        setSent(true);
+      }
+    } catch {
+      setError("Erreur lors de l'envoi du lien. Veuillez réessayer.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  if (sent) {
+    return (
+      <Alert>
+        <AlertDescription>
+          Un lien de connexion a été envoyé à <strong>{email}</strong>.
+          Vérifiez votre boîte mail pour créer votre compte.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      <div className="space-y-2">
+        <Label htmlFor="magic-email">Email</Label>
+        <Input
+          id="magic-email"
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <Button type="submit" disabled={pending} className="w-full">
+        {pending ? "Envoi..." : "Créer un compte avec un lien magique"}
+      </Button>
+    </form>
+  );
+}
+
 export default function RegisterPage() {
   const [state, action, pending] = useActionState(register, null);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -20,62 +85,6 @@ export default function RegisterPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           14 jours d&apos;essai gratuit, sans engagement
         </p>
-      </div>
-
-      <form action={action} className="space-y-4">
-        {state?.success === false && (
-          <Alert variant="destructive">
-            <AlertDescription>{state.error}</AlertDescription>
-          </Alert>
-        )}
-
-        <div className="space-y-2">
-          <Label htmlFor="name">Nom complet</Label>
-          <Input
-            id="name"
-            name="name"
-            type="text"
-            required
-            autoComplete="name"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="password">Mot de passe</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-          />
-          <p className="text-xs text-muted-foreground">8 caractères minimum</p>
-        </div>
-
-        <Button type="submit" disabled={pending} className="w-full">
-          {pending ? "Création..." : "Créer mon compte"}
-        </Button>
-      </form>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <Separator />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-muted px-2 text-muted-foreground">ou</span>
-        </div>
       </div>
 
       <Button
@@ -103,6 +112,83 @@ export default function RegisterPage() {
         </svg>
         Continuer avec Google
       </Button>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-muted px-2 text-muted-foreground">ou</span>
+        </div>
+      </div>
+
+      <MagicLinkRegister />
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-muted px-2 text-muted-foreground">ou</span>
+        </div>
+      </div>
+
+      {!showPassword ? (
+        <Button
+          variant="ghost"
+          className="w-full text-muted-foreground"
+          onClick={() => setShowPassword(true)}
+        >
+          Créer un compte avec un mot de passe
+        </Button>
+      ) : (
+        <form action={action} className="space-y-4">
+          {state?.success === false && (
+            <Alert variant="destructive">
+              <AlertDescription>{state.error}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="name">Nom complet</Label>
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              required
+              autoComplete="name"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Mot de passe</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              minLength={8}
+              autoComplete="new-password"
+            />
+            <p className="text-xs text-muted-foreground">8 caractères minimum</p>
+          </div>
+
+          <Button type="submit" disabled={pending} className="w-full">
+            {pending ? "Création..." : "Créer mon compte"}
+          </Button>
+        </form>
+      )}
 
       <p className="text-center text-sm text-muted-foreground">
         Déjà un compte ?{" "}

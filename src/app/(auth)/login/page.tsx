@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useActionState } from "react";
+import { Suspense, useActionState, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { login } from "@/actions/auth";
@@ -34,8 +34,73 @@ function OAuthError() {
   );
 }
 
+function MagicLinkForm() {
+  const [email, setEmail] = useState("");
+  const [pending, setPending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setPending(true);
+    setError("");
+    try {
+      const result = await signIn("nodemailer", {
+        email,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("Erreur lors de l'envoi du lien. Veuillez réessayer.");
+      } else {
+        setSent(true);
+      }
+    } catch {
+      setError("Erreur lors de l'envoi du lien. Veuillez réessayer.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  if (sent) {
+    return (
+      <Alert>
+        <AlertDescription>
+          Un lien de connexion a été envoyé à <strong>{email}</strong>.
+          Vérifiez votre boîte mail.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      <div className="space-y-2">
+        <Label htmlFor="magic-email">Email</Label>
+        <Input
+          id="magic-email"
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <Button type="submit" disabled={pending} className="w-full">
+        {pending ? "Envoi..." : "Recevoir un lien de connexion"}
+      </Button>
+    </form>
+  );
+}
+
 export default function LoginPage() {
   const [state, action, pending] = useActionState(login, null);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -46,60 +111,9 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <form action={action} className="space-y-4">
-        <Suspense>
-          <OAuthError />
-        </Suspense>
-        {state?.success === false && (
-          <Alert variant="destructive">
-            <AlertDescription>{state.error}</AlertDescription>
-          </Alert>
-        )}
-
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="password">Mot de passe</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            required
-            autoComplete="current-password"
-          />
-        </div>
-
-        <div className="flex items-center justify-end">
-          <Link
-            href="/forgot-password"
-            className="text-sm text-primary hover:text-primary/80"
-          >
-            Mot de passe oublié ?
-          </Link>
-        </div>
-
-        <Button type="submit" disabled={pending} className="w-full">
-          {pending ? "Connexion..." : "Se connecter"}
-        </Button>
-      </form>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <Separator />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-muted px-2 text-muted-foreground">ou</span>
-        </div>
-      </div>
+      <Suspense>
+        <OAuthError />
+      </Suspense>
 
       <Button
         variant="outline"
@@ -126,6 +140,79 @@ export default function LoginPage() {
         </svg>
         Continuer avec Google
       </Button>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-muted px-2 text-muted-foreground">ou</span>
+        </div>
+      </div>
+
+      <MagicLinkForm />
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-muted px-2 text-muted-foreground">ou</span>
+        </div>
+      </div>
+
+      {!showPassword ? (
+        <Button
+          variant="ghost"
+          className="w-full text-muted-foreground"
+          onClick={() => setShowPassword(true)}
+        >
+          Se connecter avec un mot de passe
+        </Button>
+      ) : (
+        <form action={action} className="space-y-4">
+          {state?.success === false && (
+            <Alert variant="destructive">
+              <AlertDescription>{state.error}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Mot de passe</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              autoComplete="current-password"
+            />
+          </div>
+
+          <div className="flex items-center justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-primary hover:text-primary/80"
+            >
+              Mot de passe oublié ?
+            </Link>
+          </div>
+
+          <Button type="submit" disabled={pending} className="w-full">
+            {pending ? "Connexion..." : "Se connecter"}
+          </Button>
+        </form>
+      )}
 
       <p className="text-center text-sm text-muted-foreground">
         Pas encore de compte ?{" "}

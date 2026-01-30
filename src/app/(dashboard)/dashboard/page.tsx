@@ -53,20 +53,40 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Tableau de bord</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Vue d&apos;ensemble de votre activité
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/devis/new">
             <Plus className="h-4 w-4" />
             Nouveau devis
           </Link>
         </Button>
       </div>
+
+      {/* Welcome block when empty */}
+      {devisList.length === 0 && facturesList.length === 0 && (
+        <Card className="mt-6 border-dashed p-6 text-center sm:p-8">
+          <h3 className="text-lg font-semibold">
+            Bienvenue sur Facturoo
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Commencez par ajouter un client puis créez votre premier devis.
+          </p>
+          <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+            <Button variant="outline" asChild className="w-full sm:w-auto">
+              <Link href="/clients/new">Ajouter un client</Link>
+            </Button>
+            <Button asChild className="w-full sm:w-auto">
+              <Link href="/devis/new">Créer un devis</Link>
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {/* KPI Cards */}
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -97,7 +117,7 @@ export default async function DashboardPage() {
                 </p>
               </div>
             </div>
-            <div className="mt-3 flex gap-2 text-xs">
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
               <Badge variant="draft">
                 {devisDraft} brouillon{devisDraft > 1 ? "s" : ""}
               </Badge>
@@ -255,25 +275,6 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Welcome block when empty */}
-      {devisList.length === 0 && facturesList.length === 0 && (
-        <Card className="mt-8 border-dashed p-8 text-center">
-          <h3 className="text-lg font-semibold">
-            Bienvenue sur Facturoo
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Commencez par ajouter un client puis créez votre premier devis.
-          </p>
-          <div className="mt-6 flex items-center justify-center gap-4">
-            <Button variant="outline" asChild>
-              <Link href="/clients/new">Ajouter un client</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/devis/new">Créer un devis</Link>
-            </Button>
-          </div>
-        </Card>
-      )}
     </div>
   );
 }

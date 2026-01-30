@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 
 interface Client {
   id: string;
@@ -37,6 +38,7 @@ export function DevisForm({
     defaultValues?.items ?? [{ designation: "", quantity: 1, unitPrice: 0 }]
   );
   const [tvaRate, setTvaRate] = useState(defaultValues?.tvaRate ?? 20);
+  const [tvaInclusive, setTvaInclusive] = useState(false);
 
   const totals = computeTotals(items, tvaRate);
 
@@ -69,26 +71,38 @@ export function DevisForm({
         </select>
       </div>
 
-      {/* TVA Rate */}
-      <div className="space-y-2">
-        <Label htmlFor="tvaRate">Taux de TVA</Label>
-        <select
-          id="tvaRate"
-          name="tvaRate"
-          value={tvaRate}
-          onChange={(e) => setTvaRate(Number(e.target.value))}
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        >
-          {TVA_RATES.map((rate) => (
-            <option key={rate} value={rate}>
-              {rate}%
-            </option>
-          ))}
-        </select>
+      {/* TVA Rate + Inclusive toggle */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="tvaRate">Taux de TVA</Label>
+          <select
+            id="tvaRate"
+            name="tvaRate"
+            value={tvaRate}
+            onChange={(e) => setTvaRate(Number(e.target.value))}
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            {TVA_RATES.map((rate) => (
+              <option key={rate} value={rate}>
+                {rate}%
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2 sm:pb-0.5">
+          <Switch
+            id="tvaInclusive"
+            checked={tvaInclusive}
+            onCheckedChange={setTvaInclusive}
+          />
+          <Label htmlFor="tvaInclusive" className="text-sm font-normal">
+            Prix TTC
+          </Label>
+        </div>
       </div>
 
       {/* Line Items */}
-      <LineItemsEditor items={items} onChange={setItems} />
+      <LineItemsEditor items={items} onChange={setItems} tvaInclusive={tvaInclusive} tvaRate={tvaRate} />
 
       {/* Totals */}
       <Card>

@@ -43,10 +43,12 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 11,
+    fontSize: 13,
     fontFamily: "Helvetica-Bold",
     marginBottom: 6,
     color: "#333",
+    textTransform: "uppercase",
+    letterSpacing: 1,
   },
   clientName: {
     fontSize: 12,

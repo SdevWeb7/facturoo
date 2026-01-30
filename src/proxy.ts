@@ -21,7 +21,8 @@ export async function proxy(req: NextRequest) {
     pathname.startsWith("/login") ||
     pathname.startsWith("/register") ||
     pathname.startsWith("/forgot-password") ||
-    pathname.startsWith("/reset-password");
+    pathname.startsWith("/reset-password") ||
+    pathname.startsWith("/verify-request");
 
   const isDashboard =
     pathname.startsWith("/dashboard") ||
@@ -34,7 +35,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
-  if (isAuthPage && isLoggedIn) {
+  if ((isAuthPage || pathname === "/") && isLoggedIn) {
     return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
   }
 

@@ -14,9 +14,11 @@ export interface LineItem {
 interface LineItemsEditorProps {
   items: LineItem[];
   onChange: (items: LineItem[]) => void;
+  tvaInclusive?: boolean;
+  tvaRate?: number;
 }
 
-export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
+export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate = 20 }: LineItemsEditorProps) {
   function addItem() {
     onChange([...items, { designation: "", quantity: 1, unitPrice: 0 }]);
   }
@@ -30,7 +32,13 @@ export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
       if (i !== index) return item;
       if (field === "designation") return { ...item, designation: value };
       if (field === "quantity") return { ...item, quantity: parseFloat(value) || 0 };
-      if (field === "unitPrice") return { ...item, unitPrice: Math.round(parseFloat(value) * 100) || 0 };
+      if (field === "unitPrice") {
+        const euros = parseFloat(value) || 0;
+        const centimes = tvaInclusive
+          ? Math.round((euros * 100) / (1 + tvaRate / 100))
+          : Math.round(euros * 100);
+        return { ...item, unitPrice: centimes };
+      }
       return item;
     });
     onChange(updated);
@@ -63,7 +71,6 @@ export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
               </Label>
               <Input
                 type="text"
-                name={`items.${index}.designation`}
                 value={item.designation}
                 onChange={(e) => updateItem(index, "designation", e.target.value)}
                 placeholder="Description du poste"
@@ -76,7 +83,6 @@ export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
               </Label>
               <Input
                 type="number"
-                name={`items.${index}.quantity`}
                 value={item.quantity}
                 onChange={(e) => updateItem(index, "quantity", e.target.value)}
                 step="0.01"
@@ -86,12 +92,15 @@ export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
             </div>
             <div className="sm:col-span-3">
               <Label className="mb-1 text-xs text-muted-foreground">
-                Prix unitaire HT
+                {tvaInclusive ? "Prix unitaire TTC" : "Prix unitaire HT"}
               </Label>
               <Input
                 type="number"
-                name={`items.${index}.unitPrice`}
-                value={(item.unitPrice / 100).toFixed(2)}
+                value={
+                  tvaInclusive
+                    ? (item.unitPrice * (1 + tvaRate / 100) / 100).toFixed(2)
+                    : (item.unitPrice / 100).toFixed(2)
+                }
                 onChange={(e) => updateItem(index, "unitPrice", e.target.value)}
                 step="0.01"
                 min="0"

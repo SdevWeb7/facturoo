@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { hasActiveSubscription } from "@/lib/subscription";
 import { PLANS } from "@/lib/stripe";
 import { SubscriptionActions } from "./SubscriptionActions";
+import { ProfileForm } from "@/components/forms/ProfileForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -50,32 +51,16 @@ export default async function SettingsPage() {
           <CardTitle>Profil</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Nom</span>
-              <p className="font-medium">{user.name || "—"}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Email</span>
-              <p className="font-medium">{user.email}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Entreprise</span>
-              <p className="font-medium">{user.company || "—"}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">SIRET</span>
-              <p className="font-medium">{user.siret || "—"}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Adresse</span>
-              <p className="font-medium">{user.address || "—"}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Téléphone</span>
-              <p className="font-medium">{user.phone || "—"}</p>
-            </div>
-          </div>
+          <ProfileForm
+            defaultValues={{
+              name: user.name || "",
+              email: user.email,
+              company: user.company || "",
+              siret: user.siret || "",
+              address: user.address || "",
+              phone: user.phone || "",
+            }}
+          />
         </CardContent>
       </Card>
 

@@ -12,7 +12,7 @@ export default function NewClientPage() {
         <h1 className="mt-2 text-2xl font-bold">Nouveau client</h1>
       </div>
 
-      <div className="max-w-lg rounded-lg border bg-card p-6">
+      <div className="mx-auto max-w-lg rounded-lg border bg-card p-6 lg:mx-0">
         <ClientForm action={createClient} submitLabel="Créer le client" />
       </div>
     </div>

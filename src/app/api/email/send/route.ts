@@ -183,8 +183,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Email send error:", error);
+
+    let message = "Erreur lors de l'envoi de l'email.";
+    if (error instanceof Error) {
+      if (error.message.includes("Invalid login") || error.message.includes("EAUTH")) {
+        message = "Échec d'authentification SMTP. Vérifiez vos identifiants email (SMTP_USER / SMTP_PASS) dans la configuration.";
+      } else if (error.message.includes("ECONNREFUSED") || error.message.includes("ETIMEDOUT")) {
+        message = "Impossible de se connecter au serveur email. Vérifiez SMTP_HOST et SMTP_PORT.";
+      } else if (error.message.includes("EENVELOPE") || error.message.includes("No recipients")) {
+        message = "Adresse email du destinataire invalide.";
+      }
+    }
+
     return NextResponse.json(
-      { error: "Erreur lors de l'envoi de l'email" },
+      { error: message },
       { status: 500 }
     );
   }

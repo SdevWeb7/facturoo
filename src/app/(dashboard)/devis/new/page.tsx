@@ -36,7 +36,7 @@ export default async function NewDevisPage() {
           </Link>
         </div>
       ) : (
-        <div className="max-w-2xl rounded-lg border bg-card p-6">
+        <div className="mx-auto max-w-2xl rounded-lg border bg-card p-6 lg:mx-0">
           <NewDevisForm clients={clients} />
         </div>
       )}
