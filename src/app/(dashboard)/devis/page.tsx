@@ -3,9 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { formatCurrency, computeTotals } from "@/lib/utils";
-import { DeleteDevisButton } from "./DeleteDevisButton";
-import { ConvertDevisButton } from "./ConvertDevisButton";
-import { SendEmailButton } from "@/components/SendEmailButton";
+import { DevisActionsMenu } from "./DevisActionsMenu";
+import { SortableTableHead } from "@/components/SortableTableHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -18,15 +17,42 @@ import {
 } from "@/components/ui/table";
 import { STATUS_BADGE_VARIANT } from "@/lib/status";
 
-export default async function DevisPage() {
+export default async function DevisPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string; order?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
+
+  const { sort, order } = await searchParams;
 
   const devisList = await prisma.devis.findMany({
     where: { userId: session.user.id },
     include: { client: true, items: true },
     orderBy: { createdAt: "desc" },
   });
+
+  const devisWithTotals = devisList.map((devis) => {
+    const itemsForCalc = devis.items.map((item) => ({
+      quantity: Number(item.quantity),
+      unitPrice: item.unitPrice,
+    }));
+    const totals = computeTotals(itemsForCalc, Number(devis.tvaRate));
+    return { ...devis, totalTTC: totals.totalTTC };
+  });
+
+  const dir = order === "asc" ? 1 : -1;
+  if (sort === "date") {
+    devisWithTotals.sort((a, b) => dir * (new Date(a.date).getTime() - new Date(b.date).getTime()));
+  } else if (sort === "client") {
+    devisWithTotals.sort((a, b) => dir * a.client.name.localeCompare(b.client.name));
+  } else if (sort === "totalTTC") {
+    devisWithTotals.sort((a, b) => dir * (a.totalTTC - b.totalTTC));
+  } else if (sort === "status") {
+    const statusOrder: Record<string, number> = { DRAFT: 0, SENT: 1, INVOICED: 2 };
+    devisWithTotals.sort((a, b) => dir * ((statusOrder[a.status] ?? 0) - (statusOrder[b.status] ?? 0)));
+  }
 
   return (
     <div>
@@ -37,7 +63,7 @@ export default async function DevisPage() {
         </Button>
       </div>
 
-      {devisList.length === 0 ? (
+      {devisWithTotals.length === 0 ? (
         <div className="mt-8 text-center">
           <p className="text-muted-foreground">Aucun devis pour le moment.</p>
           <Link
@@ -53,26 +79,24 @@ export default async function DevisPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Numéro</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead className="text-right">Total TTC</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <SortableTableHead column="date">Date</SortableTableHead>
+                <SortableTableHead column="client">Client</SortableTableHead>
+                <SortableTableHead column="status">Statut</SortableTableHead>
+                <SortableTableHead column="totalTTC" className="text-right">Total TTC</SortableTableHead>
+                <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {devisList.map((devis) => {
-                const itemsForCalc = devis.items.map((item) => ({
-                  quantity: Number(item.quantity),
-                  unitPrice: item.unitPrice,
-                }));
-                const totals = computeTotals(itemsForCalc, Number(devis.tvaRate));
+              {devisWithTotals.map((devis) => {
                 const statusInfo = STATUS_BADGE_VARIANT[devis.status];
 
                 return (
                   <TableRow key={devis.id}>
                     <TableCell className="font-medium">
                       {devis.number}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {new Date(devis.date).toLocaleDateString("fr-FR")}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {devis.client.name}
@@ -83,36 +107,10 @@ export default async function DevisPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right font-medium">
-                      {formatCurrency(totals.totalTTC)}
+                      {formatCurrency(devis.totalTTC)}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {new Date(devis.date).toLocaleDateString("fr-FR")}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <a
-                        href={`/api/pdf/devis/${devis.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-muted-foreground hover:text-foreground"
-                      >
-                        PDF
-                      </a>
-                      {devis.status !== "INVOICED" && (
-                        <SendEmailButton type="devis" id={devis.id} />
-                      )}
-                      {devis.status !== "INVOICED" && (
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link href={`/devis/${devis.id}/edit`}>
-                            Modifier
-                          </Link>
-                        </Button>
-                      )}
-                      {devis.status === "SENT" && (
-                        <ConvertDevisButton devisId={devis.id} />
-                      )}
-                      {devis.status !== "INVOICED" && (
-                        <DeleteDevisButton devisId={devis.id} />
-                      )}
+                    <TableCell>
+                      <DevisActionsMenu devisId={devis.id} status={devis.status} />
                     </TableCell>
                   </TableRow>
                 );

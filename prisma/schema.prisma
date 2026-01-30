@@ -127,10 +127,16 @@ model DevisItem {
   order Int @default(0)
 }
 
+enum FactureStatus {
+  PENDING
+  PAID
+}
+
 model Facture {
-  id     String   @id @default(cuid())
+  id     String        @id @default(cuid())
   number String
-  date   DateTime @default(now())
+  status FactureStatus @default(PENDING)
+  date   DateTime      @default(now())
 
   tvaRate Decimal @default(20) @db.Decimal(5, 2)
 

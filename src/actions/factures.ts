@@ -6,7 +6,7 @@ import { checkSubscription } from "@/lib/subscription";
 import { logAction } from "@/lib/logger";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { actionError, type ActionResult } from "@/lib/action-utils";
+import { actionError, actionSuccess, type ActionResult } from "@/lib/action-utils";
 
 async function generateFactureNumber(userId: string): Promise<string> {
   const year = new Date().getFullYear();
@@ -48,10 +48,6 @@ export async function convertDevisToFacture(
 
   if (!devis || devis.userId !== session.user.id) {
     return actionError("Devis introuvable");
-  }
-
-  if (devis.status === "DRAFT") {
-    return actionError("Le devis doit d'abord être envoyé avant d'être converti en facture");
   }
 
   if (devis.status === "INVOICED") {
@@ -96,4 +92,81 @@ export async function convertDevisToFacture(
   revalidatePath("/devis");
   revalidatePath("/factures");
   redirect("/factures");
+}
+
+export async function markFactureAsPaid(
+  factureId: string
+): Promise<ActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) return actionError("Non autorisé");
+
+  const facture = await prisma.facture.findUnique({
+    where: { id: factureId },
+  });
+
+  if (!facture || facture.userId !== session.user.id) {
+    return actionError("Facture introuvable");
+  }
+
+  if (facture.status === "PAID") {
+    return actionError("Cette facture est déjà encaissée");
+  }
+
+  await prisma.facture.update({
+    where: { id: factureId },
+    data: { status: "PAID" },
+  });
+
+  logAction("facture.markedAsPaid", session.user.id, {
+    factureId,
+    factureNumber: facture.number,
+  });
+
+  revalidatePath("/factures");
+  return actionSuccess();
+}
+
+export async function deleteFacture(
+  factureId: string
+): Promise<ActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) return actionError("Non autorisé");
+
+  const facture = await prisma.facture.findUnique({
+    where: { id: factureId },
+    include: { devis: true },
+  });
+
+  if (!facture || facture.userId !== session.user.id) {
+    return actionError("Facture introuvable");
+  }
+
+  if (facture.status === "PAID") {
+    return actionError("Une facture encaissée ne peut pas être supprimée");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    // Soft delete the facture
+    await tx.facture.update({
+      where: { id: factureId },
+      data: { deletedAt: new Date() },
+    });
+
+    // If linked to a devis, revert devis status to SENT
+    if (facture.devis) {
+      await tx.devis.update({
+        where: { id: facture.devis.id },
+        data: { status: "SENT", factureId: null },
+      });
+    }
+  });
+
+  logAction("facture.deleted", session.user.id, {
+    factureId,
+    factureNumber: facture.number,
+  });
+
+  revalidatePath("/factures");
+  revalidatePath("/devis");
+  return actionSuccess();
 }
