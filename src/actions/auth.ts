@@ -3,10 +3,17 @@
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import { actionError, actionSuccess, zodErrorMessage, type ActionResult } from "@/lib/action-utils";
+import { authRateLimit, checkRateLimit } from "@/lib/rate-limit";
+
+async function getClientIp(): Promise<string> {
+  const h = await headers();
+  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || "anonymous";
+}
 
 const RegisterSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
@@ -18,6 +25,12 @@ export async function register(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const ip = await getClientIp();
+  const { limited } = await checkRateLimit(authRateLimit, `auth:register:${ip}`);
+  if (limited) {
+    return actionError("Trop de tentatives. Réessayez dans quelques minutes.");
+  }
+
   const parsed = RegisterSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -64,6 +77,12 @@ export async function login(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const ip = await getClientIp();
+  const { limited } = await checkRateLimit(authRateLimit, `auth:login:${ip}`);
+  if (limited) {
+    return actionError("Trop de tentatives. Réessayez dans quelques minutes.");
+  }
+
   const parsed = LoginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -87,6 +106,52 @@ export async function login(
     // Everything else (including NEXT_REDIRECT on success) must be re-thrown
     throw error;
   }
+
+  return actionSuccess();
+}
+
+const UpdateProfileSchema = z.object({
+  name: z.string().min(1, "Le nom est requis"),
+  company: z.string().optional().default(""),
+  siret: z.string().optional().default(""),
+  address: z.string().optional().default(""),
+  phone: z.string().optional().default(""),
+});
+
+export async function updateProfile(
+  _prev: ActionResult | null,
+  formData: FormData
+): Promise<ActionResult> {
+  const { auth } = await import("@/lib/auth");
+  const session = await auth();
+  if (!session?.user?.id) {
+    return actionError("Non authentifié");
+  }
+
+  const parsed = UpdateProfileSchema.safeParse({
+    name: formData.get("name"),
+    company: formData.get("company"),
+    siret: formData.get("siret"),
+    address: formData.get("address"),
+    phone: formData.get("phone"),
+  });
+
+  if (!parsed.success) {
+    return actionError(zodErrorMessage(parsed.error));
+  }
+
+  const { name, company, siret, address, phone } = parsed.data;
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: {
+      name,
+      company: company || null,
+      siret: siret || null,
+      address: address || null,
+      phone: phone || null,
+    },
+  });
 
   return actionSuccess();
 }

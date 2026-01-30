@@ -14,7 +14,7 @@ SaaS de devis et factures pour artisans français.
 - **PDF**: `@react-pdf/renderer` v4 (`renderToBuffer`, `createElement`)
 - **Payments**: Stripe v20 (API `2026-01-28.clover`)
 - **Email**: Nodemailer via SMTP (Resend)
-- **Rate Limiting**: `@upstash/ratelimit` + `@upstash/redis`
+- **Rate Limiting**: `@upstash/ratelimit` + `@upstash/redis` — applied on auth (5/min) and PDF (30/min)
 - **Tests**: Vitest (unit), Playwright (E2E)
 - **Icons**: lucide-react
 
@@ -45,6 +45,8 @@ src/
 - **Numbering**: `DEV-YYYY-NNN` for devis, `FAC-YYYY-NNN` for factures, year-filtered sequential
 - **Devis status machine**: `DRAFT` → `SENT` → `INVOICED`. Guards on update/delete (block INVOICED).
 - **PDF types**: Use `ReactElement<any>` cast and `new Uint8Array(buffer)` for NextResponse compatibility
+- **Rate Limiting**: `authRateLimit` (5 req/min) on register, login, magic link. `pdfRateLimit` (30 req/min) on PDF generation. Defined in `src/lib/rate-limit.ts`, gracefully disabled if Upstash env vars are missing.
+- **Magic link email**: Custom French template in Nodemailer provider (`sendVerificationRequest` in `src/lib/auth.ts`)
 
 ## Commands
 
@@ -63,7 +65,7 @@ npx prisma studio    # Database GUI
 Required in `.env` (not committed):
 - `DATABASE_URL` — PostgreSQL connection string (Neon)
 - `NEXTAUTH_SECRET` — Random secret for JWT
-- `NEXTAUTH_URL` — App URL (http://localhost:3000 local, https://facturoo.vercel.app prod)
+- `NEXTAUTH_URL` — App URL (http://localhost:3000 local). Not needed on Vercel thanks to `trustHost: true`
 - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_MONTHLY_PRICE_ID`, `STRIPE_YEARLY_PRICE_ID`
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
 - `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
@@ -83,3 +85,6 @@ Required in `.env` (not committed):
 - `@react-pdf/renderer` types are incompatible with React 19 — use `as ReactElement<any>` cast
 - `renderToBuffer` returns Buffer not assignable to NextResponse body — wrap with `new Uint8Array(buffer)`
 - Never import Prisma in proxy/middleware — causes Edge Function > 1MB
+- `trustHost: true` in NextAuth config — no need for `NEXTAUTH_URL` on Vercel
+- Google OAuth callback URL: `https://facturoo.vercel.app/api/auth/callback/google`
+- User cascade deletes: deleting a User cascades to Account, Client, Devis, Facture and their items

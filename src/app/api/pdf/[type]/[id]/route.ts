@@ -5,6 +5,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { DevisDocument } from "@/components/pdf/DevisDocument";
 import { FactureDocument } from "@/components/pdf/FactureDocument";
 import { createElement, type ReactElement } from "react";
+import { pdfRateLimit, checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(
   _request: NextRequest,
@@ -13,6 +14,14 @@ export async function GET(
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
+  const { limited } = await checkRateLimit(pdfRateLimit, `pdf:${session.user.id}`);
+  if (limited) {
+    return NextResponse.json(
+      { error: "Trop de requêtes. Réessayez dans quelques minutes." },
+      { status: 429 }
+    );
   }
 
   const { type, id } = await params;
