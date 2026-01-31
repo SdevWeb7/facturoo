@@ -82,6 +82,22 @@ export default async function SettingsPage() {
               </Alert>
             )}
 
+            {user.stripeSubscriptionId && !currentPlan && (
+              <Alert>
+                <AlertDescription>
+                  Abonnement actif
+                  {user.stripeCurrentPeriodEnd && (
+                    <>
+                      {" "}— prochain renouvellement le{" "}
+                      <strong>
+                        {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR")}
+                      </strong>
+                    </>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
+
             {user.stripeSubscriptionId && currentPlan && (
               <Alert variant={user.stripeCancelAtPeriodEnd ? "destructive" : "default"}>
                 <AlertDescription>

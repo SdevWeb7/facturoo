@@ -106,8 +106,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (url.startsWith(baseUrl)) return url;
       return `${baseUrl}/dashboard`;
     },
-    async jwt({ token, user }) {
-      if (user) token.id = user.id;
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id;
+        console.log(`[auth] JWT: provider=${account?.provider} userId=${user.id}`);
+      }
       return token;
     },
     async session({ session, token }) {
