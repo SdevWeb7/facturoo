@@ -63,12 +63,20 @@ export default async function DashboardPage() {
             Vue d&apos;ensemble de votre activité
           </p>
         </div>
-        <Button asChild className="w-full sm:w-auto">
-          <Link href="/devis/new">
-            <Plus className="h-4 w-4" />
-            Nouveau devis
-          </Link>
-        </Button>
+        <div className="flex w-full gap-3 sm:w-auto">
+          <Button variant="outline" asChild className="flex-1 sm:flex-initial">
+            <Link href="/clients/new">
+              <UserPlus className="h-4 w-4" />
+              Nouveau client
+            </Link>
+          </Button>
+          <Button asChild className="flex-1 sm:flex-initial">
+            <Link href="/devis/new">
+              <Plus className="h-4 w-4" />
+              Nouveau devis
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Welcome block when empty */}
