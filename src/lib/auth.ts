@@ -51,7 +51,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       credentials: {
@@ -109,7 +108,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
-        console.log(`[auth] JWT: provider=${account?.provider} userId=${user.id}`);
       }
       return token;
     },

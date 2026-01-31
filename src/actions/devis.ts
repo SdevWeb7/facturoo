@@ -82,6 +82,12 @@ export async function createDevis(
     return actionError(zodErrorMessage(parsed.error));
   }
 
+  // Verify client belongs to the authenticated user
+  const client = await prisma.client.findUnique({
+    where: { id: parsed.data.clientId, userId: session.user.id },
+  });
+  if (!client) return actionError("Client introuvable");
+
   const number = await generateDevisNumber(session.user.id);
 
   const devis = await prisma.devis.create({
@@ -154,6 +160,12 @@ export async function updateDevis(
   if (!parsed.success) {
     return actionError(zodErrorMessage(parsed.error));
   }
+
+  // Verify client belongs to the authenticated user
+  const client = await prisma.client.findUnique({
+    where: { id: parsed.data.clientId, userId: session.user.id },
+  });
+  if (!client) return actionError("Client introuvable");
 
   await prisma.$transaction([
     // Delete existing items

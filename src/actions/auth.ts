@@ -164,6 +164,12 @@ export async function requestPasswordReset(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const ip = await getClientIp();
+  const { limited } = await checkRateLimit(authRateLimit, `auth:reset-request:${ip}`);
+  if (limited) {
+    return actionError("Trop de tentatives. Réessayez dans quelques minutes.");
+  }
+
   const parsed = ForgotPasswordSchema.safeParse({
     email: formData.get("email"),
   });
@@ -180,17 +186,49 @@ export async function requestPasswordReset(
     return actionSuccess();
   }
 
-  const token = crypto.randomUUID();
+  const token = crypto.randomBytes(32).toString("hex");
   const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
   await prisma.verificationToken.create({
     data: { identifier: email, token, expires },
   });
 
-  // TODO: send email with reset link (Phase 11)
-  // For now, log the token in development
+  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+
   if (process.env.NODE_ENV === "development") {
-    console.log(`[DEV] Reset link: ${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`);
+    console.log(`[DEV] Reset link: ${resetUrl}`);
+  }
+
+  // Send password reset email
+  try {
+    const nodemailer = await import("nodemailer");
+    const transport = nodemailer.default.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 465,
+      secure: process.env.SMTP_SECURE === "true",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    await transport.sendMail({
+      from: process.env.SMTP_FROM || "noreply@facturoo.fr",
+      to: email,
+      subject: "Réinitialisation de votre mot de passe — Facturoo",
+      text: `Réinitialisez votre mot de passe en cliquant sur ce lien :\n\n${resetUrl}\n\nSi vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.\n\nCe lien expire dans 1 heure.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;">
+          <h2 style="color: #1a1a1a;">Réinitialisation de mot de passe</h2>
+          <p>Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :</p>
+          <a href="${resetUrl}" style="display: inline-block; background: #2563eb; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">Réinitialiser mon mot de passe</a>
+          <p style="margin-top: 24px; color: #666; font-size: 14px;">Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email en toute sécurité.</p>
+          <p style="color: #999; font-size: 12px;">Ce lien expire dans 1 heure.</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[auth] Failed to send password reset email:", err instanceof Error ? err.message : "Unknown error");
   }
 
   return actionSuccess();
@@ -205,6 +243,12 @@ export async function resetPassword(
   _prev: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const ip = await getClientIp();
+  const { limited } = await checkRateLimit(authRateLimit, `auth:reset-password:${ip}`);
+  if (limited) {
+    return actionError("Trop de tentatives. Réessayez dans quelques minutes.");
+  }
+
   const parsed = ResetPasswordSchema.safeParse({
     token: formData.get("token"),
     password: formData.get("password"),
