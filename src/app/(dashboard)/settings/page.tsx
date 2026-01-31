@@ -5,8 +5,9 @@ import { hasActiveSubscription } from "@/lib/subscription";
 import { PLANS } from "@/lib/stripe";
 import { SubscriptionActions } from "./SubscriptionActions";
 import { ProfileForm } from "@/components/forms/ProfileForm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -42,13 +43,16 @@ export default async function SettingsPage() {
     : null;
 
   return (
-    <div>
+    <div className="space-y-8">
       <h1 className="text-2xl font-bold">Paramètres</h1>
 
       {/* Profile */}
-      <Card className="mt-6">
+      <Card>
         <CardHeader>
           <CardTitle>Profil</CardTitle>
+          <CardDescription>
+            Vos informations personnelles et professionnelles
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ProfileForm
@@ -65,78 +69,95 @@ export default async function SettingsPage() {
       </Card>
 
       {/* Subscription */}
-      <Card className="mt-6">
+      <Card>
         <CardHeader>
           <CardTitle>Abonnement</CardTitle>
+          <CardDescription>
+            Gérez votre formule et votre facturation
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div>
+          {/* Status card */}
+          <div className="rounded-xl border p-5">
             {isTrialing && (
-              <Alert>
-                <AlertDescription>
-                  Période d&apos;essai active jusqu&apos;au{" "}
-                  <strong>
-                    {new Date(user.trialEndsAt!).toLocaleDateString("fr-FR")}
-                  </strong>
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {user.stripeSubscriptionId && !currentPlan && (
-              <Alert>
-                <AlertDescription>
-                  Abonnement actif
-                  {user.stripeCurrentPeriodEnd && (
-                    <>
-                      {" "}— prochain renouvellement le{" "}
-                      <strong>
-                        {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR")}
-                      </strong>
-                    </>
-                  )}
-                </AlertDescription>
-              </Alert>
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <Clock className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold">Période d&apos;essai</p>
+                    <Badge variant="sent">Active</Badge>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Votre essai est actif jusqu&apos;au{" "}
+                    <strong>
+                      {new Date(user.trialEndsAt!).toLocaleDateString("fr-FR")}
+                    </strong>
+                  </p>
+                </div>
+              </div>
             )}
 
             {user.stripeSubscriptionId && currentPlan && (
-              <Alert variant={user.stripeCancelAtPeriodEnd ? "destructive" : "default"}>
-                <AlertDescription>
+              <div className="flex items-start gap-3">
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${user.stripeCancelAtPeriodEnd ? "bg-destructive/10" : "bg-success/10"}`}>
                   {user.stripeCancelAtPeriodEnd ? (
-                    <>
-                      Abonnement <strong>{currentPlan.name}</strong> annulé
-                      {user.stripeCurrentPeriodEnd && (
-                        <>
-                          {" "}— actif jusqu&apos;au{" "}
-                          <strong>
-                            {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR")}
-                          </strong>
-                        </>
-                      )}
-                    </>
+                    <AlertTriangle className="h-5 w-5 text-destructive" />
                   ) : (
-                    <>
-                      Abonnement <strong>{currentPlan.name}</strong> actif
-                      {user.stripeCurrentPeriodEnd && (
-                        <>
-                          {" "}— prochain renouvellement le{" "}
-                          <strong>
-                            {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR")}
-                          </strong>
-                        </>
-                      )}
-                    </>
+                    <CheckCircle2 className="h-5 w-5 text-success" />
                   )}
-                </AlertDescription>
-              </Alert>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold">{currentPlan.name}</p>
+                    <Badge variant={user.stripeCancelAtPeriodEnd ? "destructive" : "invoiced"}>
+                      {user.stripeCancelAtPeriodEnd ? "Annulé" : "Actif"}
+                    </Badge>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {user.stripeCancelAtPeriodEnd
+                      ? `Actif jusqu'au ${new Date(user.stripeCurrentPeriodEnd!).toLocaleDateString("fr-FR")}`
+                      : `Prochain renouvellement le ${user.stripeCurrentPeriodEnd ? new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR") : "—"}`}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {user.stripeSubscriptionId && !currentPlan && (
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-success/10">
+                  <CheckCircle2 className="h-5 w-5 text-success" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold">Abonnement actif</p>
+                    <Badge variant="invoiced">Actif</Badge>
+                  </div>
+                  {user.stripeCurrentPeriodEnd && (
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Prochain renouvellement le{" "}
+                      <strong>
+                        {new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR")}
+                      </strong>
+                    </p>
+                  )}
+                </div>
+              </div>
             )}
 
             {!isActive && !isTrialing && (
-              <Alert variant="destructive">
-                <AlertDescription>
-                  Aucun abonnement actif. Souscrivez pour continuer à utiliser
-                  Facturoo.
-                </AlertDescription>
-              </Alert>
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                </div>
+                <div>
+                  <p className="font-semibold">Aucun abonnement</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Souscrivez pour continuer à utiliser Facturoo.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
 

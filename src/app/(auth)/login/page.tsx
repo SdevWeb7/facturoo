@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 
 const oauthErrors: Record<string, string> = {
   OAuthAccountNotLinked:
@@ -117,7 +116,7 @@ export default function LoginPage() {
 
       <Button
         variant="outline"
-        className="w-full"
+        className="w-full h-11 border-2 hover:shadow-warm font-medium"
         onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -143,10 +142,10 @@ export default function LoginPage() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <Separator />
+          <div className="w-full border-t" />
         </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-muted px-2 text-muted-foreground">ou</span>
+        <div className="relative flex justify-center">
+          <span className="bg-card px-3 text-xs uppercase tracking-wider text-muted-foreground">ou</span>
         </div>
       </div>
 
@@ -154,10 +153,10 @@ export default function LoginPage() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <Separator />
+          <div className="w-full border-t" />
         </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-muted px-2 text-muted-foreground">ou</span>
+        <div className="relative flex justify-center">
+          <span className="bg-card px-3 text-xs uppercase tracking-wider text-muted-foreground">ou</span>
         </div>
       </div>
 

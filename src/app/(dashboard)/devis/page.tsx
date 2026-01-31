@@ -7,6 +7,9 @@ import { DevisActionsMenu } from "./DevisActionsMenu";
 import { SortableTableHead } from "@/components/SortableTableHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { FileText, Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -59,22 +62,31 @@ export default async function DevisPage({
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Devis</h1>
         <Button asChild>
-          <Link href="/devis/new">Nouveau devis</Link>
+          <Link href="/devis/new">
+            <Plus className="h-4 w-4" />
+            Nouveau devis
+          </Link>
         </Button>
       </div>
 
       {devisWithTotals.length === 0 ? (
-        <div className="mt-8 text-center">
-          <p className="text-muted-foreground">Aucun devis pour le moment.</p>
-          <Link
-            href="/devis/new"
-            className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary/80"
-          >
-            Créer votre premier devis
-          </Link>
+        <div className="mt-8">
+          <EmptyState
+            icon={<FileText className="h-7 w-7" />}
+            title="Aucun devis"
+            description="Créez votre premier devis pour commencer à facturer vos clients."
+            action={
+              <Button asChild>
+                <Link href="/devis/new">
+                  <Plus className="h-4 w-4" />
+                  Créer votre premier devis
+                </Link>
+              </Button>
+            }
+          />
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-lg border bg-card">
+        <Card className="mt-6 overflow-hidden p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -117,7 +129,7 @@ export default async function DevisPage({
               })}
             </TableBody>
           </Table>
-        </div>
+        </Card>
       )}
     </div>
   );

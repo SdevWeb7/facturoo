@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   Users,
@@ -11,6 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
   SheetContent,
@@ -24,35 +27,75 @@ const navItems = [
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/devis", label: "Devis", icon: FileText },
   { href: "/factures", label: "Factures", icon: Receipt },
-  { href: "/settings", label: "Paramètres", icon: Settings },
 ];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  const userName = session?.user?.name || session?.user?.email || "Utilisateur";
 
   return (
-    <nav className="flex-1 space-y-1 px-3 py-4">
-      {navItems.map((item) => {
-        const isActive =
-          pathname === item.href || pathname.startsWith(item.href + "/");
-        return (
-          <Button
-            key={item.href}
-            variant="ghost"
-            asChild
-            className={cn(
-              "w-full justify-start gap-3 text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
-              isActive && "bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-accent"
+    <div className="flex h-full flex-col">
+      {/* User section */}
+      <div className="border-b border-sidebar-border px-4 py-4">
+        <div className="flex items-center gap-3">
+          <Avatar name={userName} size="sm" className="bg-sidebar-accent text-sidebar-foreground" />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-sidebar-foreground">
+              {session?.user?.name || "Mon compte"}
+            </p>
+            {session?.user?.email && (
+              <p className="truncate text-xs text-sidebar-foreground/60">
+                {session.user.email}
+              </p>
             )}
-          >
-            <Link href={item.href} onClick={onNavigate}>
-              <item.icon className="h-5 w-5" />
-              {item.label}
-            </Link>
-          </Button>
-        );
-      })}
-    </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        {navItems.map((item) => {
+          const isActive =
+            pathname === item.href || pathname.startsWith(item.href + "/");
+          return (
+            <Button
+              key={item.href}
+              variant="ghost"
+              asChild
+              className={cn(
+                "w-full justify-start gap-3 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                isActive && "border-l-2 border-white bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-accent font-semibold"
+              )}
+            >
+              <Link href={item.href} onClick={onNavigate}>
+                <item.icon className="h-5 w-5" />
+                {item.label}
+              </Link>
+            </Button>
+          );
+        })}
+      </nav>
+
+      {/* Bottom section */}
+      <div className="border-t border-sidebar-border px-3 py-3">
+        <Button
+          variant="ghost"
+          asChild
+          className={cn(
+            "w-full justify-start gap-3 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+            (pathname === "/settings" || pathname.startsWith("/settings/")) &&
+              "border-l-2 border-white bg-sidebar-accent text-sidebar-foreground font-semibold"
+          )}
+        >
+          <Link href="/settings" onClick={onNavigate}>
+            <Settings className="h-5 w-5" />
+            Paramètres
+          </Link>
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -60,11 +103,14 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar">
-        <div className="flex h-16 items-center border-b border-sidebar-border px-6">
+      <aside className="hidden lg:flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar bg-gradient-to-b from-sidebar to-sidebar/95">
+        <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
           <Link href="/dashboard" className="text-xl font-bold text-sidebar-foreground font-display">
             Facturoo
           </Link>
+          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
+            Pro
+          </Badge>
         </div>
         <SidebarContent />
       </aside>
@@ -72,7 +118,7 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
       {/* Mobile/tablet drawer */}
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent side="left" className="w-64 p-0 bg-sidebar text-sidebar-foreground border-sidebar-border">
-          <SheetHeader className="flex h-16 items-center border-b border-sidebar-border px-6">
+          <SheetHeader className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
             <SheetTitle className="text-xl font-bold text-sidebar-foreground font-display">
               Facturoo
             </SheetTitle>

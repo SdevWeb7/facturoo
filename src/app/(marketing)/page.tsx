@@ -6,9 +6,14 @@ import {
   Clock,
   Shield,
   Zap,
+  ArrowRight,
+  CheckCircle2,
+  Server,
+  Headphones,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const features = [
   {
@@ -49,38 +54,132 @@ const features = [
   },
 ];
 
+const steps = [
+  {
+    number: "1",
+    title: "Créez votre compte",
+    description: "Inscription en 30 secondes. Ajoutez vos informations d'entreprise.",
+  },
+  {
+    number: "2",
+    title: "Rédigez vos devis",
+    description: "Ajoutez vos clients, créez vos devis avec lignes de prestations et TVA.",
+  },
+  {
+    number: "3",
+    title: "Facturez en un clic",
+    description: "Convertissez vos devis en factures et envoyez-les par email avec PDF.",
+  },
+];
+
+const trustItems = [
+  {
+    icon: CheckCircle2,
+    title: "Conforme normes FR",
+    description: "Numérotation séquentielle, mentions légales obligatoires",
+  },
+  {
+    icon: Server,
+    title: "Données en Europe",
+    description: "Hébergement sécurisé, conforme RGPD",
+  },
+  {
+    icon: Headphones,
+    title: "Support réactif",
+    description: "Une question ? Notre équipe vous répond rapidement",
+  },
+];
+
 export default function HomePage() {
   return (
     <main>
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 py-24 text-center">
-        <h1 className="animate-fade-in-up text-5xl font-extrabold tracking-tight sm:text-6xl">
-          Vos devis et factures
-          <br />
-          <span className="text-primary">en 2 minutes</span>
-        </h1>
-        <p className="animate-fade-in-up animate-stagger-2 mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-          L&apos;outil simple et efficace pour les artisans fran&ccedil;ais.
-          Cr&eacute;ez vos devis, envoyez-les par email, convertissez-les en
-          factures. Sans prise de t&ecirc;te.
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <Button size="lg" asChild>
-            <Link href="/register">Essayer gratuitement 14 jours</Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <Link href="/pricing">Voir les tarifs</Link>
-          </Button>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="relative mx-auto max-w-6xl px-6 py-24 sm:py-32 text-center">
+          <Badge variant="secondary" className="animate-fade-in-up mb-6 text-sm px-4 py-1.5">
+            Essai gratuit 14 jours
+          </Badge>
+
+          <h1 className="animate-fade-in-up animate-stagger-2 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
+            Vos devis et factures
+            <br />
+            <span className="text-gradient">en 2 minutes</span>
+          </h1>
+
+          <p className="animate-fade-in-up animate-stagger-3 mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+            L&apos;outil simple et efficace pour les artisans fran&ccedil;ais.
+            Cr&eacute;ez vos devis, envoyez-les par email, convertissez-les en
+            factures. Sans prise de t&ecirc;te.
+          </p>
+
+          <div className="animate-fade-in-up animate-stagger-4 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button size="lg" asChild className="w-full sm:w-auto bg-gradient-to-r from-primary to-primary-hover hover:shadow-warm-lg">
+              <Link href="/register">
+                Essayer gratuitement 14 jours
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
+              <Link href="/pricing">Voir les tarifs</Link>
+            </Button>
+          </div>
+
+          <p className="animate-fade-in-up animate-stagger-5 mt-4 text-sm text-muted-foreground">
+            Pas de carte bancaire requise. Sans engagement.
+          </p>
+
+          {/* Dashboard mockup with perspective */}
+          <div className="animate-fade-in-up animate-stagger-5 mt-16 mx-auto max-w-4xl">
+            <div className="rounded-2xl border bg-card shadow-warm-lg p-2 sm:p-3" style={{ transform: "perspective(1200px) rotateX(2deg)" }}>
+              <div className="rounded-xl bg-muted/50 p-6 sm:p-8">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {["12 Clients", "8 Devis", "5 Factures", "4 250 €"].map((stat, i) => (
+                    <div key={i} className="rounded-xl bg-card p-3 sm:p-4 shadow-warm text-center">
+                      <p className="text-lg sm:text-2xl font-bold text-primary">{stat.split(" ")[0]}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{stat.split(" ").slice(1).join(" ")}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Sans carte bancaire. Sans engagement.
-        </p>
+      </section>
+
+      {/* How it works — 3 steps */}
+      <section className="border-t bg-card py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-center text-3xl font-bold sm:text-4xl">
+            Comment &ccedil;a marche
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">
+            Trois étapes simples pour gérer vos devis et factures.
+          </p>
+
+          <div className="mt-16 grid gap-8 sm:grid-cols-3">
+            {steps.map((step, i) => (
+              <div key={step.number} className={`relative text-center animate-fade-in-up animate-stagger-${Math.min(i + 1, 5)}`}>
+                <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-hover text-white text-xl font-bold shadow-warm">
+                  {step.number}
+                </div>
+                {i < steps.length - 1 && (
+                  <div className="hidden sm:block absolute top-7 left-[calc(50%+2rem)] w-[calc(100%-4rem)] border-t-2 border-dashed border-border" />
+                )}
+                <h3 className="mt-5 text-lg font-semibold">{step.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Features */}
-      <section className="border-t bg-muted/50 py-24">
+      <section className="border-t bg-muted/30 py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-center text-3xl font-bold">
+          <h2 className="text-center text-3xl font-bold sm:text-4xl">
             Tout ce dont vous avez besoin
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">
@@ -88,17 +187,17 @@ export default function HomePage() {
             outil simple, rapide et conforme.
           </p>
 
-          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, i) => (
-              <Card key={feature.title} className={`card-hover animate-fade-in-up animate-stagger-${Math.min(i + 1, 5)}`}>
+              <Card key={feature.title} className={`card-hover-premium animate-fade-in-up animate-stagger-${Math.min(i + 1, 5)}`}>
                 <CardContent>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20">
-                    <feature.icon className="h-5 w-5 text-accent-foreground" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-accent/20 to-accent/10">
+                    <feature.icon className="h-6 w-6 text-accent-foreground" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold">
                     {feature.title}
                   </h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -108,19 +207,45 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Trust section */}
+      <section className="border-t bg-card py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-center text-3xl font-bold sm:text-4xl">
+            Vous &ecirc;tes entre de bonnes mains
+          </h2>
+          <div className="mt-12 grid gap-8 sm:grid-cols-3">
+            {trustItems.map((item) => (
+              <div key={item.title} className="text-center">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-success/10">
+                  <item.icon className="h-6 w-6 text-success" />
+                </div>
+                <h3 className="mt-4 font-semibold">{item.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
-      <section className="py-24">
+      <section className="border-t py-24">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2 className="text-3xl font-bold">
+          <h2 className="text-3xl font-bold sm:text-4xl">
             Pr&ecirc;t &agrave; simplifier votre facturation ?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Rejoignez les artisans qui gagnent du temps avec Facturoo.
             14 jours d&apos;essai gratuit, sans engagement.
           </p>
-          <Button size="lg" className="mt-8" asChild>
-            <Link href="/register">Commencer maintenant</Link>
+          <Button size="lg" className="mt-8 bg-gradient-to-r from-primary to-primary-hover hover:shadow-warm-lg" asChild>
+            <Link href="/register">
+              Commencer maintenant
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </Button>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Pas de carte bancaire requise
+          </p>
         </div>
       </section>
     </main>

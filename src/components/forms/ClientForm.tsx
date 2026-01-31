@@ -22,7 +22,7 @@ export function ClientForm({ action, defaultValues, submitLabel }: ClientFormPro
   const [state, formAction, pending] = useActionState(action, null);
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5">
       {state?.success === false && (
         <Alert variant="destructive">
           <AlertDescription>{state.error}</AlertDescription>

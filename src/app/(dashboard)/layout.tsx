@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
+import { ToastProvider } from "@/components/ui/toast";
 
 export default function DashboardLayout({
   children,
@@ -14,15 +15,19 @@ export default function DashboardLayout({
 
   return (
     <SessionProvider>
-      <div className="flex h-screen">
-        <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <Header onToggleSidebar={() => setSidebarOpen(true)} />
-          <main className="flex-1 overflow-y-auto bg-background p-4 lg:p-6">
-            {children}
-          </main>
+      <ToastProvider>
+        <div className="flex h-screen">
+          <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <Header onToggleSidebar={() => setSidebarOpen(true)} />
+            <main className="flex-1 overflow-y-auto bg-background p-4 lg:p-8">
+              <div className="mx-auto max-w-7xl animate-fade-in-up">
+                {children}
+              </div>
+            </main>
+          </div>
         </div>
-      </div>
+      </ToastProvider>
     </SessionProvider>
   );
 }

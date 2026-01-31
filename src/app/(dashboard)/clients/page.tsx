@@ -2,8 +2,12 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Users, Plus } from "lucide-react";
 import { DeleteClientButton } from "./DeleteClientButton";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Avatar } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -27,26 +31,35 @@ export default async function ClientsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Clients</h1>
         <Button asChild>
-          <Link href="/clients/new">Nouveau client</Link>
+          <Link href="/clients/new">
+            <Plus className="h-4 w-4" />
+            Nouveau client
+          </Link>
         </Button>
       </div>
 
       {clients.length === 0 ? (
-        <div className="mt-8 text-center">
-          <p className="text-muted-foreground">Aucun client pour le moment.</p>
-          <Link
-            href="/clients/new"
-            className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary/80"
-          >
-            Créer votre premier client
-          </Link>
+        <div className="mt-8">
+          <EmptyState
+            icon={<Users className="h-7 w-7" />}
+            title="Aucun client"
+            description="Commencez par ajouter votre premier client pour créer des devis."
+            action={
+              <Button asChild>
+                <Link href="/clients/new">
+                  <Plus className="h-4 w-4" />
+                  Créer votre premier client
+                </Link>
+              </Button>
+            }
+          />
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-lg border bg-card">
+        <Card className="mt-6 overflow-hidden p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nom</TableHead>
+                <TableHead>Client</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Téléphone</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -55,8 +68,11 @@ export default async function ClientsPage() {
             <TableBody>
               {clients.map((client) => (
                 <TableRow key={client.id}>
-                  <TableCell className="font-medium">
-                    {client.name}
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={client.name} size="sm" />
+                      <span className="font-medium">{client.name}</span>
+                    </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {client.email}
@@ -76,7 +92,7 @@ export default async function ClientsPage() {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </Card>
       )}
     </div>
   );

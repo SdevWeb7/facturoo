@@ -10,10 +10,13 @@ import {
   TrendingUp,
   ArrowRight,
   Plus,
+  UserPlus,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Avatar } from "@/components/ui/avatar";
 import { STATUS_BADGE_VARIANT } from "@/lib/status";
 
 export default async function DashboardPage() {
@@ -70,22 +73,29 @@ export default async function DashboardPage() {
 
       {/* Welcome block when empty */}
       {devisList.length === 0 && facturesList.length === 0 && (
-        <Card className="mt-6 border-dashed p-6 text-center sm:p-8">
-          <h3 className="text-lg font-semibold">
-            Bienvenue sur Facturoo
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Commencez par ajouter un client puis créez votre premier devis.
-          </p>
-          <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-            <Button variant="outline" asChild className="w-full sm:w-auto">
-              <Link href="/clients/new">Ajouter un client</Link>
-            </Button>
-            <Button asChild className="w-full sm:w-auto">
-              <Link href="/devis/new">Créer un devis</Link>
-            </Button>
-          </div>
-        </Card>
+        <div className="mt-6">
+          <EmptyState
+            icon={<FileText className="h-7 w-7" />}
+            title="Bienvenue sur Facturoo"
+            description="Commencez par ajouter un client puis créez votre premier devis."
+            action={
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <Button variant="outline" asChild>
+                  <Link href="/clients/new">
+                    <UserPlus className="h-4 w-4" />
+                    Ajouter un client
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/devis/new">
+                    <Plus className="h-4 w-4" />
+                    Créer un devis
+                  </Link>
+                </Button>
+              </div>
+            }
+          />
+        </div>
       )}
 
       {/* KPI Cards */}
@@ -93,7 +103,7 @@ export default async function DashboardPage() {
         <Card className="animate-fade-in-up animate-stagger-1 card-hover">
           <CardContent>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">
                 <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -107,8 +117,8 @@ export default async function DashboardPage() {
         <Card className="animate-fade-in-up animate-stagger-2 card-hover">
           <CardContent>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <FileText className="h-5 w-5 text-primary" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-chart-4/20 to-chart-4/10">
+                <FileText className="h-5 w-5 text-chart-4" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Devis</p>
@@ -134,7 +144,7 @@ export default async function DashboardPage() {
         <Card className="animate-fade-in-up animate-stagger-3 card-hover">
           <CardContent>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent/20 to-accent/10">
                 <Receipt className="h-5 w-5 text-accent-foreground" />
               </div>
               <div>
@@ -150,7 +160,7 @@ export default async function DashboardPage() {
         <Card className="animate-fade-in-up animate-stagger-4 card-hover">
           <CardContent>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/10">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-success/20 to-success/10">
                 <TrendingUp className="h-5 w-5 text-success" />
               </div>
               <div>
@@ -168,17 +178,17 @@ export default async function DashboardPage() {
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         {/* Recent Devis */}
         <Card>
-          <div className="flex items-center justify-between border-b px-5 py-4">
-            <h2 className="font-semibold">Derniers devis</h2>
+          <div className="flex items-center justify-between border-b px-6 py-4">
+            <h2 className="font-semibold font-display">Derniers devis</h2>
             <Link
               href="/devis"
-              className="flex items-center gap-1 text-sm text-primary hover:text-primary/80"
+              className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors"
             >
               Tout voir <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
           {recentDevis.length === 0 ? (
-            <div className="px-5 py-8 text-center text-sm text-muted-foreground">
+            <div className="px-6 py-10 text-center text-sm text-muted-foreground">
               Aucun devis créé
             </div>
           ) : (
@@ -193,19 +203,21 @@ export default async function DashboardPage() {
                 return (
                   <li
                     key={devis.id}
-                    className="flex items-center justify-between px-5 py-3"
+                    className="flex items-center justify-between px-6 py-3 hover:bg-primary-subtle transition-colors"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {devis.number}
-                        <span className="ml-2 text-muted-foreground">&mdash;</span>
-                        <span className="ml-2 text-muted-foreground">
-                          {devis.client.name}
-                        </span>
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(devis.date).toLocaleDateString("fr-FR")}
-                      </p>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar name={devis.client.name} size="sm" />
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">
+                          {devis.number}
+                          <span className="ml-2 text-muted-foreground">
+                            {devis.client.name}
+                          </span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(devis.date).toLocaleDateString("fr-FR")}
+                        </p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <Badge variant={statusInfo.variant}>
@@ -224,19 +236,19 @@ export default async function DashboardPage() {
 
         {/* Recent Factures */}
         <Card>
-          <div className="flex items-center justify-between border-b px-5 py-4">
-            <h2 className="font-semibold">
+          <div className="flex items-center justify-between border-b px-6 py-4">
+            <h2 className="font-semibold font-display">
               Dernières factures
             </h2>
             <Link
               href="/factures"
-              className="flex items-center gap-1 text-sm text-primary hover:text-primary/80"
+              className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors"
             >
               Tout voir <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
           {recentFactures.length === 0 ? (
-            <div className="px-5 py-8 text-center text-sm text-muted-foreground">
+            <div className="px-6 py-10 text-center text-sm text-muted-foreground">
               Aucune facture créée
             </div>
           ) : (
@@ -250,19 +262,21 @@ export default async function DashboardPage() {
                 return (
                   <li
                     key={facture.id}
-                    className="flex items-center justify-between px-5 py-3"
+                    className="flex items-center justify-between px-6 py-3 hover:bg-primary-subtle transition-colors"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {facture.number}
-                        <span className="ml-2 text-muted-foreground">&mdash;</span>
-                        <span className="ml-2 text-muted-foreground">
-                          {facture.client.name}
-                        </span>
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(facture.date).toLocaleDateString("fr-FR")}
-                      </p>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar name={facture.client.name} size="sm" />
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">
+                          {facture.number}
+                          <span className="ml-2 text-muted-foreground">
+                            {facture.client.name}
+                          </span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(facture.date).toLocaleDateString("fr-FR")}
+                        </p>
+                      </div>
                     </div>
                     <span className="text-sm font-medium">
                       {formatCurrency(totals.totalTTC)}

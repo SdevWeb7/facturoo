@@ -7,7 +7,8 @@ SaaS de devis et factures pour artisans français.
 - **Framework**: Next.js 16 (App Router, Turbopack)
 - **React**: 19 (`useActionState` for forms)
 - **TypeScript**: 5, strict mode
-- **CSS**: Tailwind CSS v4
+- **CSS**: Tailwind CSS v4 (oklch color tokens, `@theme inline`)
+- **Fonts**: Plus Jakarta Sans (body), DM Serif Display (headings) — via `next/font/google`
 - **ORM**: Prisma 6 with PostgreSQL (Neon cloud)
 - **Auth**: NextAuth v5 beta (`next-auth@5.0.0-beta.30`), JWT strategy
 - **Validation**: Zod v4 (JSON error.message parsing via `zodErrorMessage`)
@@ -17,6 +18,7 @@ SaaS de devis et factures pour artisans français.
 - **Rate Limiting**: `@upstash/ratelimit` + `@upstash/redis` — applied on auth (5/min) and PDF (30/min)
 - **Tests**: Vitest (unit), Playwright (E2E)
 - **Icons**: lucide-react
+- **UI Primitives**: Radix UI (Sheet, DropdownMenu, Select, Dialog, Label, Switch)
 
 ## Architecture
 
@@ -29,10 +31,11 @@ src/
 │   └── api/               # PDF generation, email send, Stripe webhook
 ├── actions/               # Server Actions (clients, devis, factures, subscription)
 ├── components/
-│   ├── forms/             # ClientForm, DevisForm, LineItemsEditor
-│   ├── layout/            # Sidebar, Header
+│   ├── forms/             # ClientForm, DevisForm, LineItemsEditor, ProfileForm
+│   ├── layout/            # Sidebar (mobile Sheet), Header (glass, dropdowns)
 │   ├── pdf/               # DevisDocument, FactureDocument, styles
-│   └── providers/         # SessionProvider
+│   ├── providers/         # SessionProvider
+│   └── ui/                # Button, Card, Input, Table, Badge, Alert, Avatar, Skeleton, Toast, EmptyState, etc.
 └── lib/                   # auth, prisma, stripe, email, utils, logger, rate-limit, action-utils, subscription
 ```
 
@@ -47,6 +50,11 @@ src/
 - **PDF types**: Use `ReactElement<any>` cast and `new Uint8Array(buffer)` for NextResponse compatibility
 - **Rate Limiting**: `authRateLimit` (5 req/min) on register, login, magic link. `pdfRateLimit` (30 req/min) on PDF generation. Defined in `src/lib/rate-limit.ts`, gracefully disabled if Upstash env vars are missing.
 - **Magic link email**: Custom French template in Nodemailer provider (`sendVerificationRequest` in `src/lib/auth.ts`)
+- **Design System**: Warm & premium style — see `charteUI.md` for full design tokens, component specs, and UI rules
+- **Toast**: Context-based (`ToastProvider` + `useToast`), wrapped at dashboard layout level
+- **Loading states**: Each dashboard route has a `loading.tsx` with Skeleton components (React Suspense)
+- **Button loading**: `loading` prop shows spinner + disables interaction
+- **Layout**: Sidebar with user info + plan badge, Header with glass effect + quick actions + user dropdown
 
 ## Commands
 

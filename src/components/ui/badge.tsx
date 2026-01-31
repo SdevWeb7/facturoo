@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+  "inline-flex items-center justify-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1.5 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
   {
     variants: {
       variant: {
@@ -19,15 +19,15 @@ const badgeVariants = cva(
         ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         link: "text-primary underline-offset-4 [a&]:hover:underline",
         draft:
-          "bg-muted text-muted-foreground border-border",
+          "bg-muted text-muted-foreground border-border before:inline-block before:size-1.5 before:rounded-full before:bg-muted-foreground",
         sent:
-          "bg-primary/10 text-primary border-primary/20",
+          "bg-primary/10 text-primary border-primary/20 before:inline-block before:size-1.5 before:rounded-full before:bg-primary",
         invoiced:
-          "bg-success/10 text-success border-success/20",
+          "bg-success/10 text-success border-success/20 before:inline-block before:size-1.5 before:rounded-full before:bg-success",
         paid:
-          "bg-success/15 text-success border-success/25",
+          "bg-success/15 text-success border-success/25 before:inline-block before:size-1.5 before:rounded-full before:bg-success",
         overdue:
-          "bg-destructive/10 text-destructive border-destructive/20",
+          "bg-destructive/10 text-destructive border-destructive/20 before:inline-block before:size-1.5 before:rounded-full before:bg-destructive",
       },
     },
     defaultVariants: {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ const plans = [
     name: "Annuel",
     price: "99",
     period: "/an",
+    monthlyEquiv: "8,25 €/mois",
     badge: "2 mois offerts",
     description: "Le meilleur rapport qualité-prix.",
     features: [
@@ -40,13 +41,36 @@ const plans = [
   },
 ];
 
+const faqs = [
+  {
+    question: "L'essai est-il vraiment gratuit ?",
+    answer:
+      "Oui, 14 jours sans carte bancaire. Vous pouvez créer des devis et factures dès votre inscription.",
+  },
+  {
+    question: "Puis-je changer de plan ?",
+    answer:
+      "Oui, vous pouvez passer du mensuel à l'annuel (ou inversement) à tout moment depuis vos paramètres.",
+  },
+  {
+    question: "Comment annuler mon abonnement ?",
+    answer:
+      "En un clic depuis la page Paramètres. Votre accès reste actif jusqu'à la fin de la période payée.",
+  },
+  {
+    question: "Mes données sont-elles sécurisées ?",
+    answer:
+      "Oui. Vos données sont hébergées en Europe sur des serveurs sécurisés, conformément au RGPD.",
+  },
+];
+
 export default function PricingPage() {
   return (
     <main className="py-24">
       <div className="mx-auto max-w-5xl px-6">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold">
+          <h1 className="text-4xl font-extrabold sm:text-5xl">
             Tarifs simples, sans surprise
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
@@ -62,13 +86,18 @@ export default function PricingPage() {
               key={plan.name}
               className={
                 plan.highlighted
-                  ? "relative border-2 border-primary bg-primary/5 shadow-warm-lg card-hover"
-                  : "relative card-hover"
+                  ? "relative border-2 border-primary bg-primary/5 shadow-warm-lg card-hover-premium scale-[1.02]"
+                  : "relative card-hover-premium"
               }
             >
               {plan.badge && (
-                <Badge variant="invoiced" className="absolute -top-3 right-6">
+                <Badge variant="default" className="absolute -top-3 right-6">
                   {plan.badge}
+                </Badge>
+              )}
+              {plan.highlighted && (
+                <Badge variant="secondary" className="absolute -top-3 left-6 text-xs">
+                  Recommandé
                 </Badge>
               )}
 
@@ -83,6 +112,11 @@ export default function PricingPage() {
                     {plan.price} &euro;
                   </span>
                   <span className="text-muted-foreground">{plan.period}</span>
+                  {plan.monthlyEquiv && (
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      soit {plan.monthlyEquiv}
+                    </p>
+                  )}
                 </div>
 
                 <ul className="mt-8 space-y-3">
@@ -95,11 +129,15 @@ export default function PricingPage() {
                 </ul>
 
                 <Button
-                  className="mt-8 w-full"
+                  className={`mt-8 w-full ${plan.highlighted ? "bg-gradient-to-r from-primary to-primary-hover" : ""}`}
                   variant={plan.highlighted ? "default" : "secondary"}
+                  size="lg"
                   asChild
                 >
-                  <Link href="/register">{plan.cta}</Link>
+                  <Link href="/register">
+                    {plan.cta}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
@@ -108,37 +146,21 @@ export default function PricingPage() {
 
         {/* FAQ */}
         <div className="mt-24">
-          <h2 className="text-center text-2xl font-bold">
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">
             Questions fr&eacute;quentes
           </h2>
-          <div className="mx-auto mt-8 max-w-3xl space-y-6">
-            <div>
-              <h3 className="font-semibold">
-                L&apos;essai est-il vraiment gratuit ?
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Oui, 14 jours sans carte bancaire. Vous pouvez cr&eacute;er des
-                devis et factures d&egrave;s votre inscription.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold">
-                Puis-je changer de plan ?
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Oui, vous pouvez passer du mensuel &agrave; l&apos;annuel (ou
-                inversement) &agrave; tout moment depuis vos param&egrave;tres.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold">
-                Comment annuler mon abonnement ?
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                En un clic depuis la page Param&egrave;tres. Votre acc&egrave;s
-                reste actif jusqu&apos;à la fin de la p&eacute;riode pay&eacute;e.
-              </p>
-            </div>
+          <div className="mx-auto mt-10 max-w-3xl divide-y">
+            {faqs.map((faq) => (
+              <details key={faq.question} className="group py-5">
+                <summary className="flex cursor-pointer items-center justify-between font-semibold marker:content-[''] list-none">
+                  {faq.question}
+                  <span className="ml-4 text-muted-foreground transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
           </div>
         </div>
       </div>

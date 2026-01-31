@@ -7,6 +7,10 @@ import { STATUS_BADGE_VARIANT } from "@/lib/status";
 import { SortableTableHead } from "@/components/SortableTableHead";
 import { FactureActionsMenu } from "./FactureActionsMenu";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Receipt } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -60,20 +64,20 @@ export default async function FacturesPage({
       </div>
 
       {facturesWithTotals.length === 0 ? (
-        <div className="mt-8 text-center">
-          <p className="text-muted-foreground">Aucune facture pour le moment.</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Les factures sont créées à partir des devis envoyés.
-          </p>
-          <Link
-            href="/devis"
-            className="mt-2 inline-block text-sm font-medium text-primary hover:text-primary/80"
-          >
-            Voir les devis
-          </Link>
+        <div className="mt-8">
+          <EmptyState
+            icon={<Receipt className="h-7 w-7" />}
+            title="Aucune facture"
+            description="Les factures sont créées à partir des devis envoyés."
+            action={
+              <Button asChild>
+                <Link href="/devis">Voir les devis</Link>
+              </Button>
+            }
+          />
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-lg border bg-card">
+        <Card className="mt-6 overflow-hidden p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -112,7 +116,7 @@ export default async function FacturesPage({
               ))}
             </TableBody>
           </Table>
-        </div>
+        </Card>
       )}
     </div>
   );
