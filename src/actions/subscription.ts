@@ -39,7 +39,6 @@ export async function createCheckoutSession(
   const checkoutSession = await getStripe().checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
-    payment_method_types: ["card"],
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?success=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?canceled=true`,

@@ -3,6 +3,9 @@ import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import type Stripe from "stripe";
 
+// In-memory set of processed event IDs (idempotency)
+const processedEvents = new Set<string>();
+
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
@@ -21,6 +24,11 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Idempotency: skip already processed events
+  if (processedEvents.has(event.id)) {
+    return NextResponse.json({ received: true });
   }
 
   try {
@@ -162,11 +170,18 @@ export async function POST(request: NextRequest) {
         console.log(`[stripe] Unhandled event: ${event.type}`);
     }
   } catch (error) {
-    console.error("Webhook handler error:", error);
-    return NextResponse.json(
-      { error: "Webhook handler failed" },
-      { status: 500 }
-    );
+    // Log but return 200 to prevent Stripe from retrying indefinitely on permanent errors
+    console.error(`[stripe] Webhook handler error for event ${event.id}:`, error);
+    return NextResponse.json({ received: true });
+  }
+
+  // Mark event as processed after successful handling
+  processedEvents.add(event.id);
+
+  // Cap the set size to prevent memory leaks (keep last 1000 events)
+  if (processedEvents.size > 1000) {
+    const first = processedEvents.values().next().value;
+    if (first) processedEvents.delete(first);
   }
 
   return NextResponse.json({ received: true });
