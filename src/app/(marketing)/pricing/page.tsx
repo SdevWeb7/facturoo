@@ -9,16 +9,16 @@ const plans = [
     name: "Gratuit",
     price: "0",
     period: " €",
-    description: "Pour d\u00e9marrer sans engagement.",
+    description: "Pour démarrer sans engagement.",
     features: [
       { text: "5 devis", included: true },
       { text: "5 factures", included: true },
       { text: "5 clients", included: true },
-      { text: "G\u00e9n\u00e9ration PDF", included: true },
+      { text: "Génération PDF", included: true },
       { text: "Envoi par email", included: true },
       { text: "Dashboard basique", included: true },
       { text: "Export comptable", included: false },
-      { text: "Dashboard avanc\u00e9", included: false },
+      { text: "Dashboard avancé", included: false },
     ],
     cta: "Commencer gratuitement",
     highlighted: false,
@@ -26,16 +26,16 @@ const plans = [
   {
     name: "Pro",
     price: "4,90",
-    period: " \u20ac/mois",
-    badge: "Recommand\u00e9",
-    description: "Pour les artisans qui se d\u00e9veloppent.",
+    period: " €/mois",
+    badge: "Recommandé",
+    description: "Pour les artisans qui se développent.",
     features: [
-      { text: "Devis illimit\u00e9s", included: true },
-      { text: "Factures illimit\u00e9es", included: true },
-      { text: "Clients illimit\u00e9s", included: true },
-      { text: "G\u00e9n\u00e9ration PDF", included: true },
+      { text: "Devis illimités", included: true },
+      { text: "Factures illimitées", included: true },
+      { text: "Clients illimités", included: true },
+      { text: "Génération PDF", included: true },
       { text: "Envoi par email", included: true },
-      { text: "Dashboard avanc\u00e9", included: true },
+      { text: "Dashboard avancé", included: true },
       { text: "Export comptable", included: true },
       { text: "Support prioritaire", included: true },
     ],
@@ -48,22 +48,22 @@ const faqs = [
   {
     question: "Le plan gratuit est-il vraiment gratuit ?",
     answer:
-      "Oui, sans carte bancaire. Vous pouvez cr\u00e9er jusqu\u2019\u00e0 5 devis, 5 factures et 5 clients gratuitement, sans limite de dur\u00e9e.",
+      "Oui, sans carte bancaire. Vous pouvez créer jusqu'à 5 devis, 5 factures et 5 clients gratuitement, sans limite de durée.",
   },
   {
-    question: "Que se passe-t-il si j\u2019atteins la limite gratuite ?",
+    question: "Que se passe-t-il si j'atteins la limite gratuite ?",
     answer:
-      "Vos donn\u00e9es restent accessibles. Vous pouvez toujours modifier et supprimer vos documents existants, mais la cr\u00e9ation de nouveaux sera bloqu\u00e9e jusqu\u2019au passage au Pro.",
+      "Vos données restent accessibles. Vous pouvez toujours modifier et supprimer vos documents existants, mais la création de nouveaux sera bloquée jusqu'au passage au Pro.",
   },
   {
     question: "Comment annuler mon abonnement Pro ?",
     answer:
-      "En un clic depuis la page Param\u00e8tres. Votre acc\u00e8s Pro reste actif jusqu\u2019\u00e0 la fin de la p\u00e9riode pay\u00e9e, puis vous repassez en gratuit.",
+      "En un clic depuis la page Paramètres. Votre accès Pro reste actif jusqu'à la fin de la période payée, puis vous repassez en gratuit.",
   },
   {
-    question: "Mes donn\u00e9es sont-elles s\u00e9curis\u00e9es ?",
+    question: "Mes données sont-elles sécurisées ?",
     answer:
-      "Oui. Vos donn\u00e9es sont h\u00e9berg\u00e9es en Europe sur des serveurs s\u00e9curis\u00e9s, conform\u00e9ment au RGPD.",
+      "Oui. Vos données sont hébergées en Europe sur des serveurs sécurisés, conformément au RGPD.",
   },
 ];
 

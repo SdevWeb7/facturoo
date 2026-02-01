@@ -50,7 +50,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Param\u00e8tres</h1>
+      <h1 className="text-2xl font-bold">Paramètres</h1>
 
       {/* Profile */}
       <Card>
@@ -79,7 +79,7 @@ export default async function SettingsPage() {
         <CardHeader>
           <CardTitle>Abonnement</CardTitle>
           <CardDescription>
-            G\u00e9rez votre formule et votre facturation
+            Gérez votre formule et votre facturation
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -92,7 +92,7 @@ export default async function SettingsPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold">P\u00e9riode d&apos;essai</p>
+                    <p className="font-semibold">Période d&apos;essai</p>
                     <Badge variant="sent">Active</Badge>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">
@@ -118,13 +118,13 @@ export default async function SettingsPage() {
                   <div className="flex items-center gap-2">
                     <p className="font-semibold">{currentPlan.name}</p>
                     <Badge variant={user.stripeCancelAtPeriodEnd ? "destructive" : "invoiced"}>
-                      {user.stripeCancelAtPeriodEnd ? "Annul\u00e9" : "Actif"}
+                      {user.stripeCancelAtPeriodEnd ? "Annulé" : "Actif"}
                     </Badge>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {user.stripeCancelAtPeriodEnd
                       ? `Actif jusqu'au ${new Date(user.stripeCurrentPeriodEnd!).toLocaleDateString("fr-FR")}`
-                      : `Prochain renouvellement le ${user.stripeCurrentPeriodEnd ? new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR") : "\u2014"}`}
+                      : `Prochain renouvellement le ${user.stripeCurrentPeriodEnd ? new Date(user.stripeCurrentPeriodEnd).toLocaleDateString("fr-FR") : "—"}`}
                   </p>
                 </div>
               </div>
@@ -163,7 +163,7 @@ export default async function SettingsPage() {
                     <Badge variant="secondary">Gratuit</Badge>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Passez au Pro pour cr\u00e9er en illimit\u00e9 et acc\u00e9der aux stats avanc\u00e9es.
+                    Passez au Pro pour créer en illimité et accéder aux stats avancées.
                   </p>
                 </div>
               </div>

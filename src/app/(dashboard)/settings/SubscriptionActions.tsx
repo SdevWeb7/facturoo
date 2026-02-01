@@ -35,7 +35,7 @@ export function SubscriptionActions({
           onClick={handlePortal}
           disabled={pending}
         >
-          {pending ? "Redirection..." : "G\u00e9rer mon abonnement"}
+          {pending ? "Redirection..." : "Gérer mon abonnement"}
         </Button>
       ) : (
         <Button
@@ -44,7 +44,7 @@ export function SubscriptionActions({
           className="bg-gradient-to-r from-primary to-primary-hover"
         >
           <Sparkles className="h-4 w-4" />
-          {pending ? "Redirection..." : "Passer au Pro \u2014 4,90 \u20ac/mois"}
+          {pending ? "Redirection..." : "Passer au Pro — 4,90 €/mois"}
         </Button>
       )}
     </div>
