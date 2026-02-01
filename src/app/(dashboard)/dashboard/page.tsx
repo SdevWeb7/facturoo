@@ -97,12 +97,20 @@ export default async function DashboardPage() {
             G&eacute;rez vos devis et factures simplement, sans Excel.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/devis/new">
-            <Plus className="h-4 w-4" />
-            Cr&eacute;er un devis en 2 min
-          </Link>
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" asChild>
+            <Link href="/clients/new">
+              <UserPlus className="h-4 w-4" />
+              Nouveau client
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/devis/new">
+              <Plus className="h-4 w-4" />
+              Cr&eacute;er un devis en 2 min
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Onboarding checklist */}
