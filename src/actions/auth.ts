@@ -233,6 +233,36 @@ export async function requestPasswordReset(
   return actionSuccess();
 }
 
+export async function deleteAccount(): Promise<ActionResult> {
+  const { auth } = await import("@/lib/auth");
+  const session = await auth();
+  if (!session?.user?.id) {
+    return actionError("Non authentifié");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { stripeSubscriptionId: true },
+  });
+
+  if (!user) {
+    return actionError("Utilisateur introuvable");
+  }
+
+  if (user.stripeSubscriptionId) {
+    try {
+      const { getStripe } = await import("@/lib/stripe");
+      await getStripe().subscriptions.cancel(user.stripeSubscriptionId);
+    } catch (err) {
+      console.error("[auth] Failed to cancel Stripe subscription:", err instanceof Error ? err.message : "Unknown error");
+    }
+  }
+
+  await prisma.user.delete({ where: { id: session.user.id } });
+
+  return actionSuccess();
+}
+
 const ResetPasswordSchema = z.object({
   token: z.string().min(1, "Token manquant"),
   password: z.string().min(8, "8 caractères minimum"),

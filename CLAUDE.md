@@ -29,7 +29,7 @@ src/
 │   ├── (marketing)/       # Public routes (landing, pricing)
 │   ├── (auth)/            # Login, register, forgot/reset password
 │   └── api/               # PDF generation, email send, Stripe webhook
-├── actions/               # Server Actions (clients, devis, factures, subscription)
+├── actions/               # Server Actions (auth, clients, devis, factures, subscription)
 ├── components/
 │   ├── forms/             # ClientForm, DevisForm, LineItemsEditor, ProfileForm
 │   ├── layout/            # Sidebar (mobile Sheet), Header (glass, dropdowns)
@@ -55,6 +55,7 @@ src/
 - **Loading states**: Each dashboard route has a `loading.tsx` with Skeleton components (React Suspense)
 - **Button loading**: `loading` prop shows spinner + disables interaction
 - **Layout**: Sidebar with user info + plan badge, Header with glass effect + quick actions + user dropdown
+- **Account deletion**: `deleteAccount()` server action cancels Stripe subscription + cascade deletes user. Confirmation dialog requires typing "SUPPRIMER". Located in settings danger zone.
 
 ## Commands
 

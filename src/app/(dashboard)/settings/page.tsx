@@ -9,6 +9,7 @@ import { ProfileForm } from "@/components/forms/ProfileForm";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle2, Clock, Sparkles } from "lucide-react";
+import { DeleteAccountSection } from "./DeleteAccountSection";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -205,6 +206,19 @@ export default async function SettingsPage() {
             hasSubscription={!!user.stripeSubscriptionId}
             isActive={isActive}
           />
+        </CardContent>
+      </Card>
+
+      {/* Danger zone */}
+      <Card className="border-destructive/30">
+        <CardHeader>
+          <CardTitle className="text-destructive">Zone de danger</CardTitle>
+          <CardDescription>
+            Actions irréversibles sur votre compte
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DeleteAccountSection />
         </CardContent>
       </Card>
     </div>
