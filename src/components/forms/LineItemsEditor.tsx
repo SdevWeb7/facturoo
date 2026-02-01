@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { formatCurrency } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,91 @@ interface LineItemsEditorProps {
   tvaRate?: number;
 }
 
+function euroFromCentimes(centimes: number, tvaInclusive: boolean, tvaRate: number): string {
+  if (centimes === 0) return "";
+  const euros = tvaInclusive
+    ? (centimes * (1 + tvaRate / 100)) / 100
+    : centimes / 100;
+  return euros.toFixed(2);
+}
+
+function centimesFromEuro(euroStr: string, tvaInclusive: boolean, tvaRate: number): number {
+  const euros = parseFloat(euroStr);
+  if (isNaN(euros) || euros <= 0) return 0;
+  return tvaInclusive
+    ? Math.round((euros * 100) / (1 + tvaRate / 100))
+    : Math.round(euros * 100);
+}
+
+function PriceInput({
+  value,
+  tvaInclusive,
+  tvaRate,
+  onChange,
+  label,
+}: {
+  value: number;
+  tvaInclusive: boolean;
+  tvaRate: number;
+  onChange: (centimes: number) => void;
+  label: string;
+}) {
+  const [display, setDisplay] = useState(() => euroFromCentimes(value, tvaInclusive, tvaRate));
+  const [isFocused, setIsFocused] = useState(false);
+  const lastCommittedRef = useRef(value);
+
+  // Sync from parent when value changes externally (e.g. TVA toggle)
+  useEffect(() => {
+    if (value !== lastCommittedRef.current) {
+      lastCommittedRef.current = value;
+      if (!isFocused) {
+        setDisplay(euroFromCentimes(value, tvaInclusive, tvaRate));
+      }
+    }
+  }, [value, tvaInclusive, tvaRate, isFocused]);
+
+  function handleChange(raw: string) {
+    // Normalize: replace comma with dot, strip non-numeric except dot
+    const normalized = raw.replace(",", ".").replace(/[^\d.]/g, "");
+    setDisplay(normalized);
+    // Update parent live for real-time total
+    const centimes = centimesFromEuro(normalized, tvaInclusive, tvaRate);
+    lastCommittedRef.current = centimes;
+    onChange(centimes);
+  }
+
+  function handleBlur() {
+    setIsFocused(false);
+    const centimes = centimesFromEuro(display, tvaInclusive, tvaRate);
+    lastCommittedRef.current = centimes;
+    onChange(centimes);
+    // Format nicely on blur
+    setDisplay(centimes === 0 ? "" : euroFromCentimes(centimes, tvaInclusive, tvaRate));
+  }
+
+  return (
+    <div>
+      <Label className="mb-1 text-xs text-muted-foreground">{label}</Label>
+      <div className="relative">
+        <Input
+          type="text"
+          inputMode="decimal"
+          value={display}
+          onFocus={() => setIsFocused(true)}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={handleBlur}
+          placeholder="0.00"
+          className="pr-8"
+          required
+        />
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+          €
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate = 20 }: LineItemsEditorProps) {
   function addItem() {
     onChange([...items, { designation: "", quantity: 1, unitPrice: 0 }]);
@@ -28,20 +114,18 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
     onChange(items.filter((_, i) => i !== index));
   }
 
-  function updateItem(index: number, field: keyof LineItem, value: string) {
+  function updateItem(index: number, field: "designation" | "quantity", value: string) {
     const updated = items.map((item, i) => {
       if (i !== index) return item;
       if (field === "designation") return { ...item, designation: value };
       if (field === "quantity") return { ...item, quantity: parseFloat(value) || 0 };
-      if (field === "unitPrice") {
-        const euros = parseFloat(value) || 0;
-        const centimes = tvaInclusive
-          ? Math.round((euros * 100) / (1 + tvaRate / 100))
-          : Math.round(euros * 100);
-        return { ...item, unitPrice: centimes };
-      }
       return item;
     });
+    onChange(updated);
+  }
+
+  function updatePrice(index: number, centimes: number) {
+    const updated = items.map((item, i) => (i === index ? { ...item, unitPrice: centimes } : item));
     onChange(updated);
   }
 
@@ -92,20 +176,12 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
               />
             </div>
             <div className="sm:col-span-3">
-              <Label className="mb-1 text-xs text-muted-foreground">
-                {tvaInclusive ? "Prix unitaire TTC" : "Prix unitaire HT"}
-              </Label>
-              <Input
-                type="number"
-                value={
-                  tvaInclusive
-                    ? (item.unitPrice * (1 + tvaRate / 100) / 100).toFixed(2)
-                    : (item.unitPrice / 100).toFixed(2)
-                }
-                onChange={(e) => updateItem(index, "unitPrice", e.target.value)}
-                step="0.01"
-                min="0"
-                required
+              <PriceInput
+                value={item.unitPrice}
+                tvaInclusive={tvaInclusive}
+                tvaRate={tvaRate}
+                onChange={(centimes) => updatePrice(index, centimes)}
+                label={tvaInclusive ? "Prix unitaire TTC" : "Prix unitaire HT"}
               />
             </div>
             <div className="flex items-end sm:col-span-2">

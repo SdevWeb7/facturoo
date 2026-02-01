@@ -33,12 +33,13 @@ export function ClientForm({ action, defaultValues, submitLabel }: ClientFormPro
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="name">Nom *</Label>
+        <Label htmlFor="name">Nom complet *</Label>
         <Input
           id="name"
           name="name"
           type="text"
           required
+          placeholder="Prénom Nom"
           defaultValue={defaultValues?.name}
         />
       </div>
