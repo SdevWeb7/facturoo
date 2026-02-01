@@ -242,7 +242,7 @@ export async function deleteAccount(): Promise<ActionResult> {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { stripeSubscriptionId: true },
+    select: { stripeSubscriptionId: true, image: true },
   });
 
   if (!user) {
@@ -255,6 +255,16 @@ export async function deleteAccount(): Promise<ActionResult> {
       await getStripe().subscriptions.cancel(user.stripeSubscriptionId);
     } catch (err) {
       console.error("[auth] Failed to cancel Stripe subscription:", err instanceof Error ? err.message : "Unknown error");
+    }
+  }
+
+  // Delete logo blob if exists
+  if (user.image) {
+    try {
+      const { del } = await import("@vercel/blob");
+      await del(user.image);
+    } catch (err) {
+      console.error("[auth] Failed to delete logo blob:", err instanceof Error ? err.message : "Unknown error");
     }
   }
 

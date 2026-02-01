@@ -24,6 +24,7 @@ export default async function SettingsPage() {
       siret: true,
       address: true,
       phone: true,
+      image: true,
       trialEndsAt: true,
       stripeSubscriptionId: true,
       stripePriceId: true,
@@ -71,6 +72,7 @@ export default async function SettingsPage() {
               address: user.address || "",
               phone: user.phone || "",
             }}
+            logoUrl={user.image || null}
           />
         </CardContent>
       </Card>

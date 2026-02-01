@@ -12,6 +12,12 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 30,
   },
+  logo: {
+    width: 80,
+    height: 80,
+    objectFit: "contain",
+    marginBottom: 8,
+  },
   headerLeft: {
     flex: 1,
   },

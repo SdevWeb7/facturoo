@@ -40,6 +40,7 @@ export async function GET(
       siret: true,
       address: true,
       phone: true,
+      image: true,
     },
   });
 
@@ -54,6 +55,7 @@ export async function GET(
     address: user.address,
     phone: user.phone,
     email: user.email,
+    logoUrl: user.image,
   };
 
   try {

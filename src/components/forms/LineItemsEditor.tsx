@@ -4,6 +4,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export interface LineItem {
   designation: string;
@@ -73,7 +74,7 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
                 type="text"
                 value={item.designation}
                 onChange={(e) => updateItem(index, "designation", e.target.value)}
-                placeholder="Description du poste"
+                placeholder="Ex : Main d'œuvre – installation porte"
                 required
               />
             </div>
@@ -124,9 +125,10 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
               variant="ghost"
               size="sm"
               onClick={() => removeItem(index)}
-              className="text-xs text-destructive hover:text-destructive"
+              className="text-xs text-destructive/70 hover:text-destructive hover:bg-destructive/5"
             >
-              Supprimer la ligne
+              <Trash2 className="h-3.5 w-3.5" />
+              Supprimer
             </Button>
           </div>
         </div>

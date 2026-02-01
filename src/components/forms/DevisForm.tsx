@@ -125,9 +125,14 @@ export function DevisForm({
         </CardContent>
       </Card>
 
-      <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Envoi..." : submitLabel}
-      </Button>
+      <div className="space-y-2">
+        <Button type="submit" disabled={pending} className="w-full">
+          {pending ? "Envoi..." : submitLabel}
+        </Button>
+        <p className="text-center text-xs text-muted-foreground">
+          Vous pourrez modifier ou envoyer le devis apr&egrave;s.
+        </p>
+      </div>
     </form>
   );
 }

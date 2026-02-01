@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Check } from "lucide-react";
+import { LogoUpload } from "@/components/forms/LogoUpload";
 
 interface ProfileFormProps {
   defaultValues: {
@@ -17,13 +18,15 @@ interface ProfileFormProps {
     address: string;
     phone: string;
   };
+  logoUrl: string | null;
 }
 
-export function ProfileForm({ defaultValues }: ProfileFormProps) {
+export function ProfileForm({ defaultValues, logoUrl }: ProfileFormProps) {
   const [state, formAction, pending] = useActionState(updateProfile, null);
 
   return (
     <form action={formAction} className="space-y-4">
+      <LogoUpload logoUrl={logoUrl} />
       {state?.success === false && (
         <Alert variant="destructive">
           <AlertDescription>{state.error}</AlertDescription>

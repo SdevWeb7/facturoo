@@ -1,4 +1,4 @@
-import { Document, Page, View, Text } from "@react-pdf/renderer";
+import { Document, Page, View, Text, Image } from "@react-pdf/renderer";
 import { styles } from "./styles";
 import { computeTotals, formatCurrency } from "@/lib/utils";
 
@@ -26,6 +26,7 @@ interface FactureDocumentProps {
     address: string | null;
     phone: string | null;
     email: string;
+    logoUrl?: string | null;
   };
 }
 
@@ -42,6 +43,9 @@ export function FactureDocument({
         {/* Header: Emitter + Client */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
+            {emitter.logoUrl && (
+              <Image src={emitter.logoUrl} style={styles.logo} />
+            )}
             <Text style={styles.companyName}>
               {emitter.company || emitter.name || "—"}
             </Text>
