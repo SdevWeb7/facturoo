@@ -181,14 +181,17 @@ export default async function SettingsPage() {
                 {(["clients", "devis", "factures"] as const).map((type) => {
                   const current = usage[type];
                   const limit = FREE_LIMITS[type];
+                  const remaining = Math.max(limit - current, 0);
                   const pct = Math.min((current / limit) * 100, 100);
                   const label = type.charAt(0).toUpperCase() + type.slice(1);
                   return (
                     <div key={type}>
                       <div className="flex items-center justify-between text-sm mb-1">
                         <span>{label}</span>
-                        <span className="text-muted-foreground">
-                          {current}/{limit}
+                        <span className={`text-sm font-medium ${pct >= 100 ? "text-destructive" : "text-muted-foreground"}`}>
+                          {remaining > 0
+                            ? `Il vous reste ${remaining} ${label.toLowerCase()} gratuit${remaining > 1 ? "s" : ""}`
+                            : `Limite atteinte (${limit}/${limit})`}
                         </span>
                       </div>
                       <div className="h-2 rounded-full bg-muted overflow-hidden">

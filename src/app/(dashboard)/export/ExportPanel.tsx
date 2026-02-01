@@ -55,6 +55,7 @@ const exports = [
     description: "Toutes vos factures au format CSV (Excel)",
     icon: FileSpreadsheet,
     path: "/api/export/csv-factures",
+    downloadLabel: "Télécharger le CSV factures",
   },
   {
     id: "csv-devis",
@@ -62,6 +63,7 @@ const exports = [
     description: "Tous vos devis au format CSV (Excel)",
     icon: FileSpreadsheet,
     path: "/api/export/csv-devis",
+    downloadLabel: "Télécharger le CSV devis",
   },
   {
     id: "recap-pdf",
@@ -69,6 +71,7 @@ const exports = [
     description: "Récapitulatif avec tableau et totaux",
     icon: FileText,
     path: "/api/export/recap-pdf",
+    downloadLabel: "Télécharger le récap PDF",
   },
   {
     id: "journal-pdf",
@@ -76,6 +79,7 @@ const exports = [
     description: "Factures payées classées par trimestre",
     icon: BookOpen,
     path: "/api/export/journal-pdf",
+    downloadLabel: "Télécharger le journal PDF",
   },
 ];
 
@@ -151,7 +155,7 @@ export function ExportPanel() {
                 onClick={() => handleDownload(exp.path)}
               >
                 <Download className="h-4 w-4" />
-                Télécharger
+                {exp.downloadLabel}
               </Button>
             </CardContent>
           </Card>

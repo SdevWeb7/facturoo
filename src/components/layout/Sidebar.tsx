@@ -29,7 +29,7 @@ const navItems = [
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/devis", label: "Devis", icon: FileText },
   { href: "/factures", label: "Factures", icon: Receipt },
-  { href: "/export", label: "Export", icon: Download },
+  { href: "/export", label: "Export", icon: Download, pro: true },
   { href: "/aide", label: "Aide", icon: HelpCircle },
 ];
 
@@ -76,6 +76,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               <Link href={item.href} onClick={onNavigate}>
                 <item.icon className="h-5 w-5" />
                 {item.label}
+                {item.pro && (
+                  <Badge variant="default" className="ml-auto h-5 px-1.5 py-0 text-[10px]">
+                    Pro
+                  </Badge>
+                )}
               </Link>
             </Button>
           );
