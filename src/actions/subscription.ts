@@ -2,14 +2,12 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getStripe, PLANS, type PlanKey } from "@/lib/stripe";
+import { getStripe, PLANS } from "@/lib/stripe";
 import { redirect } from "next/navigation";
 import { actionError, type ActionResult } from "@/lib/action-utils";
 import { logAction } from "@/lib/logger";
 
-export async function createCheckoutSession(
-  plan: PlanKey
-): Promise<ActionResult> {
+export async function createCheckoutSession(): Promise<ActionResult> {
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
 
@@ -34,7 +32,7 @@ export async function createCheckoutSession(
     });
   }
 
-  const priceId = PLANS[plan].priceId;
+  const priceId = PLANS.monthly.priceId;
 
   const checkoutSession = await getStripe().checkout.sessions.create({
     customer: customerId,
@@ -45,7 +43,7 @@ export async function createCheckoutSession(
     metadata: { userId: session.user.id },
   });
 
-  logAction("subscription.checkoutCreated", session.user.id, { plan });
+  logAction("subscription.checkoutCreated", session.user.id, { plan: "monthly" });
 
   if (!checkoutSession.url) return actionError("Erreur Stripe");
   redirect(checkoutSession.url);

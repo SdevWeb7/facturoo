@@ -98,7 +98,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
         <div className="relative mx-auto max-w-6xl px-6 py-24 sm:py-32 text-center">
           <Badge variant="secondary" className="animate-fade-in-up mb-6 text-sm px-4 py-1.5">
-            Essai gratuit 14 jours
+            Gratuit — 5 devis offerts
           </Badge>
 
           <h1 className="animate-fade-in-up animate-stagger-2 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
@@ -116,7 +116,7 @@ export default function HomePage() {
           <div className="animate-fade-in-up animate-stagger-4 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" asChild className="w-full sm:w-auto bg-gradient-to-r from-primary to-primary-hover hover:shadow-warm-lg">
               <Link href="/register">
-                Essayer gratuitement 14 jours
+                Commencer gratuitement
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
@@ -126,7 +126,7 @@ export default function HomePage() {
           </div>
 
           <p className="animate-fade-in-up animate-stagger-5 mt-4 text-sm text-muted-foreground">
-            Pas de carte bancaire requise. Sans engagement.
+            Gratuit jusqu&apos;&agrave; 5 devis. Sans carte bancaire.
           </p>
 
           {/* Dashboard mockup with perspective */}
@@ -235,7 +235,7 @@ export default function HomePage() {
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Rejoignez les artisans qui gagnent du temps avec Facturoo.
-            14 jours d&apos;essai gratuit, sans engagement.
+            Gratuit pour commencer, Pro quand vous grandissez.
           </p>
           <Button size="lg" className="mt-8 bg-gradient-to-r from-primary to-primary-hover hover:shadow-warm-lg" asChild>
             <Link href="/register">
@@ -244,7 +244,7 @@ export default function HomePage() {
             </Link>
           </Button>
           <p className="mt-3 text-sm text-muted-foreground">
-            Pas de carte bancaire requise
+            Pas de carte bancaire requise. 5 devis gratuits.
           </p>
         </div>
       </section>

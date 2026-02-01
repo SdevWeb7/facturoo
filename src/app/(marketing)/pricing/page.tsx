@@ -1,66 +1,69 @@
 import Link from "next/link";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const plans = [
   {
-    name: "Mensuel",
-    price: "9,90",
-    period: "/mois",
-    description: "Pour tester sans engagement.",
+    name: "Gratuit",
+    price: "0",
+    period: " €",
+    description: "Pour d\u00e9marrer sans engagement.",
     features: [
-      "Devis et factures illimités",
-      "Envoi par email avec PDF",
-      "Conversion devis → facture",
-      "Numérotation conforme",
-      "Taux TVA français",
-      "Export PDF professionnel",
+      { text: "5 devis", included: true },
+      { text: "5 factures", included: true },
+      { text: "5 clients", included: true },
+      { text: "G\u00e9n\u00e9ration PDF", included: true },
+      { text: "Envoi par email", included: true },
+      { text: "Dashboard basique", included: true },
+      { text: "Export comptable", included: false },
+      { text: "Dashboard avanc\u00e9", included: false },
     ],
-    cta: "Commencer l'essai gratuit",
+    cta: "Commencer gratuitement",
     highlighted: false,
   },
   {
-    name: "Annuel",
-    price: "99",
-    period: "/an",
-    monthlyEquiv: "8,25 €/mois",
-    badge: "2 mois offerts",
-    description: "Le meilleur rapport qualité-prix.",
+    name: "Pro",
+    price: "4,90",
+    period: " \u20ac/mois",
+    badge: "Recommand\u00e9",
+    description: "Pour les artisans qui se d\u00e9veloppent.",
     features: [
-      "Tout le plan mensuel",
-      "Devis et factures illimités",
-      "Envoi par email avec PDF",
-      "Conversion devis → facture",
-      "Numérotation conforme",
-      "Support prioritaire",
+      { text: "Devis illimit\u00e9s", included: true },
+      { text: "Factures illimit\u00e9es", included: true },
+      { text: "Clients illimit\u00e9s", included: true },
+      { text: "G\u00e9n\u00e9ration PDF", included: true },
+      { text: "Envoi par email", included: true },
+      { text: "Dashboard avanc\u00e9", included: true },
+      { text: "Export comptable", included: true },
+      { text: "Support prioritaire", included: true },
     ],
-    cta: "Commencer l'essai gratuit",
+    cta: "Passer au Pro",
     highlighted: true,
   },
 ];
 
 const faqs = [
   {
-    question: "L'essai est-il vraiment gratuit ?",
+    question: "Le plan gratuit est-il vraiment gratuit ?",
     answer:
-      "Oui, 14 jours sans carte bancaire. Vous pouvez créer des devis et factures dès votre inscription.",
+      "Oui, sans carte bancaire. Vous pouvez cr\u00e9er jusqu\u2019\u00e0 5 devis, 5 factures et 5 clients gratuitement, sans limite de dur\u00e9e.",
   },
   {
-    question: "Puis-je changer de plan ?",
+    question: "Que se passe-t-il si j\u2019atteins la limite gratuite ?",
     answer:
-      "Oui, vous pouvez passer du mensuel à l'annuel (ou inversement) à tout moment depuis vos paramètres.",
+      "Vos donn\u00e9es restent accessibles. Vous pouvez toujours modifier et supprimer vos documents existants, mais la cr\u00e9ation de nouveaux sera bloqu\u00e9e jusqu\u2019au passage au Pro.",
   },
   {
-    question: "Comment annuler mon abonnement ?",
+    question: "Comment annuler mon abonnement Pro ?",
     answer:
-      "En un clic depuis la page Paramètres. Votre accès reste actif jusqu'à la fin de la période payée.",
+      "En un clic depuis la page Param\u00e8tres. Votre acc\u00e8s Pro reste actif jusqu\u2019\u00e0 la fin de la p\u00e9riode pay\u00e9e, puis vous repassez en gratuit.",
   },
   {
-    question: "Mes données sont-elles sécurisées ?",
+    question: "Mes donn\u00e9es sont-elles s\u00e9curis\u00e9es ?",
     answer:
-      "Oui. Vos données sont hébergées en Europe sur des serveurs sécurisés, conformément au RGPD.",
+      "Oui. Vos donn\u00e9es sont h\u00e9berg\u00e9es en Europe sur des serveurs s\u00e9curis\u00e9s, conform\u00e9ment au RGPD.",
   },
 ];
 
@@ -74,8 +77,8 @@ export default function PricingPage() {
             Tarifs simples, sans surprise
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            14 jours d&apos;essai gratuit sur tous les plans. Sans carte
-            bancaire.
+            Commencez gratuitement avec 5 devis et 5 factures.
+            Passez au Pro quand vous en avez besoin.
           </p>
         </div>
 
@@ -95,11 +98,6 @@ export default function PricingPage() {
                   {plan.badge}
                 </Badge>
               )}
-              {plan.highlighted && (
-                <Badge variant="secondary" className="absolute -top-3 left-6 text-xs">
-                  Recommandé
-                </Badge>
-              )}
 
               <CardHeader>
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
@@ -109,21 +107,22 @@ export default function PricingPage() {
               <CardContent>
                 <div>
                   <span className="text-4xl font-extrabold">
-                    {plan.price} &euro;
+                    {plan.price}
                   </span>
                   <span className="text-muted-foreground">{plan.period}</span>
-                  {plan.monthlyEquiv && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      soit {plan.monthlyEquiv}
-                    </p>
-                  )}
                 </div>
 
                 <ul className="mt-8 space-y-3">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" />
-                      <span className="text-sm">{feature}</span>
+                    <li key={feature.text} className="flex items-start gap-3">
+                      {feature.included ? (
+                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" />
+                      ) : (
+                        <X className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/40" />
+                      )}
+                      <span className={`text-sm ${!feature.included ? "text-muted-foreground/60" : ""}`}>
+                        {feature.text}
+                      </span>
                     </li>
                   ))}
                 </ul>

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { formatCurrency, computeTotals } from "@/lib/utils";
+import { hasActiveSubscription } from "@/lib/subscription";
 import {
   Users,
   FileText,
@@ -11,6 +12,13 @@ import {
   ArrowRight,
   Plus,
   UserPlus,
+  AlertTriangle,
+  BarChart3,
+  Target,
+  Clock,
+  Crown,
+  Sparkles,
+  Lock,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,12 +26,21 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Avatar } from "@/components/ui/avatar";
 import { STATUS_BADGE_VARIANT } from "@/lib/status";
+import {
+  getMonthlyRevenue,
+  getOverdueFactures,
+  getConversionRate,
+  getTopClients,
+  getPrevisionnel,
+} from "@/lib/dashboard-data";
+import { RevenueChartWrapper } from "@/components/dashboard/RevenueChartWrapper";
 
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
   const userId = session.user.id;
+  const isPro = await hasActiveSubscription(userId);
 
   const [clientCount, devisList, facturesList] = await Promise.all([
     prisma.client.count({ where: { userId } }),
@@ -38,6 +55,17 @@ export default async function DashboardPage() {
       orderBy: { createdAt: "desc" },
     }),
   ]);
+
+  // Pro-only advanced stats
+  const [monthlyRevenue, overdueFactures, conversionRate, topClients, previsionnel] = isPro
+    ? await Promise.all([
+        getMonthlyRevenue(userId),
+        getOverdueFactures(userId),
+        getConversionRate(userId),
+        getTopClients(userId),
+        getPrevisionnel(userId),
+      ])
+    : [null, null, null, null, null];
 
   const devisDraft = devisList.filter((d) => d.status === "DRAFT").length;
   const devisSent = devisList.filter((d) => d.status === "SENT").length;
@@ -54,13 +82,17 @@ export default async function DashboardPage() {
   const recentDevis = devisList.slice(0, 5);
   const recentFactures = facturesList.slice(0, 5);
 
+  const overdueTotal = overdueFactures
+    ? overdueFactures.reduce((sum, f) => sum + f.totalTTC, 0)
+    : 0;
+
   return (
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Tableau de bord</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Vue d&apos;ensemble de votre activité
+            Vue d&apos;ensemble de votre activit&eacute;
           </p>
         </div>
         <div className="flex w-full gap-3 sm:w-auto">
@@ -85,7 +117,7 @@ export default async function DashboardPage() {
           <EmptyState
             icon={<FileText className="h-7 w-7" />}
             title="Bienvenue sur Facturoo"
-            description="Commencez par ajouter un client puis créez votre premier devis."
+            description="Commencez par ajouter un client puis cr&eacute;ez votre premier devis."
             action={
               <div className="flex flex-col sm:flex-row items-center gap-3">
                 <Button variant="outline" asChild>
@@ -97,7 +129,7 @@ export default async function DashboardPage() {
                 <Button asChild>
                   <Link href="/devis/new">
                     <Plus className="h-4 w-4" />
-                    Créer un devis
+                    Cr&eacute;er un devis
                   </Link>
                 </Button>
               </div>
@@ -140,10 +172,10 @@ export default async function DashboardPage() {
                 {devisDraft} brouillon{devisDraft > 1 ? "s" : ""}
               </Badge>
               <Badge variant="sent">
-                {devisSent} envoyé{devisSent > 1 ? "s" : ""}
+                {devisSent} envoy&eacute;{devisSent > 1 ? "s" : ""}
               </Badge>
               <Badge variant="invoiced">
-                {devisInvoiced} facturé{devisInvoiced > 1 ? "s" : ""}
+                {devisInvoiced} factur&eacute;{devisInvoiced > 1 ? "s" : ""}
               </Badge>
             </div>
           </CardContent>
@@ -172,7 +204,7 @@ export default async function DashboardPage() {
                 <TrendingUp className="h-5 w-5 text-success" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">CA facturé TTC</p>
+                <p className="text-sm text-muted-foreground">CA factur&eacute; TTC</p>
                 <p className="text-2xl font-bold">
                   {formatCurrency(caFactures)}
                 </p>
@@ -181,6 +213,155 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Pro-only: Overdue warning */}
+      {isPro && overdueFactures && overdueFactures.length > 0 && (
+        <Card className="mt-6 border-warning/30 bg-warning/5">
+          <CardContent>
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning/20">
+                <AlertTriangle className="h-5 w-5 text-warning" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-sm">
+                  {overdueFactures.length} facture{overdueFactures.length > 1 ? "s" : ""} impay&eacute;e{overdueFactures.length > 1 ? "s" : ""} (+30 jours)
+                </h3>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Montant total : {formatCurrency(overdueTotal)}
+                </p>
+                <div className="mt-3 space-y-1.5">
+                  {overdueFactures.slice(0, 3).map((f) => (
+                    <div key={f.id} className="flex items-center justify-between text-sm">
+                      <span>
+                        <Link href={`/factures/${f.id}`} className="text-primary hover:underline font-medium">
+                          {f.number}
+                        </Link>
+                        <span className="text-muted-foreground ml-2">{f.clientName}</span>
+                      </span>
+                      <span className="text-muted-foreground">
+                        {formatCurrency(f.totalTTC)} &mdash; {f.daysOverdue}j
+                      </span>
+                    </div>
+                  ))}
+                  {overdueFactures.length > 3 && (
+                    <Link href="/factures" className="text-sm text-primary hover:underline">
+                      Voir toutes les factures impay&eacute;es
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pro-only: Revenue Chart */}
+      {isPro && monthlyRevenue && (devisList.length > 0 || facturesList.length > 0) && (
+        <Card className="mt-6">
+          <div className="flex items-center gap-2 border-b px-6 py-4">
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            <h2 className="font-semibold font-display">CA mensuel (12 mois)</h2>
+          </div>
+          <CardContent>
+            <RevenueChartWrapper data={monthlyRevenue} />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pro-only: Advanced stats grid */}
+      {isPro && (devisList.length > 0 || facturesList.length > 0) && (
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Conversion rate */}
+          <Card className="card-hover">
+            <CardContent>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-chart-4/20 to-chart-4/10">
+                  <Target className="h-5 w-5 text-chart-4" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Conversion devis</p>
+                  <p className="text-2xl font-bold">{conversionRate}%</p>
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Taux de devis transform&eacute;s en factures
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Previsionnel */}
+          <Card className="card-hover">
+            <CardContent>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">
+                  <Clock className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Pr&eacute;visionnel</p>
+                  <p className="text-2xl font-bold">{formatCurrency(previsionnel!)}</p>
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Somme TTC des devis envoy&eacute;s en attente
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Top clients */}
+          <Card className="card-hover sm:col-span-2 lg:col-span-1">
+            <CardContent>
+              <div className="flex items-center gap-2 mb-3">
+                <Crown className="h-4 w-4 text-amber-500" />
+                <p className="text-sm font-semibold">Top clients</p>
+              </div>
+              {topClients!.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Aucune donn&eacute;e</p>
+              ) : (
+                <ul className="space-y-2">
+                  {topClients!.map((c, i) => (
+                    <li key={i} className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Avatar name={c.name} size="sm" />
+                        <span className="truncate">{c.name}</span>
+                      </div>
+                      <span className="font-medium text-xs whitespace-nowrap ml-2">
+                        {formatCurrency(c.totalTTC)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Upsell block for free users */}
+      {!isPro && (devisList.length > 0 || facturesList.length > 0) && (
+        <Card className="mt-6 border-primary/20 bg-primary/5">
+          <CardContent>
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-sm">
+                  Passez au Pro pour voir vos stats avanc&eacute;es
+                </h3>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Graphique CA, taux de conversion, top clients, pr&eacute;visionnel et factures impay&eacute;es.
+                </p>
+                <Button size="sm" className="mt-3" asChild>
+                  <Link href="/settings">
+                    <Lock className="h-3.5 w-3.5" />
+                    D&eacute;bloquer &mdash; 4,90 &euro;/mois
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Recent Activity */}
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -197,7 +378,7 @@ export default async function DashboardPage() {
           </div>
           {recentDevis.length === 0 ? (
             <div className="px-6 py-10 text-center text-sm text-muted-foreground">
-              Aucun devis créé
+              Aucun devis cr&eacute;&eacute;
             </div>
           ) : (
             <ul className="divide-y">
@@ -246,7 +427,7 @@ export default async function DashboardPage() {
         <Card>
           <div className="flex items-center justify-between border-b px-6 py-4">
             <h2 className="font-semibold font-display">
-              Dernières factures
+              Derni&egrave;res factures
             </h2>
             <Link
               href="/factures"
@@ -257,7 +438,7 @@ export default async function DashboardPage() {
           </div>
           {recentFactures.length === 0 ? (
             <div className="px-6 py-10 text-center text-sm text-muted-foreground">
-              Aucune facture créée
+              Aucune facture cr&eacute;&eacute;e
             </div>
           ) : (
             <ul className="divide-y">

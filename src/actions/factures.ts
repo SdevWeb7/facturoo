@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { checkSubscription } from "@/lib/subscription";
+import { canCreate } from "@/lib/usage";
 import { logAction } from "@/lib/logger";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -35,10 +35,11 @@ export async function convertDevisToFacture(
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
 
-  try {
-    await checkSubscription(session.user.id);
-  } catch {
-    return actionError("Abonnement requis");
+  const { allowed, current, limit } = await canCreate(session.user.id, "factures");
+  if (!allowed) {
+    return actionError(
+      `Limite de ${limit} factures atteinte (${current}/${limit}). Passez au plan Pro pour en créer davantage.`
+    );
   }
 
   const devis = await prisma.devis.findUnique({

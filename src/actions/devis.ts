@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { checkSubscription } from "@/lib/subscription";
+import { canCreate } from "@/lib/usage";
 import { logAction } from "@/lib/logger";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -54,10 +54,11 @@ export async function createDevis(
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
 
-  try {
-    await checkSubscription(session.user.id);
-  } catch {
-    return actionError("Abonnement requis");
+  const { allowed, current, limit } = await canCreate(session.user.id, "devis");
+  if (!allowed) {
+    return actionError(
+      `Limite de ${limit} devis atteinte (${current}/${limit}). Passez au plan Pro pour en créer davantage.`
+    );
   }
 
   // Parse items from FormData
@@ -119,12 +120,6 @@ export async function updateDevis(
 ): Promise<ActionResult> {
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
-
-  try {
-    await checkSubscription(session.user.id);
-  } catch {
-    return actionError("Abonnement requis");
-  }
 
   // Check ownership and status guard
   const existing = await prisma.devis.findUnique({
@@ -196,12 +191,6 @@ export async function updateDevis(
 export async function deleteDevis(id: string): Promise<ActionResult> {
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
-
-  try {
-    await checkSubscription(session.user.id);
-  } catch {
-    return actionError("Abonnement requis");
-  }
 
   const existing = await prisma.devis.findUnique({
     where: { id },

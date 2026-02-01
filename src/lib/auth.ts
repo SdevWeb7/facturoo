@@ -76,20 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  events: {
-    createUser: async ({ user }) => {
-      // Set 14-day trial for users created via magic link or OAuth
-      if (user.id) {
-        const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-        if (dbUser && !dbUser.trialEndsAt) {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) },
-          });
-        }
-      }
-    },
-  },
+  events: {},
   callbacks: {
     async signIn({ account }) {
       if (account?.provider === "nodemailer") {

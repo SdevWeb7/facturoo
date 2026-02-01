@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { checkSubscription } from "@/lib/subscription";
+import { canCreate } from "@/lib/usage";
 import { logAction } from "@/lib/logger";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -28,10 +28,11 @@ export async function createClient(
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
 
-  try {
-    await checkSubscription(session.user.id);
-  } catch {
-    return actionError("Abonnement requis");
+  const { allowed, current, limit } = await canCreate(session.user.id, "clients");
+  if (!allowed) {
+    return actionError(
+      `Limite de ${limit} clients atteinte (${current}/${limit}). Passez au plan Pro pour en créer davantage.`
+    );
   }
 
   const parsed = ClientSchema.safeParse({
@@ -62,12 +63,6 @@ export async function updateClient(
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
 
-  try {
-    await checkSubscription(session.user.id);
-  } catch {
-    return actionError("Abonnement requis");
-  }
-
   const parsed = ClientSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -92,12 +87,6 @@ export async function updateClient(
 export async function deleteClient(id: string): Promise<ActionResult> {
   const session = await auth();
   if (!session?.user?.id) return actionError("Non autorisé");
-
-  try {
-    await checkSubscription(session.user.id);
-  } catch {
-    return actionError("Abonnement requis");
-  }
 
   await prisma.client.delete({
     where: { id, userId: session.user.id },

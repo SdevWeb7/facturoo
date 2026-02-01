@@ -17,13 +17,8 @@ export function getStripe(): Stripe {
 export const PLANS = {
   monthly: {
     priceId: process.env.STRIPE_MONTHLY_PRICE_ID || "",
-    name: "Mensuel",
-    price: "9,90 €/mois",
-  },
-  yearly: {
-    priceId: process.env.STRIPE_YEARLY_PRICE_ID || "",
-    name: "Annuel",
-    price: "99 €/an",
+    name: "Pro",
+    price: "4,90 €/mois",
   },
 } as const;
 

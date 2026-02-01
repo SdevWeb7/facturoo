@@ -55,7 +55,6 @@ export async function register(
       name,
       email,
       hashedPassword,
-      trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     },
   });
 
