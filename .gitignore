@@ -10,6 +10,9 @@ node_modules
 
 # testing
 /coverage
+/test-results
+/playwright-report
+.playwright-mcp
 
 # next.js
 /.next/
