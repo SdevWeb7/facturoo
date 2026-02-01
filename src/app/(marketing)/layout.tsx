@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import MobileNav from "./MobileNav";
 
 export default function MarketingLayout({
   children,
@@ -16,7 +17,8 @@ export default function MarketingLayout({
             <Receipt className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold font-display">Facturoo</span>
           </Link>
-          <nav className="flex items-center gap-6">
+          <MobileNav />
+          <nav className="hidden md:flex items-center gap-6">
             <Link
               href="/pricing"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"

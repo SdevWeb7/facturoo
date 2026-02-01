@@ -1,6 +1,2 @@
-page dashboard les 2 derniers composants depasse de l ecran en mode mobile
-
-en mode mobile le header est completement eclater ca depasse
 
 
-en mode mobile on dirait que le html a un gros margin right qui decale tout peux tu regarder cela de plus pres
