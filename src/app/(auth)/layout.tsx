@@ -17,9 +17,9 @@ export default function AuthLayout({
         </div>
         <div>
           <h2 className="text-3xl font-bold font-display leading-snug">
-            Vos devis et factures,
+            Vos devis et factures
             <br />
-            simplifiés.
+            en 2 minutes, sans Excel.
           </h2>
           <p className="mt-4 text-lg text-primary-foreground/80 leading-relaxed">
             L&apos;outil pensé pour les artisans fran&ccedil;ais.

@@ -93,6 +93,9 @@ function MagicLinkForm() {
       <Button type="submit" disabled={pending} className="w-full">
         {pending ? "Envoi..." : "Recevoir un lien de connexion"}
       </Button>
+      <p className="text-center text-xs text-muted-foreground">
+        Vous recevrez un email immédiat pour vous connecter.
+      </p>
     </form>
   );
 }

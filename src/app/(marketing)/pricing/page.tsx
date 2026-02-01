@@ -28,15 +28,15 @@ const plans = [
     price: "4,90",
     period: " €/mois",
     badge: "Recommandé",
-    description: "Pour les artisans qui se développent.",
+    description: "Devis illimités + export comptable + envoi email.",
     features: [
       { text: "Devis illimités", included: true },
       { text: "Factures illimitées", included: true },
+      { text: "Export comptable", included: true },
+      { text: "Envoi par email", included: true },
       { text: "Clients illimités", included: true },
       { text: "Génération PDF", included: true },
-      { text: "Envoi par email", included: true },
       { text: "Dashboard avancé", included: true },
-      { text: "Export comptable", included: true },
       { text: "Support prioritaire", included: true },
     ],
     cta: "Passer au Pro",
@@ -138,6 +138,11 @@ export default function PricingPage() {
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
+                {plan.highlighted && (
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    Annulable à tout moment — paiement sécurisé via Stripe.
+                  </p>
+                )}
               </CardContent>
             </Card>
           ))}
