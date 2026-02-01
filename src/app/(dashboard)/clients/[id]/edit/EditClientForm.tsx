@@ -10,6 +10,9 @@ interface EditClientFormProps {
     name: string;
     email: string;
     address?: string;
+    addressComplement?: string;
+    postalCode?: string;
+    city?: string;
     phone?: string;
   };
 }
