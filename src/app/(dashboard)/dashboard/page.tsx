@@ -444,10 +444,10 @@ export default async function DashboardPage() {
       )}
 
       {/* Recent Activity */}
-      <div className="mt-8 grid gap-6 lg:grid-cols-2 overflow-hidden">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
         {/* Recent Devis */}
-        <Card>
-          <div className="flex items-center justify-between border-b px-6 py-4">
+        <Card className="overflow-hidden">
+          <div className="flex items-center justify-between border-b px-4 py-4 sm:px-6">
             <h2 className="font-semibold font-display">Derniers devis</h2>
             <Link
               href="/devis"
@@ -472,29 +472,31 @@ export default async function DashboardPage() {
                 return (
                   <li
                     key={devis.id}
-                    className="flex items-center justify-between gap-2 px-6 py-3 hover:bg-primary-subtle transition-colors overflow-hidden"
+                    className="px-4 py-3 hover:bg-primary-subtle transition-colors sm:px-6"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <Avatar name={devis.client.name} size="sm" />
-                      <div className="min-w-0">
+                      <Avatar name={devis.client.name} size="sm" className="hidden sm:flex" />
+                      <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">
                           {devis.number}
                           <span className="ml-2 text-muted-foreground">
                             {devis.client.name}
                           </span>
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(devis.date).toLocaleDateString("fr-FR")}
-                        </p>
+                        <div className="flex items-center justify-between mt-0.5">
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(devis.date).toLocaleDateString("fr-FR")}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={statusInfo.variant}>
+                              {statusInfo.label}
+                            </Badge>
+                            <span className="text-sm font-medium whitespace-nowrap">
+                              {formatCurrency(totals.totalTTC)}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant={statusInfo.variant}>
-                        {statusInfo.label}
-                      </Badge>
-                      <span className="text-sm font-medium whitespace-nowrap">
-                        {formatCurrency(totals.totalTTC)}
-                      </span>
                     </div>
                   </li>
                 );
@@ -504,8 +506,8 @@ export default async function DashboardPage() {
         </Card>
 
         {/* Recent Factures */}
-        <Card>
-          <div className="flex items-center justify-between border-b px-6 py-4">
+        <Card className="overflow-hidden">
+          <div className="flex items-center justify-between border-b px-4 py-4 sm:px-6">
             <h2 className="font-semibold font-display">
               Derni&egrave;res factures
             </h2>
@@ -531,25 +533,27 @@ export default async function DashboardPage() {
                 return (
                   <li
                     key={facture.id}
-                    className="flex items-center justify-between gap-2 px-6 py-3 hover:bg-primary-subtle transition-colors overflow-hidden"
+                    className="px-4 py-3 hover:bg-primary-subtle transition-colors sm:px-6"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <Avatar name={facture.client.name} size="sm" />
-                      <div className="min-w-0">
+                      <Avatar name={facture.client.name} size="sm" className="hidden sm:flex" />
+                      <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">
                           {facture.number}
                           <span className="ml-2 text-muted-foreground">
                             {facture.client.name}
                           </span>
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(facture.date).toLocaleDateString("fr-FR")}
-                        </p>
+                        <div className="flex items-center justify-between mt-0.5">
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(facture.date).toLocaleDateString("fr-FR")}
+                          </p>
+                          <span className="text-sm font-medium whitespace-nowrap">
+                            {formatCurrency(totals.totalTTC)}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <span className="text-sm font-medium whitespace-nowrap shrink-0">
-                      {formatCurrency(totals.totalTTC)}
-                    </span>
                   </li>
                 );
               })}
