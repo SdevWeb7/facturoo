@@ -1,1 +1,4 @@
 quand on veut rentrer un montant ca bloque
+
+
+travailler sur la favicon
