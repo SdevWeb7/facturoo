@@ -13,31 +13,31 @@ export default function MentionsLegalesPage() {
         </div>
 
         <div className="mt-16 space-y-12 text-sm text-muted-foreground leading-relaxed">
-          {/* Éditeur */}
+          {/* TODO: Décommenter et remplir quand l'entreprise sera créée
           <section>
             <h2 className="text-lg font-bold text-foreground">
-              &Eacute;diteur du site
+              Éditeur du site
             </h2>
             <div className="mt-4 space-y-1">
               <p>
                 <strong className="text-foreground">Raison sociale :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                [À COMPLÉTER]
               </p>
               <p>
                 <strong className="text-foreground">Forme juridique :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                [À COMPLÉTER]
               </p>
               <p>
                 <strong className="text-foreground">SIRET :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                [À COMPLÉTER]
               </p>
               <p>
                 <strong className="text-foreground">Adresse :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                [À COMPLÉTER]
               </p>
               <p>
-                <strong className="text-foreground">T&eacute;l&eacute;phone :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                <strong className="text-foreground">Téléphone :</strong>{" "}
+                [À COMPLÉTER]
               </p>
               <p>
                 <strong className="text-foreground">Email :</strong>{" "}
@@ -46,13 +46,13 @@ export default function MentionsLegalesPage() {
             </div>
           </section>
 
-          {/* Directeur de publication */}
           <section>
             <h2 className="text-lg font-bold text-foreground">
               Directeur de la publication
             </h2>
-            <p className="mt-4">[&Agrave; COMPL&Eacute;TER — Nom et pr&eacute;nom]</p>
+            <p className="mt-4">[À COMPLÉTER — Nom et prénom]</p>
           </section>
+          */}
 
           {/* Hébergeur */}
           <section>

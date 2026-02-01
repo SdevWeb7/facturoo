@@ -34,23 +34,23 @@ export default function CGVPage() {
             </p>
           </section>
 
-          {/* Éditeur */}
+          {/* TODO: Décommenter et remplir quand l'entreprise sera créée
           <section>
             <h2 className="text-lg font-bold text-foreground">
-              Article 2 — &Eacute;diteur du service
+              Article 2 — Éditeur du service
             </h2>
             <div className="mt-4 space-y-1">
               <p>
                 <strong className="text-foreground">Raison sociale :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                [À COMPLÉTER]
               </p>
               <p>
                 <strong className="text-foreground">SIRET :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                [À COMPLÉTER]
               </p>
               <p>
                 <strong className="text-foreground">Adresse :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
+                [À COMPLÉTER]
               </p>
               <p>
                 <strong className="text-foreground">Email :</strong>{" "}
@@ -58,6 +58,7 @@ export default function CGVPage() {
               </p>
             </div>
           </section>
+          */}
 
           {/* Inscription */}
           <section>
@@ -241,12 +242,13 @@ export default function CGVPage() {
             <p className="mt-4">
               Les pr&eacute;sentes CGV sont soumises au droit fran&ccedil;ais.
             </p>
+            {/* TODO: Décommenter et remplir la ville du siège social quand l'entreprise sera créée
             <p className="mt-2">
-              En cas de litige, les parties s&apos;engagent &agrave; rechercher
-              une solution amiable. &Agrave; d&eacute;faut, le litige sera
-              soumis aux tribunaux comp&eacute;tents de [&Agrave;
-              COMPL&Eacute;TER — ville du si&egrave;ge social].
+              En cas de litige, les parties s&apos;engagent à rechercher
+              une solution amiable. À défaut, le litige sera
+              soumis aux tribunaux compétents de [À COMPLÉTER — ville du siège social].
             </p>
+            */}
             <p className="mt-2">
               Conform&eacute;ment &agrave; l&apos;article L612-1 du Code de la
               consommation, le consommateur peut recourir gratuitement &agrave;
