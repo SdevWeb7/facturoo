@@ -12,8 +12,9 @@ export default function MarketingLayout({
       {/* Navbar — sticky glass */}
       <header className="sticky top-0 z-50 border-b surface-glass">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center gap-2">
             <Image src="/logo_facturoo.png" alt="Facturoo" width={635} height={172} className="h-9 w-auto" priority />
+            <span className="text-xl font-bold font-display">Facturoo</span>
           </Link>
           <nav className="flex items-center gap-6">
             <Link
@@ -55,7 +56,10 @@ export default function MarketingLayout({
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {/* Brand */}
             <div className="lg:col-span-1">
-              <Image src="/logo_facturoo.png" alt="Facturoo" width={635} height={172} className="h-8 w-auto" />
+              <div className="flex items-center gap-2">
+                <Image src="/logo_facturoo.png" alt="Facturoo" width={635} height={172} className="h-8 w-auto" />
+                <span className="text-lg font-bold font-display">Facturoo</span>
+              </div>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                 Devis et factures pour artisans français. Simple, rapide, conforme.
               </p>
