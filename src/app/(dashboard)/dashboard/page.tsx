@@ -436,7 +436,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Recent Activity */}
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2 overflow-hidden">
         {/* Recent Devis */}
         <Card>
           <div className="flex items-center justify-between border-b px-6 py-4">
@@ -464,7 +464,7 @@ export default async function DashboardPage() {
                 return (
                   <li
                     key={devis.id}
-                    className="flex items-center justify-between px-6 py-3 hover:bg-primary-subtle transition-colors"
+                    className="flex items-center justify-between gap-2 px-6 py-3 hover:bg-primary-subtle transition-colors overflow-hidden"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar name={devis.client.name} size="sm" />
@@ -480,11 +480,11 @@ export default async function DashboardPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 shrink-0">
                       <Badge variant={statusInfo.variant}>
                         {statusInfo.label}
                       </Badge>
-                      <span className="text-sm font-medium">
+                      <span className="text-sm font-medium whitespace-nowrap">
                         {formatCurrency(totals.totalTTC)}
                       </span>
                     </div>
@@ -523,7 +523,7 @@ export default async function DashboardPage() {
                 return (
                   <li
                     key={facture.id}
-                    className="flex items-center justify-between px-6 py-3 hover:bg-primary-subtle transition-colors"
+                    className="flex items-center justify-between gap-2 px-6 py-3 hover:bg-primary-subtle transition-colors overflow-hidden"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar name={facture.client.name} size="sm" />
@@ -539,7 +539,7 @@ export default async function DashboardPage() {
                         </p>
                       </div>
                     </div>
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-medium whitespace-nowrap shrink-0">
                       {formatCurrency(totals.totalTTC)}
                     </span>
                   </li>

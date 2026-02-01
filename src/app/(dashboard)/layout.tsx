@@ -20,7 +20,7 @@ export default function DashboardLayout({
           <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
           <div className="flex flex-1 flex-col overflow-hidden">
             <Header onToggleSidebar={() => setSidebarOpen(true)} />
-            <main className="flex-1 overflow-y-auto bg-background p-4 lg:p-8">
+            <main className="flex-1 overflow-y-auto overflow-x-hidden bg-background p-4 lg:p-8">
               <div className="mx-auto max-w-7xl animate-fade-in-up">
                 {children}
               </div>

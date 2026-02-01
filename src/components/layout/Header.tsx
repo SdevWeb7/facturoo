@@ -39,21 +39,21 @@ export function Header({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const userName = session?.user?.name || session?.user?.email || "Utilisateur";
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-card/80 surface-glass px-4 lg:px-6 shadow-warm">
-      <div className="flex items-center gap-3">
+    <header className="flex h-16 items-center justify-between border-b bg-card/80 surface-glass px-4 lg:px-6 shadow-warm overflow-hidden">
+      <div className="flex items-center gap-3 min-w-0">
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden"
+          className="lg:hidden shrink-0"
           onClick={onToggleSidebar}
         >
           <Menu className="h-5 w-5" />
           <span className="sr-only">Menu</span>
         </Button>
-        <h2 className="text-lg font-semibold font-display">{pageTitle}</h2>
+        <h2 className="text-lg font-semibold font-display truncate">{pageTitle}</h2>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         {/* Quick actions */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
