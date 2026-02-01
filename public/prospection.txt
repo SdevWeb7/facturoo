@@ -1,0 +1,47 @@
+Étape 1 : Recherche
+
+Google Maps → tape :
+
+plombier + ville
+
+électricien + ville
+
+peintre + ville
+
+menuisier + ville
+
+
+
+Étape 2 : Sélection
+
+Tu prends ceux qui ont :
+
+✅ site web ou email visible
+✅ moins de 10 employés
+✅ avis clients (preuve qu’ils bossent)
+
+
+
+Étape 3 : Message copier/coller
+
+Objet : Devis en 2 minutes (sans Excel)
+
+Bonjour,
+Je viens de lancer Facturoo, un outil très simple pour créer et envoyer devis et factures en 2 minutes, pensé pour les artisans.
+
+Vous pouvez tester gratuitement (5 devis inclus) ici :
+👉 https://facturoo.vercel.app
+
+Si vous avez une question, je réponds directement.
+
+Bonne journée,
+Steven
+
+
+
+Étape 4 : Relance J+2
+
+Bonjour 🙂 petite relance, si vous voulez tester Facturoo :
+https://facturoo.vercel.app
+
+Je suis dispo si besoin.
