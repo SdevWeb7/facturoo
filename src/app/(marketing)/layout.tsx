@@ -81,13 +81,19 @@ export default function MarketingLayout({
               <h4 className="text-sm font-semibold mb-3">Légal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <span className="cursor-default">Mentions légales</span>
+                  <Link href="/mentions-legales" className="hover:text-foreground transition-colors">
+                    Mentions légales
+                  </Link>
                 </li>
                 <li>
-                  <span className="cursor-default">Politique de confidentialité</span>
+                  <Link href="/confidentialite" className="hover:text-foreground transition-colors">
+                    Politique de confidentialité
+                  </Link>
                 </li>
                 <li>
-                  <span className="cursor-default">CGV</span>
+                  <Link href="/cgv" className="hover:text-foreground transition-colors">
+                    CGV
+                  </Link>
                 </li>
               </ul>
             </div>
