@@ -222,6 +222,12 @@ export default function LoginPage() {
           Créer un compte
         </Link>
       </p>
+
+      <p className="text-center text-sm text-muted-foreground">
+        <Link href="/" className="hover:text-primary/80">
+          ← Retour à l&apos;accueil
+        </Link>
+      </p>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   FileText,
@@ -129,19 +130,17 @@ export default function HomePage() {
             Gratuit jusqu&apos;&agrave; 5 devis. Sans carte bancaire.
           </p>
 
-          {/* Dashboard mockup with perspective */}
+          {/* Dashboard preview screenshot */}
           <div className="animate-fade-in-up animate-stagger-5 mt-16 mx-auto max-w-4xl">
             <div className="rounded-2xl border bg-card shadow-warm-lg p-2 sm:p-3" style={{ transform: "perspective(1200px) rotateX(2deg)" }}>
-              <div className="rounded-xl bg-muted/50 p-6 sm:p-8">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {["12 Clients", "8 Devis", "5 Factures", "4 250 €"].map((stat, i) => (
-                    <div key={i} className="rounded-xl bg-card p-3 sm:p-4 shadow-warm text-center">
-                      <p className="text-lg sm:text-2xl font-bold text-primary">{stat.split(" ")[0]}</p>
-                      <p className="text-xs sm:text-sm text-muted-foreground">{stat.split(" ").slice(1).join(" ")}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <Image
+                src="/images/dashboard-preview.png"
+                alt="Aperçu du tableau de bord Facturoo"
+                width={1200}
+                height={680}
+                priority
+                className="rounded-xl"
+              />
             </div>
           </div>
         </div>
