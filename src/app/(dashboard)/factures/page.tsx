@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Receipt } from "lucide-react";
+import { Receipt, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -19,16 +19,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { SearchInput } from "@/components/ui/search-input";
 
 export default async function FacturesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string; order?: string }>;
+  searchParams: Promise<{ sort?: string; order?: string; q?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const { sort, order } = await searchParams;
+  const { sort, order, q } = await searchParams;
 
   const factures = await prisma.facture.findMany({
     where: { userId: session.user.id, deletedAt: null },
@@ -57,11 +58,26 @@ export default async function FacturesPage({
     facturesWithTotals.sort((a, b) => dir * ((statusOrder[a.status] ?? 0) - (statusOrder[b.status] ?? 0)));
   }
 
+  const filtered = q
+    ? facturesWithTotals.filter((f) => {
+        const search = q.toLowerCase();
+        return (
+          f.number.toLowerCase().includes(search) ||
+          f.client.name.toLowerCase().includes(search) ||
+          f.items.some((item) => item.designation.toLowerCase().includes(search))
+        );
+      })
+    : facturesWithTotals;
+
   return (
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Factures</h1>
       </div>
+
+      {facturesWithTotals.length > 0 && (
+        <SearchInput placeholder="Rechercher par client, numéro, description…" className="mt-6 max-w-sm" />
+      )}
 
       {facturesWithTotals.length === 0 ? (
         <div className="mt-8">
@@ -74,6 +90,14 @@ export default async function FacturesPage({
                 <Link href="/devis">Voir les devis</Link>
               </Button>
             }
+          />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="mt-8">
+          <EmptyState
+            icon={<Search className="h-7 w-7" />}
+            title="Aucun résultat"
+            description={`Aucune facture ne correspond à « ${q} ».`}
           />
         </div>
       ) : (
@@ -90,7 +114,7 @@ export default async function FacturesPage({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {facturesWithTotals.map((facture) => (
+              {filtered.map((facture) => (
                 <TableRow key={facture.id}>
                   <TableCell className="font-medium">
                     {facture.number}

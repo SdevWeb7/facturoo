@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -19,16 +19,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { STATUS_BADGE_VARIANT } from "@/lib/status";
+import { SearchInput } from "@/components/ui/search-input";
 
 export default async function DevisPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string; order?: string }>;
+  searchParams: Promise<{ sort?: string; order?: string; q?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const { sort, order } = await searchParams;
+  const { sort, order, q } = await searchParams;
 
   const devisList = await prisma.devis.findMany({
     where: { userId: session.user.id },
@@ -57,6 +58,17 @@ export default async function DevisPage({
     devisWithTotals.sort((a, b) => dir * ((statusOrder[a.status] ?? 0) - (statusOrder[b.status] ?? 0)));
   }
 
+  const filtered = q
+    ? devisWithTotals.filter((d) => {
+        const search = q.toLowerCase();
+        return (
+          d.number.toLowerCase().includes(search) ||
+          d.client.name.toLowerCase().includes(search) ||
+          d.items.some((item) => item.designation.toLowerCase().includes(search))
+        );
+      })
+    : devisWithTotals;
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -68,6 +80,10 @@ export default async function DevisPage({
           </Link>
         </Button>
       </div>
+
+      {devisWithTotals.length > 0 && (
+        <SearchInput placeholder="Rechercher par client, numéro, description…" className="mt-6 max-w-sm" />
+      )}
 
       {devisWithTotals.length === 0 ? (
         <div className="mt-8">
@@ -85,6 +101,14 @@ export default async function DevisPage({
             }
           />
         </div>
+      ) : filtered.length === 0 ? (
+        <div className="mt-8">
+          <EmptyState
+            icon={<Search className="h-7 w-7" />}
+            title="Aucun résultat"
+            description={`Aucun devis ne correspond à « ${q} ».`}
+          />
+        </div>
       ) : (
         <Card className="mt-6 overflow-hidden p-0">
           <Table>
@@ -99,7 +123,7 @@ export default async function DevisPage({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {devisWithTotals.map((devis) => {
+              {filtered.map((devis) => {
                 const statusInfo = STATUS_BADGE_VARIANT[devis.status];
 
                 return (
