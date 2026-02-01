@@ -14,6 +14,8 @@ import {
 const ContactSchema = z.object({
   subject: z.string().min(1, "Le sujet est requis"),
   message: z.string().min(10, "Le message doit contenir au moins 10 caractères"),
+  name: z.string().min(1, "Le nom est requis").optional(),
+  email: z.string().email("Email invalide").optional(),
 });
 
 const transporter = nodemailer.createTransport({
@@ -31,11 +33,36 @@ export async function sendContact(
   formData: FormData
 ): Promise<ActionResult> {
   const session = await auth();
-  if (!session?.user?.id || !session.user.email) {
-    return actionError("Non autorisé");
+
+  let userName: string;
+  let userEmail: string;
+  let rateLimitKey: string;
+
+  if (session?.user?.id && session.user.email) {
+    userName = session.user.name || "Utilisateur";
+    userEmail = session.user.email;
+    rateLimitKey = session.user.id;
+  } else {
+    const name = formData.get("name");
+    const email = formData.get("email");
+
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      return actionError("Le nom est requis");
+    }
+    if (!email || typeof email !== "string") {
+      return actionError("L'email est requis");
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return actionError("Email invalide");
+    }
+
+    userName = name.trim();
+    userEmail = email.trim();
+    rateLimitKey = `public:${userEmail}`;
   }
 
-  const { limited } = await checkRateLimit(emailRateLimit, session.user.id);
+  const { limited } = await checkRateLimit(emailRateLimit, rateLimitKey);
   if (limited) {
     return actionError("Trop de messages envoyés. Réessayez plus tard.");
   }
@@ -48,9 +75,6 @@ export async function sendContact(
   if (!parsed.success) {
     return actionError(zodErrorMessage(parsed.error));
   }
-
-  const userName = session.user.name || "Utilisateur";
-  const userEmail = session.user.email;
 
   try {
     await transporter.sendMail({

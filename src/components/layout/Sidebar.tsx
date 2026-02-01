@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -81,6 +82,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     Pro
                   </Badge>
                 )}
+                {item.href === "/aide" && (
+                  <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                )}
               </Link>
             </Button>
           );
@@ -114,8 +118,8 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar bg-gradient-to-b from-sidebar to-sidebar/95">
         <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
-          <Link href="/dashboard" className="text-xl font-bold text-sidebar-foreground font-display">
-            Facturoo
+          <Link href="/dashboard" className="flex items-center">
+            <Image src="/logo_facturoo.png" alt="Facturoo" width={120} height={32} className="brightness-0 invert" />
           </Link>
           <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
             Pro
@@ -128,8 +132,8 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent side="left" className="w-64 p-0 bg-sidebar text-sidebar-foreground border-sidebar-border">
           <SheetHeader className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
-            <SheetTitle className="text-xl font-bold text-sidebar-foreground font-display">
-              Facturoo
+            <SheetTitle>
+              <Image src="/logo_facturoo.png" alt="Facturoo" width={120} height={32} className="brightness-0 invert" />
             </SheetTitle>
             <SheetDescription className="sr-only">
               Navigation principale

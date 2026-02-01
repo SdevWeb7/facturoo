@@ -79,7 +79,7 @@ export default async function AideDashboardPage() {
         <CardHeader>
           <CardTitle>Nous contacter</CardTitle>
           <CardDescription>
-            Une question ? Un problème ? Envoyez-nous un message, nous vous répondrons rapidement.
+            Je lis et réponds personnellement à chaque message envoyé ici.
           </CardDescription>
         </CardHeader>
         <CardContent>

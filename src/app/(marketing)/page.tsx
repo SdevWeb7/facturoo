@@ -73,7 +73,12 @@ const steps = [
   },
 ];
 
-const trustItems = [
+const trustItems: {
+  icon: typeof CheckCircle2;
+  title: string;
+  description: string;
+  link?: string;
+}[] = [
   {
     icon: CheckCircle2,
     title: "Conforme normes FR",
@@ -87,7 +92,8 @@ const trustItems = [
   {
     icon: Headphones,
     title: "Support réactif",
-    description: "Une question ? Notre équipe vous répond rapidement",
+    description: "Je lis et réponds personnellement à chaque message",
+    link: "/contact",
   },
 ];
 
@@ -220,6 +226,11 @@ export default function HomePage() {
                 </div>
                 <h3 className="mt-4 font-semibold">{item.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                {item.link && (
+                  <Link href={item.link} className="mt-2 inline-block text-sm font-medium text-primary hover:underline">
+                    Nous contacter →
+                  </Link>
+                )}
               </div>
             ))}
           </div>

@@ -9,8 +9,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Check } from "lucide-react";
 
 interface ContactFormProps {
-  userName: string;
-  userEmail: string;
+  userName?: string;
+  userEmail?: string;
 }
 
 const subjects = [
@@ -41,25 +41,45 @@ export function ContactForm({ userName, userEmail }: ContactFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="contact-name">Nom</Label>
-          <Input
-            id="contact-name"
-            type="text"
-            value={userName}
-            disabled
-            className="opacity-60"
-          />
+          <Label htmlFor="contact-name">Nom {!userName && "*"}</Label>
+          {userName ? (
+            <Input
+              id="contact-name"
+              type="text"
+              value={userName}
+              disabled
+              className="opacity-60"
+            />
+          ) : (
+            <Input
+              id="contact-name"
+              name="name"
+              type="text"
+              required
+              placeholder="Votre nom"
+            />
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="contact-email">Email</Label>
-          <Input
-            id="contact-email"
-            type="email"
-            value={userEmail}
-            disabled
-            className="opacity-60"
-          />
+          <Label htmlFor="contact-email">Email {!userEmail && "*"}</Label>
+          {userEmail ? (
+            <Input
+              id="contact-email"
+              type="email"
+              value={userEmail}
+              disabled
+              className="opacity-60"
+            />
+          ) : (
+            <Input
+              id="contact-email"
+              name="email"
+              type="email"
+              required
+              placeholder="votre@email.com"
+            />
+          )}
         </div>
       </div>
 

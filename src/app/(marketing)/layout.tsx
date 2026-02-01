@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -11,8 +12,8 @@ export default function MarketingLayout({
       {/* Navbar — sticky glass */}
       <header className="sticky top-0 z-50 border-b surface-glass">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-xl font-bold text-primary font-display">
-            Facturoo
+          <Link href="/" className="flex items-center">
+            <Image src="/logo_facturoo.png" alt="Facturoo" width={140} height={36} priority />
           </Link>
           <nav className="flex items-center gap-6">
             <Link
@@ -26,6 +27,12 @@ export default function MarketingLayout({
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Aide
+            </Link>
+            <Link
+              href="/contact"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Contact
             </Link>
             <Link
               href="/login"
@@ -48,7 +55,7 @@ export default function MarketingLayout({
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {/* Brand */}
             <div className="lg:col-span-1">
-              <p className="text-lg font-bold font-display text-primary">Facturoo</p>
+              <Image src="/logo_facturoo.png" alt="Facturoo" width={120} height={32} />
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                 Devis et factures pour artisans français. Simple, rapide, conforme.
               </p>
@@ -104,6 +111,11 @@ export default function MarketingLayout({
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <span className="cursor-default">support@facturoo.fr</span>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-foreground transition-colors">
+                    Formulaire de contact
+                  </Link>
                 </li>
               </ul>
             </div>
