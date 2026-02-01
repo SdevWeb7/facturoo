@@ -51,7 +51,7 @@ export function SubscriptionActions({
             className="bg-gradient-to-r from-primary to-primary-hover"
           >
             <Sparkles className="h-4 w-4" />
-            {pending ? "Redirection..." : "Passer au Pro — 4,90 €/mois"}
+            {pending ? "Redirection..." : "Passer au Pro — 9,90 €/mois"}
           </Button>
         </div>
       )}

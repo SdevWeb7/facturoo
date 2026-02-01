@@ -426,7 +426,7 @@ export default async function DashboardPage() {
                 <Button size="sm" className="mt-3" asChild>
                   <Link href="/settings">
                     <Lock className="h-3.5 w-3.5" />
-                    D&eacute;bloquer &mdash; 4,90 &euro;/mois
+                    D&eacute;bloquer &mdash; 9,90 &euro;/mois
                   </Link>
                 </Button>
               </div>

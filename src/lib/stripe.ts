@@ -18,7 +18,7 @@ export const PLANS = {
   monthly: {
     priceId: process.env.STRIPE_MONTHLY_PRICE_ID || "",
     name: "Pro",
-    price: "4,90 €/mois",
+    price: "9,90 €/mois",
   },
 } as const;
 

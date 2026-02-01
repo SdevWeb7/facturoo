@@ -25,7 +25,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "4,90",
+    price: "9,90",
     period: " €/mois",
     badge: "Recommandé",
     description: "Devis illimités + export comptable + envoi email.",
