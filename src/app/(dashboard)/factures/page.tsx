@@ -101,7 +101,35 @@ export default async function FacturesPage({
           />
         </div>
       ) : (
-        <Card className="mt-6 overflow-hidden p-0">
+        <>
+        {/* Mobile cards */}
+        <div className="mt-6 space-y-3 md:hidden">
+          {filtered.map((facture) => (
+            <Card key={facture.id} className="p-4">
+              <div className="flex items-center justify-between">
+                <Link href={`/factures/${facture.id}`} className="font-medium hover:underline">
+                  {facture.number}
+                </Link>
+                <Badge variant={STATUS_BADGE_VARIANT[facture.status]?.variant ?? "default"}>
+                  {STATUS_BADGE_VARIANT[facture.status]?.label ?? facture.status}
+                </Badge>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">{facture.client.name}</p>
+              <div className="mt-2 flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">
+                  {new Date(facture.date).toLocaleDateString("fr-FR")}
+                </span>
+                <span className="font-medium">{formatCurrency(facture.totalTTC)}</span>
+              </div>
+              <div className="mt-2 flex justify-end">
+                <FactureActionsMenu factureId={facture.id} status={facture.status} />
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Desktop table */}
+        <Card className="mt-6 hidden overflow-hidden p-0 md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -141,6 +169,7 @@ export default async function FacturesPage({
             </TableBody>
           </Table>
         </Card>
+        </>
       )}
     </div>
   );

@@ -55,7 +55,41 @@ export default async function ClientsPage() {
           />
         </div>
       ) : (
-        <Card className="mt-6 overflow-hidden p-0">
+        <>
+        {/* Mobile cards */}
+        <div className="mt-6 space-y-3 md:hidden">
+          {clients.map((client) => (
+            <Card key={client.id} className="p-4">
+              <div className="flex items-center gap-3">
+                <Avatar name={client.name} size="sm" />
+                <span className="font-medium">{client.name}</span>
+              </div>
+              {client.email && (
+                <p className="mt-1 text-sm text-muted-foreground">{client.email}</p>
+              )}
+              {client.phone && (
+                <p className="text-sm text-muted-foreground">{client.phone}</p>
+              )}
+              <div className="mt-3 flex items-center gap-2">
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href={`/devis/new?clientId=${client.id}`}>
+                    <FileText className="h-3.5 w-3.5" />
+                    Nouveau devis
+                  </Link>
+                </Button>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href={`/clients/${client.id}/edit`}>
+                    Modifier
+                  </Link>
+                </Button>
+                <DeleteClientButton clientId={client.id} />
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Desktop table */}
+        <Card className="mt-6 hidden overflow-hidden p-0 md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -99,6 +133,7 @@ export default async function ClientsPage() {
             </TableBody>
           </Table>
         </Card>
+        </>
       )}
     </div>
   );

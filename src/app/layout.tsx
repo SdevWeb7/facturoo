@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   description:
     "Vos devis et factures en 2 minutes, sans prise de tête.",
   icons: {
-    icon: "/favicon_facturoo.png",
-    apple: "/favicon_facturoo.png",
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 

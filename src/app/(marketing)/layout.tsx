@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function MarketingLayout({
@@ -13,7 +13,7 @@ export default function MarketingLayout({
       <header className="sticky top-0 z-50 border-b surface-glass">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo_facturoo.png" alt="Facturoo" width={635} height={172} className="h-9 w-auto" priority />
+            <Receipt className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold font-display">Facturoo</span>
           </Link>
           <nav className="flex items-center gap-6">
@@ -57,7 +57,7 @@ export default function MarketingLayout({
             {/* Brand */}
             <div className="lg:col-span-1">
               <div className="flex items-center gap-2">
-                <Image src="/logo_facturoo.png" alt="Facturoo" width={635} height={172} className="h-8 w-auto" />
+                <Receipt className="h-5 w-5 text-primary" />
                 <span className="text-lg font-bold font-display">Facturoo</span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">

@@ -111,7 +111,43 @@ export default async function DevisPage({
           />
         </div>
       ) : (
-        <Card className="mt-6 overflow-hidden p-0">
+        <>
+        {/* Mobile cards */}
+        <div className="mt-6 space-y-3 md:hidden">
+          {filtered.map((devis) => {
+            const statusInfo = STATUS_BADGE_VARIANT[devis.status];
+            return (
+              <Card key={devis.id} className="p-4">
+                <div className="flex items-center justify-between">
+                  <Link href={`/devis/${devis.id}`} className="font-medium hover:underline">
+                    {devis.number}
+                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={statusInfo.variant}>
+                      {statusInfo.label}
+                    </Badge>
+                    {devis.status === "DRAFT" && (
+                      <SendDevisButton devisId={devis.id} />
+                    )}
+                  </div>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">{devis.client.name}</p>
+                <div className="mt-2 flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {new Date(devis.date).toLocaleDateString("fr-FR")}
+                  </span>
+                  <span className="font-medium">{formatCurrency(devis.totalTTC)}</span>
+                </div>
+                <div className="mt-2 flex justify-end">
+                  <DevisActionsMenu devisId={devis.id} status={devis.status} />
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Desktop table */}
+        <Card className="mt-6 hidden overflow-hidden p-0 md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -160,6 +196,7 @@ export default async function DevisPage({
             </TableBody>
           </Table>
         </Card>
+        </>
       )}
     </div>
   );
