@@ -80,6 +80,14 @@ export default async function FactureDetailPage({
               {facture.client.address && (
                 <p className="text-sm text-muted-foreground">{facture.client.address}</p>
               )}
+              {facture.client.addressComplement && (
+                <p className="text-sm text-muted-foreground">{facture.client.addressComplement}</p>
+              )}
+              {(facture.client.postalCode || facture.client.city) && (
+                <p className="text-sm text-muted-foreground">
+                  {[facture.client.postalCode, facture.client.city].filter(Boolean).join(" ")}
+                </p>
+              )}
             </div>
             <div className="text-right">
               <h3 className="text-sm font-medium text-muted-foreground">Date</h3>

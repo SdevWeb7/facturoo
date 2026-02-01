@@ -36,6 +36,9 @@ export default async function EditClientPage({
             name: client.name,
             email: client.email,
             address: client.address ?? undefined,
+            addressComplement: client.addressComplement ?? undefined,
+            postalCode: client.postalCode ?? undefined,
+            city: client.city ?? undefined,
             phone: client.phone ?? undefined,
           }}
         />

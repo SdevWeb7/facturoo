@@ -63,7 +63,7 @@ export async function GET(
       const devis = await prisma.devis.findUnique({
         where: { id, userId: session.user.id },
         include: {
-          client: { select: { name: true, email: true, address: true } },
+          client: { select: { name: true, email: true, address: true, addressComplement: true, postalCode: true, city: true } },
           items: { orderBy: { order: "asc" } },
         },
       });
@@ -106,7 +106,7 @@ export async function GET(
     const facture = await prisma.facture.findUnique({
       where: { id, userId: session.user.id },
       include: {
-        client: { select: { name: true, email: true, address: true } },
+        client: { select: { name: true, email: true, address: true, addressComplement: true, postalCode: true, city: true } },
         items: { orderBy: { order: "asc" } },
       },
     });

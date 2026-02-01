@@ -18,6 +18,9 @@ const ClientSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
   email: z.string().email("Email invalide"),
   address: z.string().optional(),
+  addressComplement: z.string().optional(),
+  postalCode: z.string().optional(),
+  city: z.string().optional(),
   phone: z.string().optional(),
 });
 
@@ -39,6 +42,9 @@ export async function createClient(
     name: formData.get("name"),
     email: formData.get("email"),
     address: formData.get("address") || undefined,
+    addressComplement: formData.get("addressComplement") || undefined,
+    postalCode: formData.get("postalCode") || undefined,
+    city: formData.get("city") || undefined,
     phone: formData.get("phone") || undefined,
   });
 
@@ -67,6 +73,9 @@ export async function updateClient(
     name: formData.get("name"),
     email: formData.get("email"),
     address: formData.get("address") || undefined,
+    addressComplement: formData.get("addressComplement") || undefined,
+    postalCode: formData.get("postalCode") || undefined,
+    city: formData.get("city") || undefined,
     phone: formData.get("phone") || undefined,
   });
 

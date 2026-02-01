@@ -13,6 +13,9 @@ interface ClientFormProps {
     name?: string;
     email?: string;
     address?: string;
+    addressComplement?: string;
+    postalCode?: string;
+    city?: string;
     phone?: string;
   };
   submitLabel: string;
@@ -57,8 +60,41 @@ export function ClientForm({ action, defaultValues, submitLabel }: ClientFormPro
           id="address"
           name="address"
           type="text"
+          placeholder="Numéro et rue"
           defaultValue={defaultValues?.address}
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="addressComplement">Complément d&apos;adresse</Label>
+        <Input
+          id="addressComplement"
+          name="addressComplement"
+          type="text"
+          placeholder="Apt, étage, bâtiment..."
+          defaultValue={defaultValues?.addressComplement}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="postalCode">Code postal</Label>
+          <Input
+            id="postalCode"
+            name="postalCode"
+            type="text"
+            defaultValue={defaultValues?.postalCode}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="city">Ville</Label>
+          <Input
+            id="city"
+            name="city"
+            type="text"
+            defaultValue={defaultValues?.city}
+          />
+        </div>
       </div>
 
       <div className="space-y-2">

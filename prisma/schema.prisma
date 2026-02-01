@@ -68,11 +68,14 @@ model User {
 }
 
 model Client {
-  id      String  @id @default(cuid())
-  name    String
-  email   String
-  address String?
-  phone   String?
+  id                String  @id @default(cuid())
+  name              String
+  email             String
+  address           String?
+  addressComplement String?
+  postalCode        String?
+  city              String?
+  phone             String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

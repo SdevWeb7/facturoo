@@ -19,6 +19,9 @@ interface DevisDocumentProps {
     name: string;
     email: string;
     address: string | null;
+    addressComplement: string | null;
+    postalCode: string | null;
+    city: string | null;
   };
   emitter: {
     name: string | null;
@@ -63,6 +66,14 @@ export function DevisDocument({ devis, client, emitter }: DevisDocumentProps) {
             <Text style={styles.clientText}>{client.email}</Text>
             {client.address && (
               <Text style={styles.clientText}>{client.address}</Text>
+            )}
+            {client.addressComplement && (
+              <Text style={styles.clientText}>{client.addressComplement}</Text>
+            )}
+            {(client.postalCode || client.city) && (
+              <Text style={styles.clientText}>
+                {[client.postalCode, client.city].filter(Boolean).join(" ")}
+              </Text>
             )}
           </View>
         </View>
