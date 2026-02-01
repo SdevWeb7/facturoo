@@ -33,7 +33,7 @@ export function ContactForm({ userName, userEmail }: ContactFormProps) {
       )}
 
       {state?.success === true && (
-        <Alert>
+        <Alert variant="success">
           <Check className="h-4 w-4" />
           <AlertDescription>Message envoyé ! Nous vous répondrons rapidement.</AlertDescription>
         </Alert>

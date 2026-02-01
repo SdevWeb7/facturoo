@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 export async function sendMail(options: nodemailer.SendMailOptions) {
   return transporter.sendMail({
-    from: process.env.SMTP_FROM || "support@facturoo.app",
+    from: process.env.SMTP_FROM || "Facturoo <support@facturoo.app>",
     ...options,
   });
 }
@@ -33,7 +33,7 @@ export async function sendDocumentEmail({
   pdfFilename,
 }: SendDocumentEmailParams) {
   await transporter.sendMail({
-    from: process.env.SMTP_FROM || "support@facturoo.app",
+    from: process.env.SMTP_FROM || "Facturoo <support@facturoo.app>",
     to,
     subject,
     text,
