@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Avatar } from "@/components/ui/avatar";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -17,14 +18,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export default async function ClientsPage() {
+const PER_PAGE = 10;
+
+export default async function ClientsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
+
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, Number(pageParam) || 1);
 
   const clients = await prisma.client.findMany({
     where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
   });
+
+  const totalPages = Math.ceil(clients.length / PER_PAGE);
+  const paginated = clients.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
   return (
     <div>
@@ -38,7 +51,7 @@ export default async function ClientsPage() {
         </Button>
       </div>
 
-      {clients.length === 0 ? (
+      {paginated.length === 0 && clients.length === 0 ? (
         <div className="mt-8">
           <EmptyState
             icon={<Users className="h-7 w-7" />}
@@ -58,7 +71,7 @@ export default async function ClientsPage() {
         <>
         {/* Mobile cards */}
         <div className="mt-6 space-y-3 md:hidden">
-          {clients.map((client) => (
+          {paginated.map((client) => (
             <Card key={client.id} className="p-4">
               <div className="flex items-center gap-3">
                 <Avatar name={client.name} size="sm" />
@@ -100,7 +113,7 @@ export default async function ClientsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clients.map((client) => (
+              {paginated.map((client) => (
                 <TableRow key={client.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -133,6 +146,7 @@ export default async function ClientsPage() {
             </TableBody>
           </Table>
         </Card>
+        <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/clients" />
         </>
       )}
     </div>

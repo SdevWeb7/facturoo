@@ -21,16 +21,20 @@ import {
 } from "@/components/ui/table";
 import { STATUS_BADGE_VARIANT } from "@/lib/status";
 import { SearchInput } from "@/components/ui/search-input";
+import { Pagination } from "@/components/ui/pagination";
+
+const PER_PAGE = 10;
 
 export default async function DevisPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string; order?: string; q?: string }>;
+  searchParams: Promise<{ sort?: string; order?: string; q?: string; page?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const { sort, order, q } = await searchParams;
+  const { sort, order, q, page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, Number(pageParam) || 1);
 
   const devisList = await prisma.devis.findMany({
     where: { userId: session.user.id },
@@ -69,6 +73,14 @@ export default async function DevisPage({
         );
       })
     : devisWithTotals;
+
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const paginated = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const paginationSearchParams: Record<string, string> = {};
+  if (sort) paginationSearchParams.sort = sort;
+  if (order) paginationSearchParams.order = order;
+  if (q) paginationSearchParams.q = q;
 
   return (
     <div>
@@ -114,11 +126,11 @@ export default async function DevisPage({
         <>
         {/* Mobile cards */}
         <div className="mt-6 space-y-3 md:hidden">
-          {filtered.map((devis) => {
+          {paginated.map((devis) => {
             const statusInfo = STATUS_BADGE_VARIANT[devis.status];
             return (
               <Card key={devis.id} className="p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-1">
                   <Link href={`/devis/${devis.id}`} className="font-medium hover:underline">
                     {devis.number}
                   </Link>
@@ -160,7 +172,7 @@ export default async function DevisPage({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((devis) => {
+              {paginated.map((devis) => {
                 const statusInfo = STATUS_BADGE_VARIANT[devis.status];
 
                 return (
@@ -196,6 +208,7 @@ export default async function DevisPage({
             </TableBody>
           </Table>
         </Card>
+        <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/devis" searchParams={paginationSearchParams} />
         </>
       )}
     </div>

@@ -20,16 +20,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { SearchInput } from "@/components/ui/search-input";
+import { Pagination } from "@/components/ui/pagination";
+
+const PER_PAGE = 10;
 
 export default async function FacturesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string; order?: string; q?: string }>;
+  searchParams: Promise<{ sort?: string; order?: string; q?: string; page?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const { sort, order, q } = await searchParams;
+  const { sort, order, q, page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, Number(pageParam) || 1);
 
   const factures = await prisma.facture.findMany({
     where: { userId: session.user.id, deletedAt: null },
@@ -69,6 +73,14 @@ export default async function FacturesPage({
       })
     : facturesWithTotals;
 
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const paginated = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const paginationSearchParams: Record<string, string> = {};
+  if (sort) paginationSearchParams.sort = sort;
+  if (order) paginationSearchParams.order = order;
+  if (q) paginationSearchParams.q = q;
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -104,13 +116,13 @@ export default async function FacturesPage({
         <>
         {/* Mobile cards */}
         <div className="mt-6 space-y-3 md:hidden">
-          {filtered.map((facture) => (
+          {paginated.map((facture) => (
             <Card key={facture.id} className="p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1">
                 <Link href={`/factures/${facture.id}`} className="font-medium hover:underline">
                   {facture.number}
                 </Link>
-                <Badge variant={STATUS_BADGE_VARIANT[facture.status]?.variant ?? "default"}>
+                <Badge variant={STATUS_BADGE_VARIANT[facture.status]?.variant ?? "default"} className="w-fit">
                   {STATUS_BADGE_VARIANT[facture.status]?.label ?? facture.status}
                 </Badge>
               </div>
@@ -142,7 +154,7 @@ export default async function FacturesPage({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((facture) => (
+              {paginated.map((facture) => (
                 <TableRow key={facture.id}>
                   <TableCell className="font-medium">
                     {facture.number}
@@ -169,6 +181,7 @@ export default async function FacturesPage({
             </TableBody>
           </Table>
         </Card>
+        <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/factures" searchParams={paginationSearchParams} />
         </>
       )}
     </div>
