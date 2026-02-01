@@ -28,19 +28,19 @@ export default function MobileNav() {
           <span className="sr-only">Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-64">
-        <nav className="mt-8 flex flex-col gap-4">
+      <SheetContent side="right" className="w-72 px-6 pt-12">
+        <nav className="flex flex-col gap-5">
           {links.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               onClick={() => setOpen(false)}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {label}
             </Link>
           ))}
-          <Button size="sm" asChild className="mt-2">
+          <Button asChild className="mt-4">
             <Link href="/register" onClick={() => setOpen(false)}>
               Essai gratuit
             </Link>

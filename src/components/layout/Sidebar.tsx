@@ -118,7 +118,6 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
       <aside className="hidden lg:flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar bg-gradient-to-b from-sidebar to-sidebar/95">
         <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <Receipt className="h-5 w-5 text-primary" />
             <span className="text-lg font-bold font-display text-sidebar-foreground">Facturoo</span>
           </Link>
           <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
@@ -133,7 +132,6 @@ export function Sidebar({ open, onOpenChange }: { open: boolean; onOpenChange: (
         <SheetContent side="left" className="w-64 p-0 bg-sidebar text-sidebar-foreground border-sidebar-border">
           <SheetHeader className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
             <SheetTitle className="flex items-center gap-2">
-              <Receipt className="h-5 w-5 text-primary" />
               <span className="text-lg font-bold font-display text-sidebar-foreground">Facturoo</span>
             </SheetTitle>
             <SheetDescription className="sr-only">
