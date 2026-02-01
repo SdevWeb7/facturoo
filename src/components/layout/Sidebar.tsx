@@ -8,6 +8,8 @@ import {
   Users,
   FileText,
   Receipt,
+  Download,
+  HelpCircle,
   Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,6 +29,8 @@ const navItems = [
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/devis", label: "Devis", icon: FileText },
   { href: "/factures", label: "Factures", icon: Receipt },
+  { href: "/export", label: "Export", icon: Download },
+  { href: "/aide", label: "Aide", icon: HelpCircle },
 ];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {

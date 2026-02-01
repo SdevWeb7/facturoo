@@ -29,7 +29,9 @@ export async function proxy(req: NextRequest) {
     pathname.startsWith("/clients") ||
     pathname.startsWith("/devis") ||
     pathname.startsWith("/factures") ||
-    pathname.startsWith("/settings");
+    pathname.startsWith("/settings") ||
+    pathname.startsWith("/aide") ||
+    pathname.startsWith("/export");
 
   if (isDashboard && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));

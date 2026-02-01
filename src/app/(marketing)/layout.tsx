@@ -22,6 +22,12 @@ export default function MarketingLayout({
               Tarifs
             </Link>
             <Link
+              href="/faq"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Aide
+            </Link>
+            <Link
               href="/login"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -60,6 +66,11 @@ export default function MarketingLayout({
                 <li>
                   <Link href="/register" className="hover:text-foreground transition-colors">
                     Essai gratuit
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="hover:text-foreground transition-colors">
+                    Aide / FAQ
                   </Link>
                 </li>
               </ul>
