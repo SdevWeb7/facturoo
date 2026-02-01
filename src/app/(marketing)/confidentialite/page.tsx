@@ -30,7 +30,7 @@ export default function ConfidentialitePage() {
               </p>
               <p>
                 <strong className="text-foreground">Email DPO :</strong>{" "}
-                support@facturoo.fr
+                support@facturoo.app
               </p>
             </div>
           </section>
@@ -177,7 +177,7 @@ export default function ConfidentialitePage() {
             </ul>
             <p className="mt-4">
               Pour exercer ces droits, contactez-nous &agrave;{" "}
-              <strong className="text-foreground">support@facturoo.fr</strong>.
+              <strong className="text-foreground">support@facturoo.app</strong>.
               Vous pouvez &eacute;galement introduire une r&eacute;clamation
               aupr&egrave;s de la CNIL (cnil.fr).
             </p>

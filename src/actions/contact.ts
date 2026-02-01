@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import nodemailer from "nodemailer";
 import { auth } from "@/lib/auth";
+import { sendMail } from "@/lib/email";
 import { emailRateLimit, checkRateLimit } from "@/lib/rate-limit";
 import {
   actionError,
@@ -16,16 +16,6 @@ const ContactSchema = z.object({
   message: z.string().min(10, "Le message doit contenir au moins 10 caractères"),
   name: z.string().min(1, "Le nom est requis").optional(),
   email: z.string().email("Email invalide").optional(),
-});
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 465,
-  secure: process.env.SMTP_SECURE === "true",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
 });
 
 export async function sendContact(
@@ -77,9 +67,8 @@ export async function sendContact(
   }
 
   try {
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || "noreply@facturoo.fr",
-      to: process.env.SMTP_FROM || "noreply@facturoo.fr",
+    await sendMail({
+      to: process.env.SMTP_FROM || "support@facturoo.app",
       replyTo: userEmail,
       subject: `[Contact] ${parsed.data.subject}`,
       text: `Nouveau message de ${userName} (${userEmail})\n\nSujet : ${parsed.data.subject}\n\n${parsed.data.message}`,

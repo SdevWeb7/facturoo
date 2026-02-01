@@ -110,7 +110,7 @@ export default function MarketingLayout({
               <h4 className="text-sm font-semibold mb-3">Contact</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <span className="cursor-default">support@facturoo.fr</span>
+                  <span className="cursor-default">support@facturoo.app</span>
                 </li>
                 <li>
                   <Link href="/contact" className="hover:text-foreground transition-colors">

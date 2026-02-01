@@ -200,19 +200,9 @@ export async function requestPasswordReset(
 
   // Send password reset email
   try {
-    const nodemailer = await import("nodemailer");
-    const transport = nodemailer.default.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 465,
-      secure: process.env.SMTP_SECURE === "true",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const { sendMail } = await import("@/lib/email");
 
-    await transport.sendMail({
-      from: process.env.SMTP_FROM || "noreply@facturoo.fr",
+    await sendMail({
       to: email,
       subject: "Réinitialisation de votre mot de passe — Facturoo",
       text: `Réinitialisez votre mot de passe en cliquant sur ce lien :\n\n${resetUrl}\n\nSi vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.\n\nCe lien expire dans 1 heure.`,

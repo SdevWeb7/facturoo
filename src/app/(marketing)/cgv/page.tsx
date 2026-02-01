@@ -54,7 +54,7 @@ export default function CGVPage() {
               </p>
               <p>
                 <strong className="text-foreground">Email :</strong>{" "}
-                support@facturoo.fr
+                support@facturoo.app
               </p>
             </div>
           </section>
