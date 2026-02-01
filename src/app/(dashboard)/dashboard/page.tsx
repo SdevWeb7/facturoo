@@ -19,11 +19,13 @@ import {
   Crown,
   Sparkles,
   Lock,
+  CheckCircle2,
+  Circle,
+  Send,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
 import { Avatar } from "@/components/ui/avatar";
 import { STATUS_BADGE_VARIANT } from "@/lib/status";
 import {
@@ -92,51 +94,115 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-2xl font-bold">Tableau de bord</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Vue d&apos;ensemble de votre activit&eacute;
+            G&eacute;rez vos devis et factures simplement, sans Excel.
           </p>
         </div>
-        <div className="flex w-full gap-3 sm:w-auto">
-          <Button variant="outline" asChild className="flex-1 sm:flex-initial">
-            <Link href="/clients/new">
-              <UserPlus className="h-4 w-4" />
-              Nouveau client
-            </Link>
-          </Button>
-          <Button asChild className="flex-1 sm:flex-initial">
-            <Link href="/devis/new">
-              <Plus className="h-4 w-4" />
-              Nouveau devis
-            </Link>
-          </Button>
-        </div>
+        <Button asChild>
+          <Link href="/devis/new">
+            <Plus className="h-4 w-4" />
+            Nouveau devis
+          </Link>
+        </Button>
       </div>
 
-      {/* Welcome block when empty */}
-      {devisList.length === 0 && facturesList.length === 0 && (
-        <div className="mt-6">
-          <EmptyState
-            icon={<FileText className="h-7 w-7" />}
-            title="Bienvenue sur Facturoo"
-            description="Commencez par ajouter un client puis cr&eacute;ez votre premier devis."
-            action={
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                <Button variant="outline" asChild>
-                  <Link href="/clients/new">
-                    <UserPlus className="h-4 w-4" />
-                    Ajouter un client
-                  </Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/devis/new">
-                    <Plus className="h-4 w-4" />
-                    Cr&eacute;er un devis
-                  </Link>
-                </Button>
+      {/* Onboarding checklist */}
+      {(() => {
+        const hasClient = clientCount > 0;
+        const hasDevis = devisList.length > 0;
+        const hasSentDevis = devisList.some((d) => d.status === "SENT" || d.status === "INVOICED");
+        const hasFacture = facturesList.length > 0;
+        const completedSteps = [hasClient, hasDevis, hasSentDevis, hasFacture].filter(Boolean).length;
+        const allDone = completedSteps === 4;
+
+        if (allDone) return null;
+
+        const steps = [
+          {
+            done: hasClient,
+            label: "Ajouter un client",
+            href: "/clients/new",
+            icon: <UserPlus className="h-4 w-4" />,
+          },
+          {
+            done: hasDevis,
+            label: "Créer un devis",
+            href: "/devis/new",
+            icon: <FileText className="h-4 w-4" />,
+          },
+          {
+            done: hasSentDevis,
+            label: "Envoyer un devis",
+            href: hasDevis ? `/devis/${devisList[0]?.id}` : "/devis",
+            icon: <Send className="h-4 w-4" />,
+          },
+          {
+            done: hasFacture,
+            label: "Créer une facture",
+            href: "/factures/new",
+            icon: <Receipt className="h-4 w-4" />,
+          },
+        ];
+
+        return (
+          <Card className="mt-6 animate-fade-in-up">
+            <div className="flex items-center justify-between border-b px-6 py-4">
+              <div>
+                <h2 className="font-semibold font-display">Bienvenue sur Facturoo 👋</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Cr&eacute;ez votre premier devis en moins de 2 minutes.
+                </p>
               </div>
-            }
-          />
-        </div>
-      )}
+              <Badge variant="sent">{completedSteps}/4</Badge>
+            </div>
+            <CardContent>
+              {/* Progress bar */}
+              <div className="mb-5 h-2 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{ width: `${(completedSteps / 4) * 100}%` }}
+                />
+              </div>
+
+              <ul className="space-y-1">
+                {steps.map((step) => {
+                  const nextTodo = steps.find((s) => !s.done);
+                  const isNext = !step.done && step === nextTodo;
+
+                  return (
+                    <li key={step.label}>
+                      <Link
+                        href={step.done ? "#" : step.href}
+                        className={`flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors ${
+                          step.done
+                            ? "text-muted-foreground"
+                            : isNext
+                              ? "bg-primary/5 text-foreground hover:bg-primary/10"
+                              : "text-muted-foreground/60 hover:bg-muted/50"
+                        }`}
+                      >
+                        {step.done ? (
+                          <CheckCircle2 className="h-5 w-5 text-success shrink-0" />
+                        ) : (
+                          <Circle className={`h-5 w-5 shrink-0 ${isNext ? "text-primary" : "text-border"}`} />
+                        )}
+                        <span className="flex items-center gap-2">
+                          {step.icon}
+                          <span className={step.done ? "line-through" : isNext ? "font-medium" : ""}>
+                            {step.label}
+                          </span>
+                        </span>
+                        {isNext && (
+                          <ArrowRight className="ml-auto h-4 w-4 text-primary shrink-0" />
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </CardContent>
+          </Card>
+        );
+      })()}
 
       {/* KPI Cards */}
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -205,9 +271,15 @@ export default async function DashboardPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">CA factur&eacute; TTC</p>
-                <p className="text-2xl font-bold">
-                  {formatCurrency(caFactures)}
-                </p>
+                {caFactures > 0 ? (
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(caFactures)}
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground/80 italic">
+                    Apparaîtra ici
+                  </p>
+                )}
               </div>
             </div>
           </CardContent>
