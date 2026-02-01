@@ -4,9 +4,15 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { NewDevisForm } from "./NewDevisForm";
 
-export default async function NewDevisPage() {
+export default async function NewDevisPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ clientId?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
+
+  const { clientId } = await searchParams;
 
   const clients = await prisma.client.findMany({
     where: { userId: session.user.id },
@@ -37,7 +43,7 @@ export default async function NewDevisPage() {
         </div>
       ) : (
         <div className="mx-auto max-w-2xl rounded-lg border bg-card p-6 lg:mx-0">
-          <NewDevisForm clients={clients} />
+          <NewDevisForm clients={clients} defaultClientId={clientId} />
         </div>
       )}
     </div>

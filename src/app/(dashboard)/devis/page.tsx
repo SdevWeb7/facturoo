@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { formatCurrency, computeTotals } from "@/lib/utils";
 import { DevisActionsMenu } from "./DevisActionsMenu";
+import { SendDevisButton } from "./SendDevisButton";
 import { SortableTableHead } from "@/components/SortableTableHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -138,9 +139,14 @@ export default async function DevisPage({
                       {devis.client.name}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={statusInfo.variant}>
-                        {statusInfo.label}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={statusInfo.variant}>
+                          {statusInfo.label}
+                        </Badge>
+                        {devis.status === "DRAFT" && (
+                          <SendDevisButton devisId={devis.id} />
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-right font-medium">
                       {formatCurrency(devis.totalTTC)}

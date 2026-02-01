@@ -105,7 +105,7 @@ export function DevisActionsMenu({ devisId, status }: DevisActionsMenuProps) {
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleConvert}>
               <FileCheck className="text-success" />
-              <span className="text-success">Convertir en facture</span>
+              <span className="text-success">Facturer ce devis</span>
             </DropdownMenuItem>
           </>
         )}

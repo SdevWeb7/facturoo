@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { Users, Plus } from "lucide-react";
+import { Users, Plus, FileText } from "lucide-react";
 import { DeleteClientButton } from "./DeleteClientButton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -81,6 +81,12 @@ export default async function ClientsPage() {
                     {client.phone || "—"}
                   </TableCell>
                   <TableCell className="text-right">
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/devis/new?clientId=${client.id}`}>
+                        <FileText className="h-3.5 w-3.5" />
+                        Nouveau devis
+                      </Link>
+                    </Button>
                     <Button variant="ghost" size="sm" asChild>
                       <Link href={`/clients/${client.id}/edit`}>
                         Modifier
