@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
+  SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
 
@@ -28,7 +30,9 @@ export default function MobileNav() {
           <span className="sr-only">Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-72 px-6 pt-12">
+      <SheetContent side="right" className="w-72 px-6 pt-12" aria-describedby={undefined}>
+        <SheetTitle className="sr-only">Navigation</SheetTitle>
+        <SheetDescription className="sr-only">Menu de navigation principal</SheetDescription>
         <nav className="flex flex-col gap-5">
           {links.map(({ href, label }) => (
             <Link
