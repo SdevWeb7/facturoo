@@ -97,7 +97,7 @@ export default async function DashboardPage() {
             G&eacute;rez vos devis et factures simplement, sans Excel.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <Button variant="outline" asChild>
             <Link href="/clients/new">
               <UserPlus className="h-4 w-4" />
