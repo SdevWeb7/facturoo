@@ -63,9 +63,6 @@ export const metadata: Metadata = {
       "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple et conforme pour les artisans français.",
     images: ["/images/og-facturoo.png"],
   },
-  alternates: {
-    canonical: "https://facturoo.vercel.app",
-  },
 };
 
 export default function RootLayout({
