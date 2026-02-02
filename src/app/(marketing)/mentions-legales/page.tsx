@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Mentions légales",
+  description: "Mentions légales du site Facturoo. Informations sur l'éditeur, l'hébergeur et la propriété intellectuelle.",
+  alternates: {
+    canonical: "https://facturoo.vercel.app/mentions-legales",
+  },
+};
+
 export default function MentionsLegalesPage() {
   return (
     <main className="py-24">

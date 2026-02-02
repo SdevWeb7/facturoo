@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Conditions Générales de Vente",
+  description: "Conditions Générales de Vente de Facturoo. Conditions applicables à l'utilisation du service de devis et factures.",
+  alternates: {
+    canonical: "https://facturoo.vercel.app/cgv",
+  },
+};
 
 export default function CGVPage() {
   return (

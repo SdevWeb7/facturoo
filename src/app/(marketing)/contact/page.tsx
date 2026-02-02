@@ -1,5 +1,15 @@
+import type { Metadata } from "next";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description:
+    "Contactez l'équipe Facturoo. Une question, un retour ou une suggestion ? Nous répondons personnellement à chaque message.",
+  alternates: {
+    canonical: "https://facturoo.vercel.app/contact",
+  },
+};
 
 export default function ContactPage() {
   return (

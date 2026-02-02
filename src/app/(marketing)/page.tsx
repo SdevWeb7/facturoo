@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,6 +16,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
+export const metadata: Metadata = {
+  title: "Logiciel devis et factures pour artisans | Facturoo",
+  description:
+    "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple, conforme et gratuit pour les artisans français. PDF, envoi email, numérotation automatique.",
+  alternates: {
+    canonical: "https://facturoo.vercel.app",
+  },
+};
 
 const features = [
   {
@@ -97,9 +107,55 @@ const trustItems: {
   },
 ];
 
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Facturoo",
+    url: "https://facturoo.vercel.app",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    description:
+      "Logiciel en ligne de devis et factures pour artisans français. Créez, envoyez et gérez vos documents commerciaux en toute conformité.",
+    offers: [
+      {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "EUR",
+        name: "Gratuit",
+        description: "5 devis, 5 factures, 5 clients",
+      },
+      {
+        "@type": "Offer",
+        price: "9.90",
+        priceCurrency: "EUR",
+        name: "Pro",
+        description: "Devis et factures illimités, export comptable",
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Facturoo",
+    url: "https://facturoo.vercel.app",
+    logo: "https://facturoo.vercel.app/favicon.svg",
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "support@facturoo.app",
+      contactType: "customer service",
+      availableLanguage: "French",
+    },
+  },
+];
+
 export default function HomePage() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />

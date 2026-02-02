@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Check, ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
+export const metadata: Metadata = {
+  title: "Tarifs",
+  description:
+    "Tarifs simples et transparents. Commencez gratuitement avec 5 devis et 5 factures. Plan Pro à 9,90€/mois pour un accès illimité.",
+  alternates: {
+    canonical: "https://facturoo.vercel.app/pricing",
+  },
+};
 
 const plans = [
   {
@@ -67,9 +77,26 @@ const faqs = [
   },
 ];
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
 export default function PricingPage() {
   return (
     <main className="py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mx-auto max-w-5xl px-6">
         {/* Header */}
         <div className="text-center">

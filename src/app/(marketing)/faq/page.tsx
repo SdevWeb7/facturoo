@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "Centre d'aide",
+  description:
+    "Retrouvez les réponses aux questions fréquentes sur Facturoo : création de devis, factures, abonnement, sécurité des données et conformité.",
+  alternates: {
+    canonical: "https://facturoo.vercel.app/faq",
+  },
+};
 
 const faqs = [
   {
@@ -55,9 +65,26 @@ const faqs = [
   },
 ];
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
 export default function AidePage() {
   return (
     <main className="py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mx-auto max-w-3xl px-6">
         {/* Header */}
         <div className="text-center">

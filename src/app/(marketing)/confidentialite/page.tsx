@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Politique de confidentialité",
+  description: "Politique de confidentialité de Facturoo. Découvrez comment nous collectons, utilisons et protégeons vos données personnelles.",
+  alternates: {
+    canonical: "https://facturoo.vercel.app/confidentialite",
+  },
+};
+
 export default function ConfidentialitePage() {
   return (
     <main className="py-24">

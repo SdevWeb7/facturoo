@@ -14,12 +14,57 @@ const dmSerifDisplay = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Facturoo – Devis & factures pour artisans",
+  metadataBase: new URL("https://facturoo.vercel.app"),
+  title: {
+    default: "Facturoo – Logiciel devis et factures pour artisans",
+    template: "%s | Facturoo",
+  },
   description:
-    "Vos devis et factures en 2 minutes, sans prise de tête.",
+    "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple et conforme pour les artisans français. Gratuit pour commencer.",
+  keywords: [
+    "devis",
+    "factures",
+    "artisan",
+    "logiciel facturation",
+    "facturation en ligne",
+    "devis artisan",
+    "facture artisan",
+    "logiciel devis",
+    "gestion devis factures",
+    "auto-entrepreneur",
+  ],
+  authors: [{ name: "Facturoo" }],
+  creator: "Facturoo",
   icons: {
     icon: "/favicon.svg",
     apple: "/favicon.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    url: "https://facturoo.vercel.app",
+    siteName: "Facturoo",
+    title: "Facturoo – Logiciel devis et factures pour artisans",
+    description:
+      "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple et conforme pour les artisans français.",
+    images: [
+      {
+        url: "/images/og-facturoo.png",
+        width: 1200,
+        height: 630,
+        alt: "Facturoo – Devis et factures pour artisans",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Facturoo – Logiciel devis et factures pour artisans",
+    description:
+      "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple et conforme pour les artisans français.",
+    images: ["/images/og-facturoo.png"],
+  },
+  alternates: {
+    canonical: "https://facturoo.vercel.app",
   },
 };
 
