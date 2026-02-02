@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Facturoo" }],
   creator: "Facturoo",
   icons: {
-    icon: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: "/favicon_facturoo.png",
+    apple: "/favicon_facturoo.png",
   },
   openGraph: {
     type: "website",

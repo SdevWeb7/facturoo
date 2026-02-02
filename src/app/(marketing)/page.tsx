@@ -139,7 +139,7 @@ const jsonLd = [
     "@type": "Organization",
     name: "Facturoo",
     url: "https://facturoo.vercel.app",
-    logo: "https://facturoo.vercel.app/favicon.svg",
+    logo: "https://facturoo.vercel.app/favicon_facturoo.png",
     contactPoint: {
       "@type": "ContactPoint",
       email: "support@facturoo.app",
