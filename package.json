@@ -42,6 +42,12 @@
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.6"
   },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions"
+  ],
   "devDependencies": {
     "@playwright/test": "^1.58.0",
     "@tailwindcss/postcss": "^4",
