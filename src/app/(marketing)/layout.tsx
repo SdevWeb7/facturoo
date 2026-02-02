@@ -1,7 +1,9 @@
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import MobileNav from "./MobileNav";
+
+const MobileNav = dynamic(() => import("./MobileNav"));
 
 export default function MarketingLayout({
   children,
