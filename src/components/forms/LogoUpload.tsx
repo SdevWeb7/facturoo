@@ -68,7 +68,7 @@ export function LogoUpload({ logoUrl: initialLogoUrl }: LogoUploadProps) {
       <label className="text-sm font-medium">Logo de l&apos;entreprise</label>
 
       {logoUrl ? (
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col items-start gap-2">
           <div className="relative h-[120px] w-[120px] overflow-hidden rounded-lg border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -79,17 +79,18 @@ export function LogoUpload({ logoUrl: initialLogoUrl }: LogoUploadProps) {
           </div>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={handleDelete}
             disabled={uploading}
+            className="text-muted-foreground hover:text-destructive"
           >
             {uploading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Trash2 className="mr-2 h-4 w-4" />
             )}
-            Supprimer
+            Supprimer le logo
           </Button>
         </div>
       ) : (
