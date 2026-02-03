@@ -137,21 +137,19 @@ export default async function DevisDetailPage({
         <div className="p-4 sm:p-6">
           <div className="flex flex-col gap-4 sm:gap-6">
             {/* Title & Number */}
-            <div className="min-w-0">
+            <div>
               <p className="text-sm text-muted-foreground mb-1">Devis</p>
-              <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight truncate">
+              <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight">
                 {devis.number}
               </h1>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 sm:mt-3 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
                   <Calendar className="h-4 w-4 shrink-0" />
-                  <span className="truncate">
-                    {new Date(devis.date).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
+                  {new Date(devis.date).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </span>
               </div>
             </div>
@@ -188,40 +186,42 @@ export default async function DevisDetailPage({
         {/* Left Column - Client Info */}
         <div className="space-y-4 sm:space-y-6">
           {/* Client Card */}
-          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-4 sm:p-6 overflow-hidden">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-              Client
-            </h2>
-            <div className="flex items-start gap-3 min-w-0">
-              <Avatar name={devis.client.name} size="lg" className="shrink-0" />
-              <div className="min-w-0 flex-1 overflow-hidden">
-                <Link
-                  href={`/clients/${devis.clientId}`}
-                  className="font-semibold text-foreground hover:text-primary transition-colors block truncate"
-                >
-                  {devis.client.name}
-                </Link>
-                <a
-                  href={`mailto:${devis.client.email}`}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors block truncate"
-                >
-                  {devis.client.email}
-                </a>
-              </div>
-            </div>
-
-            {addressLines.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-border/50">
-                <div className="flex items-start gap-2 text-sm text-muted-foreground min-w-0">
-                  <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                  <div className="space-y-0.5 min-w-0 overflow-hidden">
-                    {addressLines.map((line, i) => (
-                      <p key={i} className="truncate">{line}</p>
-                    ))}
-                  </div>
+          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden">
+            <div className="p-4 sm:p-6 overflow-x-auto">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+                Client
+              </h2>
+              <div className="flex items-start gap-3">
+                <Avatar name={devis.client.name} size="lg" className="shrink-0" />
+                <div className="min-w-0">
+                  <Link
+                    href={`/clients/${devis.clientId}`}
+                    className="font-semibold text-foreground hover:text-primary transition-colors whitespace-nowrap"
+                  >
+                    {devis.client.name}
+                  </Link>
+                  <a
+                    href={`mailto:${devis.client.email}`}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors block whitespace-nowrap"
+                  >
+                    {devis.client.email}
+                  </a>
                 </div>
               </div>
-            )}
+
+              {addressLines.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                    <div className="space-y-0.5">
+                      {addressLines.map((line, i) => (
+                        <p key={i} className="whitespace-nowrap">{line}</p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
