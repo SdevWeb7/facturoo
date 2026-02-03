@@ -107,7 +107,7 @@ export default async function DashboardPage() {
           <Button asChild>
             <Link href="/devis/new">
               <Plus className="h-4 w-4" />
-              Cr&eacute;er un devis en 2 min
+              Créer un devis
             </Link>
           </Button>
         </div>
