@@ -186,13 +186,13 @@ export default async function DevisDetailPage({
         {/* Left Column - Client Info */}
         <div className="space-y-4 sm:space-y-6">
           {/* Client Card */}
-          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-4 sm:p-6">
+          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-4 sm:p-6 overflow-hidden">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
               Client
             </h2>
-            <div className="flex items-start gap-3">
-              <Avatar name={devis.client.name} size="lg" />
-              <div className="min-w-0 flex-1">
+            <div className="flex items-start gap-3 min-w-0">
+              <Avatar name={devis.client.name} size="lg" className="shrink-0" />
+              <div className="min-w-0 flex-1 overflow-hidden">
                 <Link
                   href={`/clients/${devis.clientId}`}
                   className="font-semibold text-foreground hover:text-primary transition-colors block truncate"
@@ -210,11 +210,11 @@ export default async function DevisDetailPage({
 
             {addressLines.length > 0 && (
               <div className="mt-4 pt-4 border-t border-border/50">
-                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                <div className="flex items-start gap-2 text-sm text-muted-foreground min-w-0">
                   <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                  <div className="space-y-0.5">
+                  <div className="space-y-0.5 min-w-0 overflow-hidden">
                     {addressLines.map((line, i) => (
-                      <p key={i}>{line}</p>
+                      <p key={i} className="truncate">{line}</p>
                     ))}
                   </div>
                 </div>
@@ -224,11 +224,11 @@ export default async function DevisDetailPage({
         </div>
 
         {/* Right Column - Items & Totals */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden">
             {/* Items Table */}
-            <div className="overflow-x-auto -mx-px">
-              <table className="w-full min-w-[480px]">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[420px]">
                 <thead>
                   <tr className="border-b bg-muted/30">
                     <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:px-6 sm:py-4">
