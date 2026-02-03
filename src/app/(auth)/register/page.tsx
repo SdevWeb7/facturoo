@@ -212,7 +212,7 @@ export default function RegisterPage() {
       <div className="text-center">
         <h1 className="text-2xl font-bold">Créer un compte</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          14 jours d&apos;essai gratuit, sans engagement
+          5 devis gratuits, sans carte bancaire
         </p>
       </div>
 
