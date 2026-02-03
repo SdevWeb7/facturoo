@@ -5,7 +5,6 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
     where: { id: userId },
     select: {
       stripeCurrentPeriodEnd: true,
-      trialEndsAt: true,
     },
   });
 
@@ -13,8 +12,6 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
 
   const now = new Date();
 
-  // Backward compat: existing users with valid trial keep access
-  if (user.trialEndsAt && user.trialEndsAt > now) return true;
   if (user.stripeCurrentPeriodEnd && user.stripeCurrentPeriodEnd > now) return true;
 
   return false;

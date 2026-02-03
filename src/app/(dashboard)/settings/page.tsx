@@ -8,7 +8,7 @@ import { SubscriptionActions } from "./SubscriptionActions";
 import { ProfileForm } from "@/components/forms/ProfileForm";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle2, Clock, Sparkles } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Sparkles } from "lucide-react";
 import { DeleteAccountSection } from "./DeleteAccountSection";
 
 export default async function SettingsPage() {
@@ -26,7 +26,6 @@ export default async function SettingsPage() {
       address: true,
       phone: true,
       image: true,
-      trialEndsAt: true,
       stripeSubscriptionId: true,
       stripePriceId: true,
       stripeCurrentPeriodEnd: true,
@@ -37,13 +36,9 @@ export default async function SettingsPage() {
   if (!user) redirect("/login");
 
   const isActive = await hasActiveSubscription(session.user.id);
-  const isTrialing =
-    !user.stripeSubscriptionId &&
-    user.trialEndsAt &&
-    new Date(user.trialEndsAt) > new Date();
 
   const isPro = !!user.stripeSubscriptionId && isActive;
-  const isFree = !isActive && !isTrialing;
+  const isFree = !isActive;
 
   const currentPlan = user.stripePriceId
     ? Object.values(PLANS).find((p) => p.priceId === user.stripePriceId)
@@ -90,26 +85,6 @@ export default async function SettingsPage() {
         <CardContent>
           {/* Status card */}
           <div className="rounded-xl border p-5">
-            {isTrialing && (
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                  <Clock className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold">Période d&apos;essai</p>
-                    <Badge variant="sent">Active</Badge>
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Votre essai est actif jusqu&apos;au{" "}
-                    <strong>
-                      {new Date(user.trialEndsAt!).toLocaleDateString("fr-FR")}
-                    </strong>
-                  </p>
-                </div>
-              </div>
-            )}
-
             {user.stripeSubscriptionId && currentPlan && (
               <div className="flex items-start gap-3">
                 <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${user.stripeCancelAtPeriodEnd ? "bg-destructive/10" : "bg-success/10"}`}>
