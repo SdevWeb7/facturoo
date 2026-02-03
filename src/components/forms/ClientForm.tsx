@@ -1,11 +1,40 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { ActionResult } from "@/lib/action-utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
+function formatPhone(value: string): string {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, "");
+  // Format with space every 2 digits
+  const parts = digits.match(/.{1,2}/g) || [];
+  return parts.join(" ");
+}
+
+function PhoneInput({ defaultValue }: { defaultValue?: string }) {
+  const [value, setValue] = useState(() => formatPhone(defaultValue || ""));
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const formatted = formatPhone(e.target.value);
+    // Limit to 14 characters (10 digits + 4 spaces)
+    setValue(formatted.slice(0, 14));
+  }
+
+  return (
+    <Input
+      id="phone"
+      name="phone"
+      type="tel"
+      value={value}
+      onChange={handleChange}
+      placeholder="06 12 34 56 78"
+    />
+  );
+}
 
 interface ClientFormProps {
   action: (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
@@ -101,12 +130,7 @@ export function ClientForm({ action, defaultValues, submitLabel }: ClientFormPro
 
       <div className="space-y-2">
         <Label htmlFor="phone">Téléphone</Label>
-        <Input
-          id="phone"
-          name="phone"
-          type="tel"
-          defaultValue={defaultValues?.phone}
-        />
+        <PhoneInput defaultValue={defaultValues?.phone} />
       </div>
 
       <div className="space-y-2">
