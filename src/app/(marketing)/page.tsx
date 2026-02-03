@@ -102,7 +102,7 @@ const trustItems: {
   {
     icon: Headphones,
     title: "Support réactif",
-    description: "Je lis et réponds personnellement à chaque message",
+    description: "Réponse sous 24h",
     link: "/contact",
   },
 ];
@@ -167,13 +167,11 @@ export default function HomePage() {
           <h1 className="animate-fade-in-up animate-stagger-2 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
             Vos devis et factures
             <br />
-            <span className="text-gradient">en 2 minutes</span>
+            <span className="text-gradient">en 2 minutes.</span>
           </h1>
 
           <p className="animate-fade-in-up animate-stagger-3 mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-            L&apos;outil simple et efficace pour les artisans fran&ccedil;ais.
-            Cr&eacute;ez vos devis, envoyez-les par email, convertissez-les en
-            factures. Sans prise de t&ecirc;te.
+            Créer et gérer vos documents devient un plaisir — simple, rapide, pensé pour les artisans.
           </p>
 
           <div className="animate-fade-in-up animate-stagger-4 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
