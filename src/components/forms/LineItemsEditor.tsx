@@ -148,7 +148,7 @@ function QuantityInput({
 
 export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
   function addItem() {
-    onChange([...items, { designation: "", quantity: 1, unitPrice: 0, tvaRate: 20 }]);
+    onChange([{ designation: "", quantity: 1, unitPrice: 0, tvaRate: 20 }, ...items]);
   }
 
   function removeItem(index: number) {
