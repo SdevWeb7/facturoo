@@ -48,9 +48,9 @@ export default async function FactureDetailPage({
         <Link href="/factures" className="text-sm text-muted-foreground hover:text-foreground">
           ← Retour aux factures
         </Link>
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-2xl font-bold">Facture {facture.number}</h1>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             <SendEmailButton
               type="facture"
               id={facture.id}

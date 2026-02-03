@@ -55,12 +55,12 @@ export default async function DevisDetailPage({
         <Link href="/devis" className="text-sm text-muted-foreground hover:text-foreground">
           ← Retour aux devis
         </Link>
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold">Devis {devis.number}</h1>
             <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {!isLocked && (
               <SendEmailButton
                 type="devis"
