@@ -155,7 +155,7 @@ export default async function FactureDetailPage({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {facture.status === "PENDING" && (
                 <Button variant="outline" size="sm" asChild>
                   <Link href={`/factures/${facture.id}/edit`}>
@@ -167,7 +167,7 @@ export default async function FactureDetailPage({
               <SendEmailButton
                 type="facture"
                 id={facture.id}
-                className="inline-flex items-center gap-2 rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:text-secondary-foreground transition-colors disabled:opacity-50 h-9"
+                className="inline-flex items-center justify-center gap-1.5 rounded-md bg-secondary px-3 text-sm font-semibold text-secondary-foreground shadow-xs hover:bg-secondary/80 hover:text-secondary-foreground transition-all disabled:opacity-50 h-8"
               />
               <Button size="sm" asChild>
                 <a
@@ -185,7 +185,7 @@ export default async function FactureDetailPage({
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
         {/* Left Column - Client & Payment Info */}
         <div className="space-y-6">
           {/* Client Card */}
@@ -276,7 +276,7 @@ export default async function FactureDetailPage({
         </div>
 
         {/* Right Column - Items & Totals */}
-        <div className="lg:col-span-2">
+        <div className="md:col-span-2">
           <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden">
             {/* Items Table */}
             <div className="overflow-x-auto">

@@ -29,7 +29,7 @@ export function DevisDetailActions({ devisId, status }: DevisDetailActionsProps)
 
   return (
     <>
-      <Button variant="outline" asChild>
+      <Button variant="outline" size="sm" asChild>
         <Link href={`/devis/${devisId}/edit`}>
           <Pencil className="h-4 w-4" />
           Modifier
@@ -37,6 +37,7 @@ export function DevisDetailActions({ devisId, status }: DevisDetailActionsProps)
       </Button>
       <Button
         variant="default"
+        size="sm"
         onClick={handleConvert}
         disabled={pending}
         className="bg-success text-white hover:bg-success/90"
