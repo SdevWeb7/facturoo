@@ -104,7 +104,7 @@ export default async function DevisDetailPage({
         : "text-muted-foreground";
 
   return (
-    <div className="animate-fade-in-up">
+    <div className="w-full max-w-full overflow-hidden">
       {/* Navigation */}
       <Link
         href="/devis"
@@ -135,27 +135,29 @@ export default async function DevisDetailPage({
 
         {/* Header Content */}
         <div className="p-4 sm:p-6">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col gap-4 sm:gap-6">
             {/* Title & Number */}
-            <div>
+            <div className="min-w-0">
               <p className="text-sm text-muted-foreground mb-1">Devis</p>
-              <h1 className="text-3xl font-bold font-display tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight truncate">
                 {devis.number}
               </h1>
-              <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 sm:mt-3 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(devis.date).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  <Calendar className="h-4 w-4 shrink-0" />
+                  <span className="truncate">
+                    {new Date(devis.date).toLocaleDateString("fr-FR", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
                 </span>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 -ml-1">
               {!isLocked && (
                 <SendEmailButton
                   type="devis"
@@ -170,7 +172,7 @@ export default async function DevisDetailPage({
                   rel="noopener noreferrer"
                 >
                   <Download className="h-4 w-4" />
-                  Telecharger PDF
+                  PDF
                 </a>
               </Button>
               {!isLocked && (
@@ -182,7 +184,7 @@ export default async function DevisDetailPage({
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 w-full max-w-full">
         {/* Left Column - Client Info */}
         <div className="space-y-4 sm:space-y-6">
           {/* Client Card */}
