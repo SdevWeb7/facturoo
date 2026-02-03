@@ -106,18 +106,18 @@ export default async function FactureDetailPage({
       <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden mb-6">
         {/* Status Banner */}
         <div
-          className={`px-6 py-3 border-b ${
+          className={`px-4 py-3 border-b sm:px-6 ${
             isPaid
               ? "bg-gradient-to-r from-success/10 via-success/5 to-transparent border-success/20"
               : "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20"
           }`}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
               {isPaid ? (
-                <CheckCircle2 className="h-5 w-5 text-success" />
+                <CheckCircle2 className="h-4 w-4 text-success sm:h-5 sm:w-5" />
               ) : (
-                <Clock className="h-5 w-5 text-primary" />
+                <Clock className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
               )}
               <span className="text-sm font-medium">
                 {isPaid ? "Facture encaissee" : "En attente de paiement"}
@@ -130,7 +130,7 @@ export default async function FactureDetailPage({
         </div>
 
         {/* Header Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             {/* Title & Number */}
             <div>
@@ -185,11 +185,11 @@ export default async function FactureDetailPage({
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         {/* Left Column - Client & Payment Info */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Client Card */}
-          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-6">
+          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-4 sm:p-6">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
               Client
             </h2>
@@ -227,7 +227,7 @@ export default async function FactureDetailPage({
 
           {/* Payment Info Card - Only show if paid */}
           {isPaid && (facture.paymentDate || facture.paymentMethod) && (
-            <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-6">
+            <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-4 sm:p-6">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
                 Paiement
               </h2>
@@ -276,23 +276,23 @@ export default async function FactureDetailPage({
         </div>
 
         {/* Right Column - Items & Totals */}
-        <div className="md:col-span-2">
+        <div className="lg:col-span-2">
           <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden">
             {/* Items Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto -mx-px">
+              <table className="w-full min-w-[400px]">
                 <thead>
                   <tr className="border-b bg-muted/30">
-                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:px-6 sm:py-4">
                       Designation
                     </th>
-                    <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-20">
+                    <th className="px-2 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-14 sm:px-4 sm:py-4 sm:w-20">
                       Qte
                     </th>
-                    <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-28">
+                    <th className="px-2 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-20 sm:px-4 sm:py-4 sm:w-28">
                       P.U. HT
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-32">
+                    <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-24 sm:px-6 sm:py-4 sm:w-32">
                       Total HT
                     </th>
                   </tr>
@@ -310,18 +310,18 @@ export default async function FactureDetailPage({
                           animationDelay: `${index * 50}ms`,
                         }}
                       >
-                        <td className="px-6 py-4">
-                          <span className="font-medium text-foreground">
+                        <td className="px-3 py-3 sm:px-6 sm:py-4">
+                          <span className="font-medium text-foreground text-sm sm:text-base">
                             {item.designation}
                           </span>
                         </td>
-                        <td className="px-4 py-4 text-right text-muted-foreground tabular-nums">
+                        <td className="px-2 py-3 text-right text-muted-foreground tabular-nums text-sm sm:px-4 sm:py-4">
                           {Number(item.quantity)}
                         </td>
-                        <td className="px-4 py-4 text-right text-muted-foreground tabular-nums">
+                        <td className="px-2 py-3 text-right text-muted-foreground tabular-nums text-sm sm:px-4 sm:py-4">
                           {formatCurrency(item.unitPrice)}
                         </td>
-                        <td className="px-6 py-4 text-right font-semibold tabular-nums">
+                        <td className="px-3 py-3 text-right font-semibold tabular-nums text-sm sm:px-6 sm:py-4">
                           {formatCurrency(lineTotal)}
                         </td>
                       </tr>
@@ -332,7 +332,7 @@ export default async function FactureDetailPage({
             </div>
 
             {/* Totals Section */}
-            <div className="border-t bg-gradient-to-br from-muted/30 via-muted/20 to-transparent p-6">
+            <div className="border-t bg-gradient-to-br from-muted/30 via-muted/20 to-transparent p-4 sm:p-6">
               <div className="flex justify-end">
                 <div className="w-full max-w-xs space-y-3">
                   <div className="flex items-center justify-between text-sm">
