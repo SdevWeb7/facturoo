@@ -92,14 +92,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (url.startsWith(baseUrl)) return url;
       return `${baseUrl}/dashboard`;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        token.emailVerified = user.emailVerified ? true : false;
+      }
+      // Refresh emailVerified on token update (after verification)
+      if (trigger === "update") {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { emailVerified: true },
+        });
+        if (dbUser) {
+          token.emailVerified = dbUser.emailVerified ? true : false;
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) session.user.id = token.id as string;
+      if (session.user) {
+        session.user.id = token.id as string;
+        // @ts-expect-error - emailVerified is boolean in our custom Session type
+        session.user.emailVerified = token.emailVerified ?? false;
+      }
       return session;
     },
   },

@@ -1,8 +1,12 @@
 
 travailler sur la favicon
-
+----------------------------------------------
+export CSV pas clair 
+-----------------------------------------
+Opengraph laid
 --------------------------------------------------
-une petite banderole par exemple sous le headr dans la landing page (utilise le skill frontend-design pour confirmer le design)
+
+une petite banderole par exemple sous le header dans la landing page (utilise le skill frontend-design pour confirmer le design)
 🎁 Offre de lancement
 
 1 mois Pro offert aux 10 premiers artisans
@@ -10,4 +14,14 @@ qui testent Facturoo et nous donnent leur avis (2 minutes).
 
 → Devis illimités + export comptable inclus
 
+----------------------------------------------------
 
+
+NICE TO HAVE — Future growth                         
+
+- Multi-utilisateur / équipes (comptable, associé)        
+ - 2FA (TOTP)                                       
+ - API publique (intégrations comptables)           
+ - App mobile native              
+ - Blog / guides fiscaux (SEO + autorité)                               
+  - Intégration banque (réconciliation auto) 

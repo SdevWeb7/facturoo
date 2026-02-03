@@ -56,14 +56,151 @@ export async function register(
       name,
       email,
       hashedPassword,
+      // emailVerified is null by default - user must verify
     },
   });
 
+  // Create verification token
+  const token = crypto.randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+  await prisma.verificationToken.create({
+    data: { identifier: email, token, expires },
+  });
+
+  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[DEV] Verification link: ${verifyUrl}`);
+  }
+
+  // Send verification email
+  try {
+    const { sendMail } = await import("@/lib/email");
+
+    await sendMail({
+      to: email,
+      subject: "Confirmez votre email — Facturoo",
+      text: `Bienvenue sur Facturoo !\n\nConfirmez votre adresse email en cliquant sur ce lien :\n\n${verifyUrl}\n\nSi vous n'avez pas créé de compte, vous pouvez ignorer cet email.\n\nCe lien expire dans 24 heures.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;">
+          <h2 style="color: #1a1a1a;">Bienvenue sur Facturoo !</h2>
+          <p>Confirmez votre adresse email pour activer votre compte :</p>
+          <a href="${verifyUrl}" style="display: inline-block; background: #2563eb; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">Confirmer mon email</a>
+          <p style="margin-top: 24px; color: #666; font-size: 14px;">Si vous n'avez pas créé de compte, vous pouvez ignorer cet email.</p>
+          <p style="color: #999; font-size: 12px;">Ce lien expire dans 24 heures.</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[auth] Failed to send verification email:", err instanceof Error ? err.message : "Unknown error");
+  }
+
+  // Sign in the user (but they will be redirected to verification-pending due to unverified email)
   await signIn("credentials", {
     email,
     password,
-    redirectTo: "/dashboard",
+    redirectTo: "/verification-pending",
   });
+
+  return actionSuccess();
+}
+
+export async function verifyEmail(token: string): Promise<ActionResult> {
+  const record = await prisma.verificationToken.findUnique({
+    where: { token },
+  });
+
+  if (!record || record.expires < new Date()) {
+    return actionError("Lien expiré ou invalide");
+  }
+
+  // Mark email as verified
+  await prisma.user.update({
+    where: { email: record.identifier },
+    data: { emailVerified: new Date() },
+  });
+
+  // Delete the token
+  await prisma.verificationToken.delete({
+    where: {
+      identifier_token: {
+        identifier: record.identifier,
+        token,
+      },
+    },
+  });
+
+  return actionSuccess();
+}
+
+export async function resendVerificationEmail(): Promise<ActionResult> {
+  const { auth } = await import("@/lib/auth");
+  const session = await auth();
+  if (!session?.user?.id) {
+    return actionError("Non authentifié");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { email: true, emailVerified: true },
+  });
+
+  if (!user) {
+    return actionError("Utilisateur introuvable");
+  }
+
+  if (user.emailVerified) {
+    return actionError("Votre email est déjà vérifié");
+  }
+
+  const ip = await getClientIp();
+  const { limited } = await checkRateLimit(authRateLimit, `auth:resend-verification:${ip}`);
+  if (limited) {
+    return actionError("Trop de tentatives. Réessayez dans quelques minutes.");
+  }
+
+  // Delete existing tokens for this email
+  await prisma.verificationToken.deleteMany({
+    where: { identifier: user.email },
+  });
+
+  // Create new verification token
+  const token = crypto.randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+  await prisma.verificationToken.create({
+    data: { identifier: user.email, token, expires },
+  });
+
+  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[DEV] Verification link: ${verifyUrl}`);
+  }
+
+  // Send verification email
+  try {
+    const { sendMail } = await import("@/lib/email");
+
+    await sendMail({
+      to: user.email,
+      subject: "Confirmez votre email — Facturoo",
+      text: `Confirmez votre adresse email en cliquant sur ce lien :\n\n${verifyUrl}\n\nSi vous n'avez pas demandé cet email, vous pouvez l'ignorer.\n\nCe lien expire dans 24 heures.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;">
+          <h2 style="color: #1a1a1a;">Confirmez votre email</h2>
+          <p>Cliquez sur le bouton ci-dessous pour confirmer votre adresse email :</p>
+          <a href="${verifyUrl}" style="display: inline-block; background: #2563eb; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">Confirmer mon email</a>
+          <p style="margin-top: 24px; color: #666; font-size: 14px;">Si vous n'avez pas demandé cet email, vous pouvez l'ignorer.</p>
+          <p style="color: #999; font-size: 12px;">Ce lien expire dans 24 heures.</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[auth] Failed to send verification email:", err instanceof Error ? err.message : "Unknown error");
+    return actionError("Erreur lors de l'envoi de l'email");
+  }
 
   return actionSuccess();
 }

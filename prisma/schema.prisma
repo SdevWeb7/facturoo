@@ -57,7 +57,6 @@ model User {
   stripePriceId          String?
   stripeCurrentPeriodEnd  DateTime?
   stripeCancelAtPeriodEnd Boolean   @default(false)
-  trialEndsAt             DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -138,11 +137,23 @@ enum FactureStatus {
   PAID
 }
 
+enum PaymentMethod {
+  VIREMENT
+  CHEQUE
+  ESPECES
+  CB
+  AUTRE
+}
+
 model Facture {
   id     String        @id @default(cuid())
   number String
   status FactureStatus @default(PENDING)
   date   DateTime      @default(now())
+
+  // Payment info (set when marked as paid)
+  paymentDate   DateTime?
+  paymentMethod PaymentMethod?
 
   tvaRate Decimal @default(20) @db.Decimal(5, 2)
 

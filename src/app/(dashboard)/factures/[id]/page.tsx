@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { formatCurrency, computeTotals } from "@/lib/utils";
 import { SendEmailButton } from "@/components/SendEmailButton";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -15,6 +16,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  VIREMENT: "Virement bancaire",
+  CHEQUE: "Chèque",
+  ESPECES: "Espèces",
+  CB: "Carte bancaire",
+  AUTRE: "Autre",
+};
 
 export default async function FactureDetailPage({
   params,
@@ -51,6 +60,11 @@ export default async function FactureDetailPage({
         <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-2xl font-bold">Facture {facture.number}</h1>
           <div className="flex flex-wrap gap-2 sm:gap-3">
+            {facture.status === "PENDING" && (
+              <Button variant="outline" asChild>
+                <Link href={`/factures/${facture.id}/edit`}>Modifier</Link>
+              </Button>
+            )}
             <SendEmailButton
               type="facture"
               id={facture.id}
@@ -96,6 +110,28 @@ export default async function FactureDetailPage({
               </p>
               <h3 className="mt-3 text-sm font-medium text-muted-foreground">TVA</h3>
               <p className="mt-1 text-sm">{Number(facture.tvaRate)}%</p>
+              <h3 className="mt-3 text-sm font-medium text-muted-foreground">Statut</h3>
+              <div className="mt-1">
+                <Badge variant={facture.status === "PAID" ? "paid" : "secondary"}>
+                  {facture.status === "PAID" ? "Encaissée" : "En attente"}
+                </Badge>
+              </div>
+              {facture.status === "PAID" && facture.paymentDate && (
+                <>
+                  <h3 className="mt-3 text-sm font-medium text-muted-foreground">Date de paiement</h3>
+                  <p className="mt-1 text-sm">
+                    {new Date(facture.paymentDate).toLocaleDateString("fr-FR")}
+                  </p>
+                </>
+              )}
+              {facture.status === "PAID" && facture.paymentMethod && (
+                <>
+                  <h3 className="mt-3 text-sm font-medium text-muted-foreground">Méthode</h3>
+                  <p className="mt-1 text-sm">
+                    {PAYMENT_METHOD_LABELS[facture.paymentMethod] ?? facture.paymentMethod}
+                  </p>
+                </>
+              )}
             </div>
           </div>
 

@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { MoreHorizontal, FileDown, Mail, Eye, CircleCheck, Trash2 } from "lucide-react";
-import { markFactureAsPaid, deleteFacture } from "@/actions/factures";
+import { MoreHorizontal, FileDown, Mail, Eye, CircleCheck, Trash2, Pencil } from "lucide-react";
+import { deleteFacture } from "@/actions/factures";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MarkPaidDialog } from "./MarkPaidDialog";
 
 interface FactureActionsMenuProps {
   factureId: string;
@@ -21,6 +22,7 @@ interface FactureActionsMenuProps {
 export function FactureActionsMenu({ factureId, status }: FactureActionsMenuProps) {
   const [pending, startTransition] = useTransition();
   const [sendStatus, setSendStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [markPaidDialogOpen, setMarkPaidDialogOpen] = useState(false);
 
   async function handleSendEmail() {
     if (!confirm("Envoyer cette facture par email au client ?")) return;
@@ -55,16 +57,13 @@ export function FactureActionsMenu({ factureId, status }: FactureActionsMenuProp
     });
   }
 
-  function handleMarkPaid() {
-    startTransition(async () => {
-      const result = await markFactureAsPaid(factureId);
-      if (result && !result.success) {
-        alert(result.error);
-      }
-    });
-  }
-
   return (
+    <>
+      <MarkPaidDialog
+        factureId={factureId}
+        open={markPaidDialogOpen}
+        onOpenChange={setMarkPaidDialogOpen}
+      />
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="size-8 p-0" disabled={pending}>
@@ -102,9 +101,18 @@ export function FactureActionsMenu({ factureId, status }: FactureActionsMenuProp
         </DropdownMenuItem>
 
         {status === "PENDING" && (
+          <DropdownMenuItem asChild>
+            <Link href={`/factures/${factureId}/edit`}>
+              <Pencil />
+              Modifier
+            </Link>
+          </DropdownMenuItem>
+        )}
+
+        {status === "PENDING" && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleMarkPaid}>
+            <DropdownMenuItem onClick={() => setMarkPaidDialogOpen(true)}>
               <CircleCheck className="text-success" />
               <span className="text-success">Marquer encaissée</span>
             </DropdownMenuItem>
@@ -122,5 +130,6 @@ export function FactureActionsMenu({ factureId, status }: FactureActionsMenuProp
         )}
       </DropdownMenuContent>
     </DropdownMenu>
+    </>
   );
 }

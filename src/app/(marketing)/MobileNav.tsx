@@ -14,6 +14,7 @@ import {
 
 const links = [
   { href: "/pricing", label: "Tarifs" },
+  { href: "/about", label: "À propos" },
   { href: "/faq", label: "Aide" },
   { href: "/contact", label: "Contact" },
   { href: "/login", label: "Connexion" },

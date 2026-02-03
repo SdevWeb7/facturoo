@@ -15,6 +15,7 @@ export async function proxy(req: NextRequest) {
     cookieName,
   });
   const isLoggedIn = !!token;
+  const emailVerified = token?.emailVerified === true;
   const pathname = req.nextUrl.pathname;
 
   const isAuthPage =
@@ -23,6 +24,10 @@ export async function proxy(req: NextRequest) {
     pathname.startsWith("/forgot-password") ||
     pathname.startsWith("/reset-password") ||
     pathname.startsWith("/verify-request");
+
+  const isVerificationPage =
+    pathname.startsWith("/verify-email") ||
+    pathname.startsWith("/verification-pending");
 
   const isDashboard =
     pathname.startsWith("/dashboard") ||
@@ -33,11 +38,28 @@ export async function proxy(req: NextRequest) {
     pathname.startsWith("/aide") ||
     pathname.startsWith("/export");
 
+  // Not logged in trying to access dashboard -> redirect to login
   if (isDashboard && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
-  if ((isAuthPage || pathname === "/") && isLoggedIn) {
+  // Logged in but email not verified trying to access dashboard -> redirect to verification pending
+  if (isDashboard && isLoggedIn && !emailVerified) {
+    return NextResponse.redirect(new URL("/verification-pending", req.nextUrl));
+  }
+
+  // Logged in with unverified email on auth pages -> redirect to verification pending
+  if (isAuthPage && isLoggedIn && !emailVerified) {
+    return NextResponse.redirect(new URL("/verification-pending", req.nextUrl));
+  }
+
+  // Logged in with verified email trying to access verification page -> redirect to dashboard
+  if (isVerificationPage && isLoggedIn && emailVerified) {
+    return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+  }
+
+  // Logged in with verified email trying to access auth pages -> redirect to dashboard
+  if ((isAuthPage || pathname === "/") && isLoggedIn && emailVerified) {
     return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
   }
 
