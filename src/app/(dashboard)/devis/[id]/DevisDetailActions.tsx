@@ -39,7 +39,7 @@ export function DevisDetailActions({ devisId, status }: DevisDetailActionsProps)
         variant="default"
         onClick={handleConvert}
         disabled={pending}
-        className="bg-success text-success-foreground hover:bg-success/90"
+        className="bg-success text-white hover:bg-success/90"
       >
         {pending ? (
           <Loader2 className="h-4 w-4 animate-spin" />
