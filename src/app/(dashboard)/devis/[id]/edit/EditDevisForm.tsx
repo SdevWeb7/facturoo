@@ -10,7 +10,6 @@ interface EditDevisFormProps {
   clients: { id: string; name: string }[];
   defaultValues: {
     clientId: string;
-    tvaRate: number;
     items: LineItem[];
   };
 }

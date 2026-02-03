@@ -62,7 +62,6 @@ export async function convertDevisToFacture(
     const facture = await tx.facture.create({
       data: {
         number,
-        tvaRate: devis.tvaRate,
         userId: session.user.id,
         clientId: devis.clientId,
         items: {
@@ -70,6 +69,7 @@ export async function convertDevisToFacture(
             designation: item.designation,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
+            tvaRate: item.tvaRate,
             order: item.order,
           })),
         },

@@ -91,12 +91,12 @@ export async function POST(request: NextRequest) {
         devis: {
           number: devis.number,
           date: devis.date,
-          tvaRate: Number(devis.tvaRate),
           status: devis.status,
           items: devis.items.map((item) => ({
             designation: item.designation,
             quantity: Number(item.quantity),
             unitPrice: item.unitPrice,
+            tvaRate: item.tvaRate,
             order: item.order,
           })),
         },
@@ -150,11 +150,11 @@ export async function POST(request: NextRequest) {
       facture: {
         number: facture.number,
         date: facture.date,
-        tvaRate: Number(facture.tvaRate),
         items: facture.items.map((item) => ({
           designation: item.designation,
           quantity: Number(item.quantity),
           unitPrice: item.unitPrice,
+          tvaRate: item.tvaRate,
           order: item.order,
         })),
       },

@@ -123,6 +123,7 @@ model DevisItem {
   designation String
   quantity    Decimal @db.Decimal(10, 2)
   unitPrice   Int
+  tvaRate     Int     @default(2000) // Centièmes (2000 = 20.00%)
 
   devisId String
   devis   Devis  @relation(fields: [devisId], references: [id], onDelete: Cascade)
@@ -165,6 +166,7 @@ model FactureItem {
   designation String
   quantity    Decimal @db.Decimal(10, 2)
   unitPrice   Int
+  tvaRate     Int     @default(2000) // Centièmes (2000 = 20.00%)
 
   factureId String
   facture   Facture @relation(fields: [factureId], references: [id], onDelete: Cascade)

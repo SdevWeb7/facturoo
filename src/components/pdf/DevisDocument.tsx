@@ -1,17 +1,17 @@
 import { Document, Page, View, Text, Image } from "@react-pdf/renderer";
 import { styles } from "./styles";
-import { computeTotals, formatCurrency } from "@/lib/utils";
+import { computeTotalsPerLine, formatCurrency } from "@/lib/utils";
 
 interface DevisDocumentProps {
   devis: {
     number: string;
     date: Date;
-    tvaRate: number;
     status: string;
     items: {
       designation: string;
       quantity: number;
       unitPrice: number;
+      tvaRate: number; // centièmes (2000 = 20%)
       order: number;
     }[];
   };
@@ -35,7 +35,15 @@ interface DevisDocumentProps {
 }
 
 export function DevisDocument({ devis, client, emitter }: DevisDocumentProps) {
-  const totals = computeTotals(devis.items, devis.tvaRate);
+  // Convert tvaRate from centièmes to percentage for computation
+  const itemsWithPercentage = devis.items.map((item) => ({
+    ...item,
+    tvaRate: item.tvaRate / 100, // 2000 -> 20
+  }));
+  const totals = computeTotalsPerLine(itemsWithPercentage);
+  const sortedTvaRates = Object.keys(totals.tvaByRate)
+    .map(Number)
+    .sort((a, b) => b - a);
 
   return (
     <Document>
@@ -96,6 +104,9 @@ export function DevisDocument({ devis, client, emitter }: DevisDocumentProps) {
             <Text style={[styles.tableHeaderText, styles.colUnitPrice]}>
               P.U. HT
             </Text>
+            <Text style={[styles.tableHeaderText, styles.colTva]}>
+              TVA
+            </Text>
             <Text style={[styles.tableHeaderText, styles.colTotal]}>
               Total HT
             </Text>
@@ -113,6 +124,9 @@ export function DevisDocument({ devis, client, emitter }: DevisDocumentProps) {
                 <Text style={[styles.tableCellText, styles.colUnitPrice]}>
                   {formatCurrency(item.unitPrice)}
                 </Text>
+                <Text style={[styles.tableCellText, styles.colTva]}>
+                  {item.tvaRate / 100}%
+                </Text>
                 <Text style={[styles.tableCellText, styles.colTotal]}>
                   {formatCurrency(Math.round(item.quantity * item.unitPrice))}
                 </Text>
@@ -128,12 +142,14 @@ export function DevisDocument({ devis, client, emitter }: DevisDocumentProps) {
               {formatCurrency(totals.totalHT)}
             </Text>
           </View>
-          <View style={styles.totalsRow}>
-            <Text style={styles.totalsLabel}>TVA ({devis.tvaRate}%)</Text>
-            <Text style={styles.totalsValue}>
-              {formatCurrency(totals.totalTVA)}
-            </Text>
-          </View>
+          {sortedTvaRates.map((rate) => (
+            <View style={styles.totalsRow} key={rate}>
+              <Text style={styles.totalsLabel}>TVA {rate}%</Text>
+              <Text style={styles.totalsValue}>
+                {formatCurrency(totals.tvaByRate[rate])}
+              </Text>
+            </View>
+          ))}
           <View style={styles.totalsTTCRow}>
             <Text style={styles.totalsTTCLabel}>Total TTC</Text>
             <Text style={styles.totalsTTCValue}>

@@ -18,6 +18,25 @@ export function computeTotals(
   return { totalHT, totalTVA, totalTTC };
 }
 
+export function computeTotalsPerLine(
+  items: { quantity: number; unitPrice: number; tvaRate: number }[]
+) {
+  let totalHT = 0;
+  const tvaByRate: Record<number, number> = {};
+
+  for (const item of items) {
+    const lineHT = Math.round(item.quantity * item.unitPrice);
+    totalHT += lineHT;
+    const lineTVA = Math.round(lineHT * (item.tvaRate / 100));
+    tvaByRate[item.tvaRate] = (tvaByRate[item.tvaRate] || 0) + lineTVA;
+  }
+
+  const totalTVA = Object.values(tvaByRate).reduce((sum, v) => sum + v, 0);
+  const totalTTC = totalHT + totalTVA;
+
+  return { totalHT, totalTVA, totalTTC, tvaByRate };
+}
+
 export function formatCurrency(amountCents: number): string {
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",

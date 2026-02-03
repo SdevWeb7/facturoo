@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import type { ActionResult } from "@/lib/action-utils";
 import { LineItemsEditor, type LineItem } from "./LineItemsEditor";
-import { TVA_RATES, computeTotals, formatCurrency } from "@/lib/utils";
+import { computeTotalsPerLine, formatCurrency } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -21,7 +21,6 @@ interface DevisFormProps {
   clients: Client[];
   defaultValues?: {
     clientId: string;
-    tvaRate: number;
     items: LineItem[];
   };
   submitLabel: string;
@@ -35,12 +34,14 @@ export function DevisForm({
 }: DevisFormProps) {
   const [state, formAction, pending] = useActionState(action, null);
   const [items, setItems] = useState<LineItem[]>(
-    defaultValues?.items ?? [{ designation: "", quantity: 1, unitPrice: 0 }]
+    defaultValues?.items ?? [{ designation: "", quantity: 1, unitPrice: 0, tvaRate: 20 }]
   );
-  const [tvaRate, setTvaRate] = useState(defaultValues?.tvaRate ?? 20);
   const [tvaInclusive, setTvaInclusive] = useState(false);
 
-  const totals = computeTotals(items, tvaRate);
+  const totals = computeTotalsPerLine(items);
+  const sortedTvaRates = Object.keys(totals.tvaByRate)
+    .map(Number)
+    .sort((a, b) => b - a);
 
   return (
     <form action={formAction} className="space-y-6">
@@ -71,38 +72,20 @@ export function DevisForm({
         </select>
       </div>
 
-      {/* TVA Rate + Inclusive toggle */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-        <div className="flex-1 space-y-2">
-          <Label htmlFor="tvaRate">Taux de TVA</Label>
-          <select
-            id="tvaRate"
-            name="tvaRate"
-            value={tvaRate}
-            onChange={(e) => setTvaRate(Number(e.target.value))}
-            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          >
-            {TVA_RATES.map((rate) => (
-              <option key={rate} value={rate}>
-                {rate}%
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex items-center gap-2 sm:pb-0.5">
-          <Switch
-            id="tvaInclusive"
-            checked={tvaInclusive}
-            onCheckedChange={setTvaInclusive}
-          />
-          <Label htmlFor="tvaInclusive" className="text-sm font-normal">
-            Prix TTC
-          </Label>
-        </div>
+      {/* Prix TTC toggle */}
+      <div className="flex items-center gap-2">
+        <Switch
+          id="tvaInclusive"
+          checked={tvaInclusive}
+          onCheckedChange={setTvaInclusive}
+        />
+        <Label htmlFor="tvaInclusive" className="text-sm font-normal">
+          Saisir les prix TTC
+        </Label>
       </div>
 
       {/* Line Items */}
-      <LineItemsEditor items={items} onChange={setItems} tvaInclusive={tvaInclusive} tvaRate={tvaRate} />
+      <LineItemsEditor items={items} onChange={setItems} tvaInclusive={tvaInclusive} />
 
       {/* Totals */}
       <Card>
@@ -111,10 +94,12 @@ export function DevisForm({
             <span className="text-muted-foreground">Total HT</span>
             <span className="font-medium">{formatCurrency(totals.totalHT)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">TVA ({tvaRate}%)</span>
-            <span className="font-medium">{formatCurrency(totals.totalTVA)}</span>
-          </div>
+          {sortedTvaRates.map((rate) => (
+            <div key={rate} className="flex justify-between">
+              <span className="text-muted-foreground">TVA {rate}%</span>
+              <span className="font-medium">{formatCurrency(totals.tvaByRate[rate])}</span>
+            </div>
+          ))}
           <Separator />
           <div className="flex justify-between pt-1">
             <span className="font-semibold">Total TTC</span>

@@ -96,6 +96,10 @@ export const styles = StyleSheet.create({
     flex: 2,
     textAlign: "right",
   },
+  colTva: {
+    flex: 1,
+    textAlign: "right",
+  },
   colTotal: {
     flex: 2,
     textAlign: "right",

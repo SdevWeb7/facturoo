@@ -13,7 +13,7 @@ export function NewDevisForm({ clients, defaultClientId }: NewDevisFormProps) {
     <DevisForm
       action={createDevis}
       clients={clients}
-      defaultValues={defaultClientId ? { clientId: defaultClientId, tvaRate: 20, items: [{ designation: "", quantity: 1, unitPrice: 0 }] } : undefined}
+      defaultValues={defaultClientId ? { clientId: defaultClientId, items: [{ designation: "", quantity: 1, unitPrice: 0, tvaRate: 20 }] } : undefined}
       submitLabel="Créer le devis"
     />
   );

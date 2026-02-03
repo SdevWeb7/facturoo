@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, TVA_RATES } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,13 @@ export interface LineItem {
   designation: string;
   quantity: number;
   unitPrice: number; // centimes
+  tvaRate: number;   // pourcentage (20, 10, 5.5, 2.1)
 }
 
 interface LineItemsEditorProps {
   items: LineItem[];
   onChange: (items: LineItem[]) => void;
   tvaInclusive?: boolean;
-  tvaRate?: number;
 }
 
 function euroFromCentimes(centimes: number, tvaInclusive: boolean, tvaRate: number): string {
@@ -53,13 +53,11 @@ function PriceInput({
   const [isFocused, setIsFocused] = useState(false);
   const lastCommittedRef = useRef(value);
 
-  // Sync from parent when value changes externally (e.g. TVA toggle)
+  // Sync display when value or TVA settings change (and not focused)
   useEffect(() => {
-    if (value !== lastCommittedRef.current) {
+    if (!isFocused) {
+      setDisplay(euroFromCentimes(value, tvaInclusive, tvaRate));
       lastCommittedRef.current = value;
-      if (!isFocused) {
-        setDisplay(euroFromCentimes(value, tvaInclusive, tvaRate));
-      }
     }
   }, [value, tvaInclusive, tvaRate, isFocused]);
 
@@ -105,20 +103,21 @@ function PriceInput({
   );
 }
 
-export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate = 20 }: LineItemsEditorProps) {
+export function LineItemsEditor({ items, onChange, tvaInclusive = false }: LineItemsEditorProps) {
   function addItem() {
-    onChange([...items, { designation: "", quantity: 1, unitPrice: 0 }]);
+    onChange([...items, { designation: "", quantity: 1, unitPrice: 0, tvaRate: 20 }]);
   }
 
   function removeItem(index: number) {
     onChange(items.filter((_, i) => i !== index));
   }
 
-  function updateItem(index: number, field: "designation" | "quantity", value: string) {
+  function updateItem(index: number, field: "designation" | "quantity" | "tvaRate", value: string | number) {
     const updated = items.map((item, i) => {
       if (i !== index) return item;
-      if (field === "designation") return { ...item, designation: value };
-      if (field === "quantity") return { ...item, quantity: parseFloat(value) || 0 };
+      if (field === "designation") return { ...item, designation: value as string };
+      if (field === "quantity") return { ...item, quantity: parseFloat(value as string) || 0 };
+      if (field === "tvaRate") return { ...item, tvaRate: value as number };
       return item;
     });
     onChange(updated);
@@ -150,7 +149,7 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
           className="rounded-lg border bg-muted/50 p-3"
         >
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-12">
-            <div className="sm:col-span-5">
+            <div className="sm:col-span-4">
               <Label className="mb-1 text-xs text-muted-foreground">
                 Désignation
               </Label>
@@ -162,9 +161,9 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
                 required
               />
             </div>
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-1">
               <Label className="mb-1 text-xs text-muted-foreground">
-                Quantité
+                Qté
               </Label>
               <Input
                 type="number"
@@ -175,16 +174,32 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
                 required
               />
             </div>
-            <div className="sm:col-span-3">
+            <div className="sm:col-span-2">
               <PriceInput
                 value={item.unitPrice}
                 tvaInclusive={tvaInclusive}
-                tvaRate={tvaRate}
+                tvaRate={item.tvaRate}
                 onChange={(centimes) => updatePrice(index, centimes)}
-                label={tvaInclusive ? "Prix unitaire TTC" : "Prix unitaire HT"}
+                label={tvaInclusive ? "P.U. TTC" : "P.U. HT"}
               />
             </div>
-            <div className="flex items-end sm:col-span-2">
+            <div className="sm:col-span-2">
+              <Label className="mb-1 text-xs text-muted-foreground">
+                TVA
+              </Label>
+              <select
+                value={item.tvaRate}
+                onChange={(e) => updateItem(index, "tvaRate", Number(e.target.value))}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-2 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                {TVA_RATES.map((rate) => (
+                  <option key={rate} value={rate}>
+                    {rate}%
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-end sm:col-span-3">
               <div className="w-full">
                 <Label className="mb-1 text-xs text-muted-foreground">
                   Total HT
@@ -216,6 +231,7 @@ export function LineItemsEditor({ items, onChange, tvaInclusive = false, tvaRate
           <input type="hidden" name={`items.${index}.designation`} value={item.designation} />
           <input type="hidden" name={`items.${index}.quantity`} value={item.quantity} />
           <input type="hidden" name={`items.${index}.unitPrice`} value={item.unitPrice} />
+          <input type="hidden" name={`items.${index}.tvaRate`} value={item.tvaRate} />
         </div>
       ))}
     </div>

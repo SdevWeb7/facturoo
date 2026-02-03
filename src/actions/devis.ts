@@ -18,11 +18,11 @@ const DevisItemSchema = z.object({
   designation: z.string().min(1, "La désignation est requise"),
   quantity: z.coerce.number().positive("La quantité doit être positive"),
   unitPrice: z.coerce.number().int().min(0, "Le prix doit être positif"),
+  tvaRate: z.coerce.number().refine(isValidTvaRate, "Taux de TVA invalide"),
 });
 
 const DevisSchema = z.object({
   clientId: z.string().min(1, "Le client est requis"),
-  tvaRate: z.coerce.number().refine(isValidTvaRate, "Taux de TVA invalide"),
   items: z.array(DevisItemSchema).min(1, "Au moins une ligne est requise"),
 });
 
@@ -62,20 +62,20 @@ export async function createDevis(
   }
 
   // Parse items from FormData
-  const items: { designation: string; quantity: number; unitPrice: number }[] = [];
+  const items: { designation: string; quantity: number; unitPrice: number; tvaRate: number }[] = [];
   let i = 0;
   while (formData.get(`items.${i}.designation`) !== null) {
     items.push({
       designation: formData.get(`items.${i}.designation`) as string,
       quantity: Number(formData.get(`items.${i}.quantity`)),
       unitPrice: Number(formData.get(`items.${i}.unitPrice`)),
+      tvaRate: Number(formData.get(`items.${i}.tvaRate`)),
     });
     i++;
   }
 
   const parsed = DevisSchema.safeParse({
     clientId: formData.get("clientId"),
-    tvaRate: formData.get("tvaRate"),
     items,
   });
 
@@ -94,7 +94,6 @@ export async function createDevis(
   const devis = await prisma.devis.create({
     data: {
       number,
-      tvaRate: parsed.data.tvaRate,
       userId: session.user.id,
       clientId: parsed.data.clientId,
       items: {
@@ -102,6 +101,7 @@ export async function createDevis(
           designation: item.designation,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
+          tvaRate: Math.round(item.tvaRate * 100), // Convert percentage to centièmes (20 -> 2000)
           order: idx,
         })),
       },
@@ -135,20 +135,20 @@ export async function updateDevis(
   }
 
   // Parse items from FormData
-  const items: { designation: string; quantity: number; unitPrice: number }[] = [];
+  const items: { designation: string; quantity: number; unitPrice: number; tvaRate: number }[] = [];
   let i = 0;
   while (formData.get(`items.${i}.designation`) !== null) {
     items.push({
       designation: formData.get(`items.${i}.designation`) as string,
       quantity: Number(formData.get(`items.${i}.quantity`)),
       unitPrice: Number(formData.get(`items.${i}.unitPrice`)),
+      tvaRate: Number(formData.get(`items.${i}.tvaRate`)),
     });
     i++;
   }
 
   const parsed = DevisSchema.safeParse({
     clientId: formData.get("clientId"),
-    tvaRate: formData.get("tvaRate"),
     items,
   });
 
@@ -170,12 +170,12 @@ export async function updateDevis(
       where: { id },
       data: {
         clientId: parsed.data.clientId,
-        tvaRate: parsed.data.tvaRate,
         items: {
           create: parsed.data.items.map((item, idx) => ({
             designation: item.designation,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
+            tvaRate: Math.round(item.tvaRate * 100), // Convert percentage to centièmes (20 -> 2000)
             order: idx,
           })),
         },

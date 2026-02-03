@@ -46,11 +46,11 @@ export default async function EditDevisPage({
           clients={clients}
           defaultValues={{
             clientId: devis.clientId,
-            tvaRate: Number(devis.tvaRate),
             items: devis.items.map((item) => ({
               designation: item.designation,
               quantity: Number(item.quantity),
               unitPrice: item.unitPrice,
+              tvaRate: item.tvaRate / 100, // Convert centièmes to percentage (2000 -> 20)
             })),
           }}
         />
