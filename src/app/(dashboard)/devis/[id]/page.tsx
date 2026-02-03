@@ -187,22 +187,22 @@ export default async function DevisDetailPage({
         <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full">
           {/* Client Card */}
           <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden max-w-full">
-            <div className="p-4 sm:p-6 overflow-x-auto">
+            <div className="p-4 sm:p-6">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
                 Client
               </h2>
               <div className="flex items-start gap-3">
                 <Avatar name={devis.client.name} size="lg" className="shrink-0" />
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <Link
                     href={`/clients/${devis.clientId}`}
-                    className="font-semibold text-foreground hover:text-primary transition-colors whitespace-nowrap"
+                    className="font-semibold text-foreground hover:text-primary transition-colors break-words"
                   >
                     {devis.client.name}
                   </Link>
                   <a
                     href={`mailto:${devis.client.email}`}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors block whitespace-nowrap"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors block break-all"
                   >
                     {devis.client.email}
                   </a>
@@ -213,9 +213,9 @@ export default async function DevisDetailPage({
                 <div className="mt-4 pt-4 border-t border-border/50">
                   <div className="flex items-start gap-2 text-sm text-muted-foreground">
                     <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 min-w-0">
                       {addressLines.map((line, i) => (
-                        <p key={i} className="whitespace-nowrap">{line}</p>
+                        <p key={i} className="break-words">{line}</p>
                       ))}
                     </div>
                   </div>
