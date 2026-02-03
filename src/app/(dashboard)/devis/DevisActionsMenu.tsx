@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { MoreHorizontal, FileDown, Mail, Pencil, FileCheck, Trash2 } from "lucide-react";
+import { MoreHorizontal, FileDown, Mail, Pencil, FileCheck, Trash2, Eye } from "lucide-react";
 import { deleteDevis } from "@/actions/devis";
 import { convertDevisToFacture } from "@/actions/factures";
 import { Button } from "@/components/ui/button";
@@ -73,6 +73,12 @@ export function DevisActionsMenu({ devisId, status }: DevisActionsMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem asChild>
+          <Link href={`/devis/${devisId}`}>
+            <Eye />
+            Voir le détail
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <a
             href={`/api/pdf/devis/${devisId}`}

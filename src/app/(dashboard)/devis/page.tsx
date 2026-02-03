@@ -143,7 +143,9 @@ export default async function DevisPage({
                     )}
                   </div>
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground">{devis.client.name}</p>
+                <Link href={`/clients/${devis.clientId}`} className="mt-1 block text-sm text-muted-foreground hover:underline">
+                  {devis.client.name}
+                </Link>
                 <div className="mt-2 flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">
                     {new Date(devis.date).toLocaleDateString("fr-FR")}
@@ -186,7 +188,9 @@ export default async function DevisPage({
                       {new Date(devis.date).toLocaleDateString("fr-FR")}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {devis.client.name}
+                      <Link href={`/clients/${devis.clientId}`} className="hover:underline">
+                        {devis.client.name}
+                      </Link>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
