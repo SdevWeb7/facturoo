@@ -104,7 +104,7 @@ export default async function DevisDetailPage({
         : "text-muted-foreground";
 
   return (
-    <div className="w-full max-w-full overflow-hidden">
+    <div className="w-full max-w-full">
       {/* Navigation */}
       <Link
         href="/devis"

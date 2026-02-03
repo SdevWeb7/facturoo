@@ -92,7 +92,7 @@ export default async function FactureDetailPage({
   const isPaid = facture.status === "PAID";
 
   return (
-    <div className="w-full max-w-full overflow-hidden">
+    <div className="w-full max-w-full">
       {/* Navigation */}
       <Link
         href="/factures"
