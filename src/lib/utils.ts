@@ -44,7 +44,7 @@ export function formatCurrency(amountCents: number): string {
   }).format(amountCents / 100);
 }
 
-export const TVA_RATES = [20, 10, 5.5, 2.1] as const;
+export const TVA_RATES = [20, 10, 5.5, 2.1, 0] as const;
 
 export function isValidTvaRate(rate: number): boolean {
   return TVA_RATES.includes(rate as (typeof TVA_RATES)[number]);

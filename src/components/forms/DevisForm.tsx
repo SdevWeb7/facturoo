@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 
 interface Client {
   id: string;
@@ -36,7 +35,6 @@ export function DevisForm({
   const [items, setItems] = useState<LineItem[]>(
     defaultValues?.items ?? [{ designation: "", quantity: 1, unitPrice: 0, tvaRate: 20 }]
   );
-  const [tvaInclusive, setTvaInclusive] = useState(false);
 
   const totals = computeTotalsPerLine(items);
   const sortedTvaRates = Object.keys(totals.tvaByRate)
@@ -72,20 +70,8 @@ export function DevisForm({
         </select>
       </div>
 
-      {/* Prix TTC toggle */}
-      <div className="flex items-center gap-2">
-        <Switch
-          id="tvaInclusive"
-          checked={tvaInclusive}
-          onCheckedChange={setTvaInclusive}
-        />
-        <Label htmlFor="tvaInclusive" className="text-sm font-normal">
-          Saisir les prix TTC
-        </Label>
-      </div>
-
       {/* Line Items */}
-      <LineItemsEditor items={items} onChange={setItems} tvaInclusive={tvaInclusive} />
+      <LineItemsEditor items={items} onChange={setItems} />
 
       {/* Totals */}
       <Card>
