@@ -2,24 +2,21 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { formatCurrency, computeTotals } from "@/lib/utils";
-import { DevisActionsMenu } from "./DevisActionsMenu";
-import { SendDevisButton } from "./SendDevisButton";
+import { computeTotals } from "@/lib/utils";
+import { DevisCard } from "./DevisCard";
+import { DevisTableRow } from "./DevisTableRow";
 import { SortableTableHead } from "@/components/SortableTableHead";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FileText, Plus, Search } from "lucide-react";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { STATUS_BADGE_VARIANT } from "@/lib/status";
 import { SearchInput } from "@/components/ui/search-input";
 import { Pagination } from "@/components/ui/pagination";
 
@@ -126,38 +123,9 @@ export default async function DevisPage({
         <>
         {/* Mobile cards */}
         <div className="mt-6 space-y-3 md:hidden">
-          {paginated.map((devis) => {
-            const statusInfo = STATUS_BADGE_VARIANT[devis.status];
-            return (
-              <Card key={devis.id} className="p-4">
-                <div className="flex flex-col gap-1">
-                  <Link href={`/devis/${devis.id}`} className="font-medium hover:underline">
-                    {devis.number}
-                  </Link>
-                  <div className="flex items-center gap-2">
-                    <Badge variant={statusInfo.variant}>
-                      {statusInfo.label}
-                    </Badge>
-                    {devis.status === "DRAFT" && (
-                      <SendDevisButton devisId={devis.id} />
-                    )}
-                  </div>
-                </div>
-                <Link href={`/clients/${devis.clientId}`} className="mt-1 block text-sm text-muted-foreground hover:underline">
-                  {devis.client.name}
-                </Link>
-                <div className="mt-2 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {new Date(devis.date).toLocaleDateString("fr-FR")}
-                  </span>
-                  <span className="font-medium">{formatCurrency(devis.totalTTC)}</span>
-                </div>
-                <div className="mt-2 flex justify-end">
-                  <DevisActionsMenu devisId={devis.id} status={devis.status} />
-                </div>
-              </Card>
-            );
-          })}
+          {paginated.map((devis) => (
+            <DevisCard key={devis.id} devis={devis} />
+          ))}
         </div>
 
         {/* Desktop table */}
@@ -174,43 +142,9 @@ export default async function DevisPage({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginated.map((devis) => {
-                const statusInfo = STATUS_BADGE_VARIANT[devis.status];
-
-                return (
-                  <TableRow key={devis.id}>
-                    <TableCell className="font-medium">
-                      <Link href={`/devis/${devis.id}`} className="hover:underline">
-                        {devis.number}
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {new Date(devis.date).toLocaleDateString("fr-FR")}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      <Link href={`/clients/${devis.clientId}`} className="hover:underline">
-                        {devis.client.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={statusInfo.variant}>
-                          {statusInfo.label}
-                        </Badge>
-                        {devis.status === "DRAFT" && (
-                          <SendDevisButton devisId={devis.id} />
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {formatCurrency(devis.totalTTC)}
-                    </TableCell>
-                    <TableCell>
-                      <DevisActionsMenu devisId={devis.id} status={devis.status} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {paginated.map((devis) => (
+                <DevisTableRow key={devis.id} devis={devis} />
+              ))}
             </TableBody>
           </Table>
         </Card>
