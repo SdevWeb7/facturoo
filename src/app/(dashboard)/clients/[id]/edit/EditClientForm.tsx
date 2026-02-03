@@ -14,6 +14,7 @@ interface EditClientFormProps {
     postalCode?: string;
     city?: string;
     phone?: string;
+    description?: string;
   };
 }
 

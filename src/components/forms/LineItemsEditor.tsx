@@ -91,6 +91,61 @@ function PriceInput({
   );
 }
 
+function QuantityInput({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (qty: number) => void;
+}) {
+  const [display, setDisplay] = useState(() => value.toString());
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Sync display when value changes externally (and not focused)
+  useEffect(() => {
+    if (!isFocused) {
+      setDisplay(value.toString());
+    }
+  }, [value, isFocused]);
+
+  function handleChange(raw: string) {
+    // Allow only digits and decimal point/comma
+    const normalized = raw.replace(",", ".").replace(/[^\d.]/g, "");
+    setDisplay(normalized);
+    // Update parent live for real-time total
+    const qty = parseFloat(normalized);
+    if (!isNaN(qty) && qty > 0) {
+      onChange(qty);
+    }
+  }
+
+  function handleBlur() {
+    setIsFocused(false);
+    const qty = parseFloat(display);
+    if (isNaN(qty) || qty <= 0) {
+      // Reset to 1 if invalid
+      onChange(1);
+      setDisplay("1");
+    } else {
+      onChange(qty);
+      setDisplay(qty.toString());
+    }
+  }
+
+  return (
+    <Input
+      type="text"
+      inputMode="decimal"
+      value={display}
+      onFocus={() => setIsFocused(true)}
+      onChange={(e) => handleChange(e.target.value)}
+      onBlur={handleBlur}
+      placeholder="1"
+      required
+    />
+  );
+}
+
 export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
   function addItem() {
     onChange([...items, { designation: "", quantity: 1, unitPrice: 0, tvaRate: 20 }]);
@@ -100,14 +155,18 @@ export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
     onChange(items.filter((_, i) => i !== index));
   }
 
-  function updateItem(index: number, field: "designation" | "quantity" | "tvaRate", value: string | number) {
+  function updateItem(index: number, field: "designation" | "tvaRate", value: string | number) {
     const updated = items.map((item, i) => {
       if (i !== index) return item;
       if (field === "designation") return { ...item, designation: value as string };
-      if (field === "quantity") return { ...item, quantity: parseInt(value as string, 10) || 1 };
       if (field === "tvaRate") return { ...item, tvaRate: value as number };
       return item;
     });
+    onChange(updated);
+  }
+
+  function updateQuantity(index: number, qty: number) {
+    const updated = items.map((item, i) => (i === index ? { ...item, quantity: qty } : item));
     onChange(updated);
   }
 
@@ -153,13 +212,9 @@ export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
               <Label className="mb-1 text-xs text-muted-foreground">
                 Qté
               </Label>
-              <Input
-                type="number"
+              <QuantityInput
                 value={item.quantity}
-                onChange={(e) => updateItem(index, "quantity", e.target.value)}
-                step="1"
-                min="1"
-                required
+                onChange={(qty) => updateQuantity(index, qty)}
               />
             </div>
             <div className="sm:col-span-2">
@@ -187,10 +242,14 @@ export function LineItemsEditor({ items, onChange }: LineItemsEditorProps) {
             <div className="flex items-end sm:col-span-3">
               <div className="w-full">
                 <Label className="mb-1 text-xs text-muted-foreground">
-                  Total HT
+                  Total TTC
                 </Label>
                 <div className="rounded-md bg-background px-3 py-2 text-sm font-medium">
-                  {formatCurrency(Math.round(item.quantity * item.unitPrice))}
+                  {(() => {
+                    const lineHT = Math.round(item.quantity * item.unitPrice);
+                    const lineTVA = Math.round(lineHT * (item.tvaRate / 100));
+                    return formatCurrency(lineHT + lineTVA);
+                  })()}
                 </div>
               </div>
             </div>

@@ -178,7 +178,9 @@ export default async function DevisPage({
                 return (
                   <TableRow key={devis.id}>
                     <TableCell className="font-medium">
-                      {devis.number}
+                      <Link href={`/devis/${devis.id}`} className="hover:underline">
+                        {devis.number}
+                      </Link>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {new Date(devis.date).toLocaleDateString("fr-FR")}

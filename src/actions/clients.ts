@@ -22,6 +22,7 @@ const ClientSchema = z.object({
   postalCode: z.string().optional(),
   city: z.string().optional(),
   phone: z.string().optional(),
+  description: z.string().optional(),
 });
 
 export async function createClient(
@@ -46,6 +47,7 @@ export async function createClient(
     postalCode: formData.get("postalCode") || undefined,
     city: formData.get("city") || undefined,
     phone: formData.get("phone") || undefined,
+    description: formData.get("description") || undefined,
   });
 
   if (!parsed.success) {
@@ -77,6 +79,7 @@ export async function updateClient(
     postalCode: formData.get("postalCode") || undefined,
     city: formData.get("city") || undefined,
     phone: formData.get("phone") || undefined,
+    description: formData.get("description") || undefined,
   });
 
   if (!parsed.success) {

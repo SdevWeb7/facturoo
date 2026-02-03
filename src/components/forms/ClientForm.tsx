@@ -17,6 +17,7 @@ interface ClientFormProps {
     postalCode?: string;
     city?: string;
     phone?: string;
+    description?: string;
   };
   submitLabel: string;
 }
@@ -105,6 +106,18 @@ export function ClientForm({ action, defaultValues, submitLabel }: ClientFormPro
           name="phone"
           type="tel"
           defaultValue={defaultValues?.phone}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Notes / Description</Label>
+        <textarea
+          id="description"
+          name="description"
+          rows={3}
+          className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50"
+          placeholder="Informations supplémentaires sur ce client..."
+          defaultValue={defaultValues?.description}
         />
       </div>
 

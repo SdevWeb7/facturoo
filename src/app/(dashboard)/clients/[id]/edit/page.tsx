@@ -40,6 +40,7 @@ export default async function EditClientPage({
             postalCode: client.postalCode ?? undefined,
             city: client.city ?? undefined,
             phone: client.phone ?? undefined,
+            description: client.description ?? undefined,
           }}
         />
       </div>

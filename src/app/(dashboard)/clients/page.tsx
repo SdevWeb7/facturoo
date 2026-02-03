@@ -73,10 +73,10 @@ export default async function ClientsPage({
         <div className="mt-6 space-y-3 md:hidden">
           {paginated.map((client) => (
             <Card key={client.id} className="p-4">
-              <div className="flex items-center gap-3">
+              <Link href={`/clients/${client.id}`} className="flex items-center gap-3 hover:opacity-80">
                 <Avatar name={client.name} size="sm" />
-                <span className="font-medium">{client.name}</span>
-              </div>
+                <span className="font-medium hover:underline">{client.name}</span>
+              </Link>
               {client.email && (
                 <p className="mt-1 text-sm text-muted-foreground">{client.email}</p>
               )}
@@ -116,10 +116,10 @@ export default async function ClientsPage({
               {paginated.map((client) => (
                 <TableRow key={client.id}>
                   <TableCell>
-                    <div className="flex items-center gap-3">
+                    <Link href={`/clients/${client.id}`} className="flex items-center gap-3">
                       <Avatar name={client.name} size="sm" />
-                      <span className="font-medium">{client.name}</span>
-                    </div>
+                      <span className="font-medium hover:underline">{client.name}</span>
+                    </Link>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {client.email}
