@@ -37,17 +37,16 @@ export const metadata: Metadata = {
   creator: "Facturoo",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
     ],
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Facturoo",
+    title: "Facturoo — Devis et Factures pour Artisans | Simple et Rapide",
     description:
-      "Créez vos devis et factures en 2 minutes. Simple, rapide, pensé pour les artisans.",
+      "Créez vos devis et factures professionnels en 2 minutes. L'outil de facturation simple et conforme, pensé pour les artisans français. Essai gratuit.",
     url: "https://facturoo.vercel.app",
     siteName: "Facturoo",
     images: [
@@ -62,8 +61,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Facturoo",
-    description: "Devis & factures en 2 minutes, sans Excel.",
+    title: "Facturoo — Devis et Factures pour Artisans | Simple et Rapide",
+    description:
+      "Créez vos devis et factures professionnels en 2 minutes. L'outil de facturation simple et conforme, pensé pour les artisans français. Essai gratuit.",
     images: ["/og-image.png"],
   },
 };
