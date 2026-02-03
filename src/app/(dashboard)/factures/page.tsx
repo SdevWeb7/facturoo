@@ -86,7 +86,7 @@ export default async function FacturesPage({
       </div>
 
       {facturesWithTotals.length > 0 && (
-        <SearchInput placeholder="Rechercher par client, numéro, description…" className="mt-6 max-w-sm" />
+        <SearchInput placeholder="Rechercher par client ou numéro…" className="mt-6 max-w-sm" />
       )}
 
       {facturesWithTotals.length === 0 ? (

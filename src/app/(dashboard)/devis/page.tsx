@@ -92,7 +92,7 @@ export default async function DevisPage({
       </div>
 
       {devisWithTotals.length > 0 && (
-        <SearchInput placeholder="Rechercher par client, numéro, description…" className="mt-6 max-w-sm" />
+        <SearchInput placeholder="Rechercher par client, numéro ou statut…" className="mt-6 max-w-sm" />
       )}
 
       {devisWithTotals.length === 0 ? (
