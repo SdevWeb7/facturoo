@@ -2,13 +2,14 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { Users, Plus } from "lucide-react";
+import { Users, Plus, Search } from "lucide-react";
 import { ClientCard } from "./ClientCard";
 import { ClientTableRow } from "./ClientTableRow";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Pagination } from "@/components/ui/pagination";
+import { SearchInput } from "@/components/ui/search-input";
 import {
   Table,
   TableBody,
@@ -22,12 +23,12 @@ const PER_PAGE = 10;
 export default async function ClientsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; q?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, q } = await searchParams;
   const currentPage = Math.max(1, Number(pageParam) || 1);
 
   const clients = await prisma.client.findMany({
@@ -35,8 +36,23 @@ export default async function ClientsPage({
     orderBy: { createdAt: "desc" },
   });
 
-  const totalPages = Math.ceil(clients.length / PER_PAGE);
-  const paginated = clients.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+  const filtered = q
+    ? clients.filter((c) => {
+        const search = q.toLowerCase();
+        return (
+          c.name.toLowerCase().includes(search) ||
+          (c.email && c.email.toLowerCase().includes(search)) ||
+          (c.phone && c.phone.toLowerCase().includes(search)) ||
+          (c.city && c.city.toLowerCase().includes(search))
+        );
+      })
+    : clients;
+
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const paginated = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const paginationSearchParams: Record<string, string> = {};
+  if (q) paginationSearchParams.q = q;
 
   return (
     <div>
@@ -50,7 +66,11 @@ export default async function ClientsPage({
         </Button>
       </div>
 
-      {paginated.length === 0 && clients.length === 0 ? (
+      {clients.length > 0 && (
+        <SearchInput placeholder="Rechercher un client…" className="mt-6 max-w-sm" />
+      )}
+
+      {clients.length === 0 ? (
         <div className="mt-8">
           <EmptyState
             icon={<Users className="h-7 w-7" />}
@@ -64,6 +84,14 @@ export default async function ClientsPage({
                 </Link>
               </Button>
             }
+          />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="mt-8">
+          <EmptyState
+            icon={<Search className="h-7 w-7" />}
+            title="Aucun résultat"
+            description={`Aucun client ne correspond à « ${q} ».`}
           />
         </div>
       ) : (
@@ -93,7 +121,7 @@ export default async function ClientsPage({
             </TableBody>
           </Table>
         </Card>
-        <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/clients" />
+        <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/clients" searchParams={paginationSearchParams} />
         </>
       )}
     </div>
