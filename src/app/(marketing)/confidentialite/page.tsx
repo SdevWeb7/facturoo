@@ -29,20 +29,10 @@ export default function ConfidentialitePage() {
             <h2 className="text-lg font-bold text-foreground">
               Responsable du traitement
             </h2>
-            <div className="mt-4 space-y-1">
-              <p>
-                <strong className="text-foreground">Raison sociale :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
-              </p>
-              <p>
-                <strong className="text-foreground">Adresse :</strong>{" "}
-                [&Agrave; COMPL&Eacute;TER]
-              </p>
-              <p>
-                <strong className="text-foreground">Email DPO :</strong>{" "}
-                support@facturoo.app
-              </p>
-            </div>
+            <p className="mt-4">
+              <strong className="text-foreground">Email DPO :</strong>{" "}
+              support@facturoo.app
+            </p>
           </section>
 
           {/* Données collectées */}
