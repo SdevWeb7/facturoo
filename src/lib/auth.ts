@@ -95,12 +95,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
-        token.emailVerified = user.emailVerified ? true : false;
       }
-      // Refresh emailVerified on token update (after verification)
-      if (trigger === "update") {
+      // Always fetch emailVerified from database on login or update to ensure consistency
+      if (user || trigger === "update") {
         const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
+          where: { id: (token.id || user?.id) as string },
           select: { emailVerified: true },
         });
         if (dbUser) {
