@@ -1,12 +1,7 @@
 
 travailler sur la favicon
 
-
-
-il faudrait ajouter au client une petite description et il faudrait pouvoir aller sur la fiche client en cliquant dessus et pareil pour devis et facture je pense ?
-
-
-
+--------------------------------------------------
 une petite banderole par exemple sous le headr dans la landing page (utilise le skill frontend-design pour confirmer le design)
 🎁 Offre de lancement
 
