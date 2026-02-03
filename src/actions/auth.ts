@@ -9,6 +9,7 @@ import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import { actionError, actionSuccess, zodErrorMessage, type ActionResult } from "@/lib/action-utils";
 import { authRateLimit, checkRateLimit } from "@/lib/rate-limit";
+import { revalidatePath } from "next/cache";
 
 async function getClientIp(): Promise<string> {
   const h = await headers();
@@ -155,6 +156,7 @@ export async function updateProfile(
     },
   });
 
+  revalidatePath("/settings");
   return actionSuccess();
 }
 
