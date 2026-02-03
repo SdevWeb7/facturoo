@@ -77,22 +77,22 @@ export default async function ClientDetailPage({
         <Link href="/clients" className="text-sm text-muted-foreground hover:text-foreground">
           ← Retour aux clients
         </Link>
-        <div className="mt-2 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4 min-w-0">
             <Avatar name={client.name} size="lg" />
-            <h1 className="text-2xl font-bold">{client.name}</h1>
+            <h1 className="text-2xl font-bold truncate">{client.name}</h1>
           </div>
-          <div className="flex gap-3">
-            <Button variant="outline" asChild>
+          <div className="flex gap-2 sm:gap-3">
+            <Button variant="outline" size="sm" asChild className="flex-1 sm:flex-none">
               <Link href={`/clients/${client.id}/edit`}>
                 <Pencil className="h-4 w-4" />
-                Modifier
+                <span className="sm:inline">Modifier</span>
               </Link>
             </Button>
-            <Button asChild>
+            <Button size="sm" asChild className="flex-1 sm:flex-none">
               <Link href={`/devis/new?clientId=${client.id}`}>
                 <Plus className="h-4 w-4" />
-                Nouveau devis
+                <span className="sm:inline">Nouveau devis</span>
               </Link>
             </Button>
           </div>
@@ -105,9 +105,9 @@ export default async function ClientDetailPage({
           <CardContent>
             <h2 className="mb-4 font-semibold">Informations</h2>
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <a href={`mailto:${client.email}`} className="text-primary hover:underline">
+              <div className="flex items-center gap-3 text-sm min-w-0">
+                <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <a href={`mailto:${client.email}`} className="text-primary hover:underline truncate">
                   {client.email}
                 </a>
               </div>
@@ -183,20 +183,22 @@ export default async function ClientDetailPage({
                       <Link
                         key={devis.id}
                         href={`/devis/${devis.id}`}
-                        className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                        className="block rounded-lg border p-3 transition-colors hover:bg-muted/50"
                       >
-                        <div className="flex items-center gap-3">
-                          <FileText className="h-4 w-4 text-muted-foreground" />
-                          <div>
-                            <p className="font-medium">{devis.number}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(devis.date).toLocaleDateString("fr-FR")}
-                            </p>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            <div className="min-w-0">
+                              <p className="font-medium truncate">{devis.number}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(devis.date).toLocaleDateString("fr-FR")}
+                              </p>
+                            </div>
                           </div>
+                          <span className="font-medium shrink-0">{formatCurrency(devis.totalTTC)}</span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="mt-2 ml-7">
                           <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
-                          <span className="font-medium">{formatCurrency(devis.totalTTC)}</span>
                         </div>
                       </Link>
                     );
@@ -234,20 +236,22 @@ export default async function ClientDetailPage({
                       <Link
                         key={facture.id}
                         href={`/factures/${facture.id}`}
-                        className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                        className="block rounded-lg border p-3 transition-colors hover:bg-muted/50"
                       >
-                        <div className="flex items-center gap-3">
-                          <Receipt className="h-4 w-4 text-muted-foreground" />
-                          <div>
-                            <p className="font-medium">{facture.number}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(facture.date).toLocaleDateString("fr-FR")}
-                            </p>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <Receipt className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            <div className="min-w-0">
+                              <p className="font-medium truncate">{facture.number}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(facture.date).toLocaleDateString("fr-FR")}
+                              </p>
+                            </div>
                           </div>
+                          <span className="font-medium shrink-0">{formatCurrency(facture.totalTTC)}</span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="mt-2 ml-7">
                           <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
-                          <span className="font-medium">{formatCurrency(facture.totalTTC)}</span>
                         </div>
                       </Link>
                     );
