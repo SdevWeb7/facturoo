@@ -2,11 +2,10 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { formatCurrency, computeTotals } from "@/lib/utils";
-import { STATUS_BADGE_VARIANT } from "@/lib/status";
+import { computeTotals } from "@/lib/utils";
+import { FactureCard } from "./FactureCard";
+import { FactureTableRow } from "./FactureTableRow";
 import { SortableTableHead } from "@/components/SortableTableHead";
-import { FactureActionsMenu } from "./FactureActionsMenu";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -14,7 +13,6 @@ import { Receipt, Search } from "lucide-react";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -117,26 +115,7 @@ export default async function FacturesPage({
         {/* Mobile cards */}
         <div className="mt-6 space-y-3 md:hidden">
           {paginated.map((facture) => (
-            <Card key={facture.id} className="p-4">
-              <div className="flex flex-col gap-1">
-                <Link href={`/factures/${facture.id}`} className="font-medium hover:underline">
-                  {facture.number}
-                </Link>
-                <Badge variant={STATUS_BADGE_VARIANT[facture.status]?.variant ?? "default"} className="w-fit">
-                  {STATUS_BADGE_VARIANT[facture.status]?.label ?? facture.status}
-                </Badge>
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{facture.client.name}</p>
-              <div className="mt-2 flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {new Date(facture.date).toLocaleDateString("fr-FR")}
-                </span>
-                <span className="font-medium">{formatCurrency(facture.totalTTC)}</span>
-              </div>
-              <div className="mt-2 flex justify-end">
-                <FactureActionsMenu factureId={facture.id} status={facture.status} />
-              </div>
-            </Card>
+            <FactureCard key={facture.id} facture={facture} />
           ))}
         </div>
 
@@ -155,28 +134,7 @@ export default async function FacturesPage({
             </TableHeader>
             <TableBody>
               {paginated.map((facture) => (
-                <TableRow key={facture.id}>
-                  <TableCell className="font-medium">
-                    {facture.number}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {new Date(facture.date).toLocaleDateString("fr-FR")}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {facture.client.name}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={STATUS_BADGE_VARIANT[facture.status]?.variant ?? "default"}>
-                      {STATUS_BADGE_VARIANT[facture.status]?.label ?? facture.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {formatCurrency(facture.totalTTC)}
-                  </TableCell>
-                  <TableCell>
-                    <FactureActionsMenu factureId={facture.id} status={facture.status} />
-                  </TableCell>
-                </TableRow>
+                <FactureTableRow key={facture.id} facture={facture} />
               ))}
             </TableBody>
           </Table>
