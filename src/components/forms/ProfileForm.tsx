@@ -17,6 +17,7 @@ interface ProfileFormProps {
     siret: string;
     address: string;
     phone: string;
+    businessEmail: string;
   };
   logoUrl: string | null;
 }
@@ -53,7 +54,7 @@ export function ProfileForm({ defaultValues, logoUrl }: ProfileFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Email de connexion</Label>
           <Input
             id="email"
             type="email"
@@ -61,6 +62,20 @@ export function ProfileForm({ defaultValues, logoUrl }: ProfileFormProps) {
             disabled
             className="opacity-60"
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="businessEmail">Email sur les documents</Label>
+          <Input
+            id="businessEmail"
+            name="businessEmail"
+            type="email"
+            placeholder={defaultValues.email}
+            defaultValue={defaultValues.businessEmail}
+          />
+          <p className="text-xs text-muted-foreground">
+            Laissez vide pour utiliser l&apos;email de connexion
+          </p>
         </div>
 
         <div className="space-y-2">

@@ -49,6 +49,7 @@ model User {
   siret          String?
   address        String?
   phone          String?
+  businessEmail  String?   // Email affiché sur les PDFs (si différent de l'email de connexion)
 
   // Stripe
   stripeCustomerId       String?   @unique

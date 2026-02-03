@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
     select: {
       name: true,
       email: true,
+      businessEmail: true,
       company: true,
       siret: true,
       address: true,
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
     siret: user.siret,
     address: user.address,
     phone: user.phone,
-    email: user.email,
+    email: user.businessEmail || user.email,
   };
 
   try {

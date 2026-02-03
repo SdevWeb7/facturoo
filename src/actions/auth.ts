@@ -115,6 +115,7 @@ const UpdateProfileSchema = z.object({
   siret: z.string().optional().default(""),
   address: z.string().optional().default(""),
   phone: z.string().optional().default(""),
+  businessEmail: z.string().email("Email invalide").optional().or(z.literal("")),
 });
 
 export async function updateProfile(
@@ -133,13 +134,14 @@ export async function updateProfile(
     siret: formData.get("siret"),
     address: formData.get("address"),
     phone: formData.get("phone"),
+    businessEmail: formData.get("businessEmail"),
   });
 
   if (!parsed.success) {
     return actionError(zodErrorMessage(parsed.error));
   }
 
-  const { name, company, siret, address, phone } = parsed.data;
+  const { name, company, siret, address, phone, businessEmail } = parsed.data;
 
   await prisma.user.update({
     where: { id: session.user.id },
@@ -149,6 +151,7 @@ export async function updateProfile(
       siret: siret || null,
       address: address || null,
       phone: phone || null,
+      businessEmail: businessEmail || null,
     },
   });
 

@@ -36,6 +36,7 @@ export async function GET(
     select: {
       name: true,
       email: true,
+      businessEmail: true,
       company: true,
       siret: true,
       address: true,
@@ -54,7 +55,7 @@ export async function GET(
     siret: user.siret,
     address: user.address,
     phone: user.phone,
-    email: user.email,
+    email: user.businessEmail || user.email,
     logoUrl: user.image,
   };
 

@@ -20,6 +20,7 @@ export default async function SettingsPage() {
     select: {
       name: true,
       email: true,
+      businessEmail: true,
       company: true,
       siret: true,
       address: true,
@@ -67,6 +68,7 @@ export default async function SettingsPage() {
             defaultValues={{
               name: user.name || "",
               email: user.email,
+              businessEmail: user.businessEmail || "",
               company: user.company || "",
               siret: user.siret || "",
               address: user.address || "",
