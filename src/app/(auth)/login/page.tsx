@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useActionState, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { login } from "@/actions/auth";
 import { signIn } from "next-auth/react";
@@ -100,22 +100,23 @@ function MagicLinkForm() {
   );
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const [state, action, pending] = useActionState(login, null);
-  const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const showPassword = searchParams.get("mode") === "password";
+
+  function togglePasswordMode() {
+    if (showPassword) {
+      router.push("/login");
+    } else {
+      router.push("/login?mode=password");
+    }
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">Connexion</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Connectez-vous à votre compte Facturoo
-        </p>
-      </div>
-
-      <Suspense>
-        <OAuthError />
-      </Suspense>
+    <>
+      <OAuthError />
 
       <Button
         variant="outline"
@@ -167,7 +168,7 @@ export default function LoginPage() {
         <Button
           variant="ghost"
           className="w-full text-muted-foreground"
-          onClick={() => setShowPassword(true)}
+          onClick={togglePasswordMode}
         >
           Se connecter avec un mot de passe
         </Button>
@@ -219,7 +220,7 @@ export default function LoginPage() {
       <p className="text-center text-sm text-muted-foreground">
         Pas encore de compte ?{" "}
         <Link
-          href="/register"
+          href={showPassword ? "/register?mode=password" : "/register"}
           className="font-medium text-primary hover:text-primary/80"
         >
           Créer un compte
@@ -231,6 +232,23 @@ export default function LoginPage() {
           ← Retour à l&apos;accueil
         </Link>
       </p>
+    </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">Connexion</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Connectez-vous à votre compte Facturoo
+        </p>
+      </div>
+
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }

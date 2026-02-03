@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { Suspense, useActionState, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { register } from "@/actions/auth";
 import { signIn } from "next-auth/react";
@@ -73,19 +74,22 @@ function MagicLinkRegister() {
   );
 }
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [state, action, pending] = useActionState(register, null);
-  const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const showPassword = searchParams.get("mode") === "password";
+
+  function togglePasswordMode() {
+    if (showPassword) {
+      router.push("/register");
+    } else {
+      router.push("/register?mode=password");
+    }
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">Créer un compte</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          14 jours d&apos;essai gratuit, sans engagement
-        </p>
-      </div>
-
+    <>
       <Button
         variant="outline"
         className="w-full h-11 border-2 hover:shadow-warm font-medium"
@@ -136,7 +140,7 @@ export default function RegisterPage() {
         <Button
           variant="ghost"
           className="w-full text-muted-foreground"
-          onClick={() => setShowPassword(true)}
+          onClick={togglePasswordMode}
         >
           Créer un compte avec un mot de passe
         </Button>
@@ -191,10 +195,30 @@ export default function RegisterPage() {
 
       <p className="text-center text-sm text-muted-foreground">
         Déjà un compte ?{" "}
-        <Link href="/login" className="font-medium text-primary hover:text-primary/80">
+        <Link
+          href={showPassword ? "/login?mode=password" : "/login"}
+          className="font-medium text-primary hover:text-primary/80"
+        >
           Se connecter
         </Link>
       </p>
+    </>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">Créer un compte</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          14 jours d&apos;essai gratuit, sans engagement
+        </p>
+      </div>
+
+      <Suspense>
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }
