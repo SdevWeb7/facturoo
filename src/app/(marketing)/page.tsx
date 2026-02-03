@@ -190,17 +190,39 @@ export default function HomePage() {
             Gratuit jusqu&apos;&agrave; 5 devis. Sans carte bancaire.
           </p>
 
-          {/* Dashboard preview screenshot */}
-          <div className="animate-fade-in-up animate-stagger-5 mt-16 mx-auto max-w-4xl">
-            <div className="rounded-2xl border bg-card shadow-warm-lg p-2 sm:p-3" style={{ transform: "perspective(1200px) rotateX(2deg)" }}>
-              <Image
-                src="/images/dashboard-preview.png"
-                alt="Aperçu du tableau de bord Facturoo"
-                width={1200}
-                height={680}
-                priority
-                className="rounded-xl"
-              />
+          {/* Dashboard + PDF preview with depth effect */}
+          <div className="relative mt-16 mx-auto max-w-5xl">
+            {/* Dashboard preview - main image, slightly left */}
+            <div className="animate-fade-in-up animate-stagger-5 relative z-10 max-w-4xl">
+              <div className="rounded-2xl border bg-card shadow-warm-lg p-2 sm:p-3" style={{ transform: "perspective(1200px) rotateX(2deg)" }}>
+                <Image
+                  src="/images/dashboard-preview.png"
+                  alt="Aperçu du tableau de bord Facturoo"
+                  width={1200}
+                  height={680}
+                  priority
+                  className="rounded-xl"
+                />
+              </div>
+            </div>
+
+            {/* PDF preview - overlaid bottom right */}
+            <div
+              className="animate-fade-in-up absolute -bottom-8 -right-4 sm:right-0 z-20 w-48 sm:w-64 lg:w-80"
+              style={{ animationDelay: "0.5s" }}
+            >
+              <div
+                className="rounded-xl border bg-card shadow-warm-xl p-1.5"
+                style={{ transform: "perspective(800px) rotateY(-5deg) rotateX(2deg)" }}
+              >
+                <Image
+                  src="/images/preview_devis_pdf.png"
+                  alt="Aperçu d'un devis PDF généré par Facturoo"
+                  width={400}
+                  height={566}
+                  className="rounded-lg"
+                />
+              </div>
             </div>
           </div>
         </div>
