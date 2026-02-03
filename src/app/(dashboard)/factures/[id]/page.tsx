@@ -103,7 +103,7 @@ export default async function FactureDetailPage({
       </Link>
 
       {/* Header Card */}
-      <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden mb-6">
+      <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden mb-6 max-w-full">
         {/* Status Banner */}
         <div
           className={`px-4 py-3 border-b sm:px-6 ${
@@ -187,9 +187,9 @@ export default async function FactureDetailPage({
       {/* Main Content Grid */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 w-full max-w-full">
         {/* Left Column - Client & Payment Info */}
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full">
           {/* Client Card */}
-          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden">
+          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden max-w-full">
             <div className="p-4 sm:p-6 overflow-x-auto">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
                 Client
@@ -278,8 +278,8 @@ export default async function FactureDetailPage({
         </div>
 
         {/* Right Column - Items & Totals */}
-        <div className="lg:col-span-2 min-w-0">
-          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden">
+        <div className="lg:col-span-2 min-w-0 max-w-full">
+          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden max-w-full">
             {/* Items Table */}
             <div className="overflow-x-auto">
               <table className="w-full min-w-[360px]">
