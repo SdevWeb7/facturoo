@@ -6,24 +6,62 @@ import { formatCurrency, computeTotals } from "@/lib/utils";
 import { SendEmailButton } from "@/components/SendEmailButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Avatar } from "@/components/ui/avatar";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ArrowLeft,
+  Calendar,
+  Percent,
+  FileText,
+  Download,
+  Mail,
+  Pencil,
+  Building2,
+  MapPin,
+  CreditCard,
+  CheckCircle2,
+  Clock,
+} from "lucide-react";
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   VIREMENT: "Virement bancaire",
-  CHEQUE: "Chèque",
-  ESPECES: "Espèces",
+  CHEQUE: "Cheque",
+  ESPECES: "Especes",
   CB: "Carte bancaire",
   AUTRE: "Autre",
 };
+
+const PAYMENT_METHOD_ICONS: Record<string, React.ReactNode> = {
+  VIREMENT: <Building2 className="h-3.5 w-3.5" />,
+  CHEQUE: <FileText className="h-3.5 w-3.5" />,
+  ESPECES: <CreditCard className="h-3.5 w-3.5" />,
+  CB: <CreditCard className="h-3.5 w-3.5" />,
+  AUTRE: <CreditCard className="h-3.5 w-3.5" />,
+};
+
+function formatClientAddress(client: {
+  address?: string | null;
+  addressComplement?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
+}): string[] {
+  const lines: string[] = [];
+
+  if (client.address) {
+    lines.push(client.address);
+  }
+
+  // Only add addressComplement if it's different from address
+  if (client.addressComplement && client.addressComplement !== client.address) {
+    lines.push(client.addressComplement);
+  }
+
+  const cityLine = [client.postalCode, client.city].filter(Boolean).join(" ");
+  if (cityLine) {
+    lines.push(cityLine);
+  }
+
+  return lines;
+}
 
 export default async function FactureDetailPage({
   params,
@@ -50,139 +88,284 @@ export default async function FactureDetailPage({
     unitPrice: item.unitPrice,
   }));
   const totals = computeTotals(itemsForCalc, Number(facture.tvaRate));
+  const addressLines = formatClientAddress(facture.client);
+  const isPaid = facture.status === "PAID";
 
   return (
-    <div>
-      <div className="mb-6">
-        <Link href="/factures" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Retour aux factures
-        </Link>
-        <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-bold">Facture {facture.number}</h1>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            {facture.status === "PENDING" && (
-              <Button variant="outline" asChild>
-                <Link href={`/factures/${facture.id}/edit`}>Modifier</Link>
+    <div className="animate-fade-in-up">
+      {/* Navigation */}
+      <Link
+        href="/factures"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group mb-6"
+      >
+        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+        Retour aux factures
+      </Link>
+
+      {/* Header Card */}
+      <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden mb-6">
+        {/* Status Banner */}
+        <div
+          className={`px-6 py-3 border-b ${
+            isPaid
+              ? "bg-gradient-to-r from-success/10 via-success/5 to-transparent border-success/20"
+              : "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {isPaid ? (
+                <CheckCircle2 className="h-5 w-5 text-success" />
+              ) : (
+                <Clock className="h-5 w-5 text-primary" />
+              )}
+              <span className="text-sm font-medium">
+                {isPaid ? "Facture encaissee" : "En attente de paiement"}
+              </span>
+            </div>
+            <Badge variant={isPaid ? "paid" : "sent"}>
+              {isPaid ? "Encaissee" : "En attente"}
+            </Badge>
+          </div>
+        </div>
+
+        {/* Header Content */}
+        <div className="p-6">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            {/* Title & Number */}
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Facture</p>
+              <h1 className="text-3xl font-bold font-display tracking-tight">
+                {facture.number}
+              </h1>
+              <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(facture.date).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Percent className="h-4 w-4" />
+                  TVA {Number(facture.tvaRate)}%
+                </span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-wrap gap-2">
+              {facture.status === "PENDING" && (
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/factures/${facture.id}/edit`}>
+                    <Pencil className="h-4 w-4" />
+                    Modifier
+                  </Link>
+                </Button>
+              )}
+              <SendEmailButton
+                type="facture"
+                id={facture.id}
+                className="inline-flex items-center gap-2 rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:text-secondary-foreground transition-colors disabled:opacity-50 h-9"
+              />
+              <Button size="sm" asChild>
+                <a
+                  href={`/api/pdf/facture/${facture.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Download className="h-4 w-4" />
+                  Telecharger PDF
+                </a>
               </Button>
-            )}
-            <SendEmailButton
-              type="facture"
-              id={facture.id}
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50"
-            />
-            <Button asChild>
-              <a
-                href={`/api/pdf/facture/${facture.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Télécharger le PDF
-              </a>
-            </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      <Card>
-        <CardContent>
-          {/* Info */}
-          <div className="mb-6 grid grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">Client</h3>
-              <p className="mt-1 text-sm font-medium">{facture.client.name}</p>
-              <p className="text-sm text-muted-foreground">{facture.client.email}</p>
-              {facture.client.address && (
-                <p className="text-sm text-muted-foreground">{facture.client.address}</p>
-              )}
-              {facture.client.addressComplement && (
-                <p className="text-sm text-muted-foreground">{facture.client.addressComplement}</p>
-              )}
-              {(facture.client.postalCode || facture.client.city) && (
-                <p className="text-sm text-muted-foreground">
-                  {[facture.client.postalCode, facture.client.city].filter(Boolean).join(" ")}
-                </p>
-              )}
-            </div>
-            <div className="text-right">
-              <h3 className="text-sm font-medium text-muted-foreground">Date</h3>
-              <p className="mt-1 text-sm">
-                {new Date(facture.date).toLocaleDateString("fr-FR")}
-              </p>
-              <h3 className="mt-3 text-sm font-medium text-muted-foreground">TVA</h3>
-              <p className="mt-1 text-sm">{Number(facture.tvaRate)}%</p>
-              <h3 className="mt-3 text-sm font-medium text-muted-foreground">Statut</h3>
-              <div className="mt-1">
-                <Badge variant={facture.status === "PAID" ? "paid" : "secondary"}>
-                  {facture.status === "PAID" ? "Encaissée" : "En attente"}
-                </Badge>
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Left Column - Client & Payment Info */}
+        <div className="space-y-6">
+          {/* Client Card */}
+          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-6">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+              Client
+            </h2>
+            <div className="flex items-start gap-3">
+              <Avatar name={facture.client.name} size="lg" />
+              <div className="min-w-0 flex-1">
+                <Link
+                  href={`/clients/${facture.clientId}`}
+                  className="font-semibold text-foreground hover:text-primary transition-colors block truncate"
+                >
+                  {facture.client.name}
+                </Link>
+                <a
+                  href={`mailto:${facture.client.email}`}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors block truncate"
+                >
+                  {facture.client.email}
+                </a>
               </div>
-              {facture.status === "PAID" && facture.paymentDate && (
-                <>
-                  <h3 className="mt-3 text-sm font-medium text-muted-foreground">Date de paiement</h3>
-                  <p className="mt-1 text-sm">
-                    {new Date(facture.paymentDate).toLocaleDateString("fr-FR")}
-                  </p>
-                </>
-              )}
-              {facture.status === "PAID" && facture.paymentMethod && (
-                <>
-                  <h3 className="mt-3 text-sm font-medium text-muted-foreground">Méthode</h3>
-                  <p className="mt-1 text-sm">
-                    {PAYMENT_METHOD_LABELS[facture.paymentMethod] ?? facture.paymentMethod}
-                  </p>
-                </>
-              )}
             </div>
+
+            {addressLines.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    {addressLines.map((line, i) => (
+                      <p key={i}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Items table */}
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Désignation</TableHead>
-                <TableHead className="text-right">Qté</TableHead>
-                <TableHead className="text-right">P.U. HT</TableHead>
-                <TableHead className="text-right">Total HT</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {facture.items.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.designation}</TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {Number(item.quantity)}
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {formatCurrency(item.unitPrice)}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {formatCurrency(Math.round(Number(item.quantity) * item.unitPrice))}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {/* Payment Info Card - Only show if paid */}
+          {isPaid && (facture.paymentDate || facture.paymentMethod) && (
+            <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-6">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+                Paiement
+              </h2>
+              <div className="space-y-3">
+                {facture.paymentDate && (
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-success/10">
+                      <Calendar className="h-4 w-4 text-success" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">
+                        Date de paiement
+                      </p>
+                      <p className="text-sm font-medium">
+                        {new Date(facture.paymentDate).toLocaleDateString(
+                          "fr-FR",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {facture.paymentMethod && (
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-success/10">
+                      {PAYMENT_METHOD_ICONS[facture.paymentMethod] || (
+                        <CreditCard className="h-4 w-4 text-success" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Methode</p>
+                      <p className="text-sm font-medium">
+                        {PAYMENT_METHOD_LABELS[facture.paymentMethod] ??
+                          facture.paymentMethod}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
-          {/* Totals */}
-          <div className="mt-4 flex justify-end">
-            <div className="w-64 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total HT</span>
-                <span className="font-medium">{formatCurrency(totals.totalHT)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">TVA ({Number(facture.tvaRate)}%)</span>
-                <span className="font-medium">{formatCurrency(totals.totalTVA)}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between text-base">
-                <span className="font-semibold">Total TTC</span>
-                <span className="font-semibold">{formatCurrency(totals.totalTTC)}</span>
+        {/* Right Column - Items & Totals */}
+        <div className="lg:col-span-2">
+          <div className="bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm overflow-hidden">
+            {/* Items Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b bg-muted/30">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Designation
+                    </th>
+                    <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-20">
+                      Qte
+                    </th>
+                    <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-28">
+                      P.U. HT
+                    </th>
+                    <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-32">
+                      Total HT
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {facture.items.map((item, index) => {
+                    const lineTotal = Math.round(
+                      Number(item.quantity) * item.unitPrice
+                    );
+                    return (
+                      <tr
+                        key={item.id}
+                        className="group transition-colors hover:bg-primary-subtle"
+                        style={{
+                          animationDelay: `${index * 50}ms`,
+                        }}
+                      >
+                        <td className="px-6 py-4">
+                          <span className="font-medium text-foreground">
+                            {item.designation}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-right text-muted-foreground tabular-nums">
+                          {Number(item.quantity)}
+                        </td>
+                        <td className="px-4 py-4 text-right text-muted-foreground tabular-nums">
+                          {formatCurrency(item.unitPrice)}
+                        </td>
+                        <td className="px-6 py-4 text-right font-semibold tabular-nums">
+                          {formatCurrency(lineTotal)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Totals Section */}
+            <div className="border-t bg-gradient-to-br from-muted/30 via-muted/20 to-transparent p-6">
+              <div className="flex justify-end">
+                <div className="w-full max-w-xs space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Total HT</span>
+                    <span className="font-medium tabular-nums">
+                      {formatCurrency(totals.totalHT)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      TVA ({Number(facture.tvaRate)}%)
+                    </span>
+                    <span className="font-medium tabular-nums">
+                      {formatCurrency(totals.totalTVA)}
+                    </span>
+                  </div>
+                  <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-base font-semibold">Total TTC</span>
+                    <span
+                      className={`text-xl font-bold tabular-nums ${
+                        isPaid ? "text-success" : "text-foreground"
+                      }`}
+                    >
+                      {formatCurrency(totals.totalTTC)}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
