@@ -16,11 +16,11 @@ const dmSerifDisplay = DM_Serif_Display({
 export const metadata: Metadata = {
   metadataBase: new URL("https://facturoo.vercel.app"),
   title: {
-    default: "Facturoo – Logiciel devis et factures pour artisans",
+    default: "Facturoo — Devis & factures en 2 minutes",
     template: "%s | Facturoo",
   },
   description:
-    "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple et conforme pour les artisans français. Gratuit pour commencer.",
+    "L'outil simple pour les artisans : créez, envoyez et gérez vos devis et factures sans Excel.",
   keywords: [
     "devis",
     "factures",
@@ -45,28 +45,26 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    type: "website",
-    locale: "fr_FR",
+    title: "Facturoo",
+    description:
+      "Créez vos devis et factures en 2 minutes. Simple, rapide, pensé pour les artisans.",
     url: "https://facturoo.vercel.app",
     siteName: "Facturoo",
-    title: "Facturoo – Logiciel devis et factures pour artisans",
-    description:
-      "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple et conforme pour les artisans français.",
     images: [
       {
-        url: "/images/og-facturoo.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Facturoo – Devis et factures pour artisans",
       },
     ],
+    locale: "fr_FR",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Facturoo – Logiciel devis et factures pour artisans",
-    description:
-      "Créez vos devis et factures en 2 minutes. Logiciel en ligne simple et conforme pour les artisans français.",
-    images: ["/images/og-facturoo.png"],
+    title: "Facturoo",
+    description: "Devis & factures en 2 minutes, sans Excel.",
+    images: ["/og-image.png"],
   },
 };
 

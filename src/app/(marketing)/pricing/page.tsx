@@ -166,9 +166,16 @@ export default function PricingPage() {
                   </Link>
                 </Button>
                 {plan.highlighted && (
-                  <p className="mt-3 text-center text-xs text-muted-foreground">
-                    Annulable à tout moment — paiement sécurisé via Stripe.
-                  </p>
+                  <div className="mt-4 flex flex-col items-center gap-1 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1.5">
+                      <Check className="h-3.5 w-3.5 text-success" />
+                      Paiement sécurisé via Stripe
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Check className="h-3.5 w-3.5 text-success" />
+                      Annulable à tout moment
+                    </span>
+                  </div>
                 )}
               </CardContent>
             </Card>
