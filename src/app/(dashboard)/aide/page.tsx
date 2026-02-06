@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { ContactForm } from "@/components/forms/ContactForm";
@@ -83,7 +84,9 @@ export default async function AideDashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ContactForm userName={userName} userEmail={userEmail} />
+          <Suspense>
+            <ContactForm userName={userName} userEmail={userEmail} />
+          </Suspense>
         </CardContent>
       </Card>
     </div>

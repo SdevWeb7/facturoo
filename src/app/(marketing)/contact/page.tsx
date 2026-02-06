@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -29,7 +30,9 @@ export default function ContactPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ContactForm />
+          <Suspense>
+            <ContactForm />
+          </Suspense>
         </CardContent>
       </Card>
     </main>

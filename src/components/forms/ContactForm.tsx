@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import { sendContact } from "@/actions/contact";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,8 @@ const subjects = [
 
 export function ContactForm({ userName, userEmail }: ContactFormProps) {
   const [state, formAction, pending] = useActionState(sendContact, null);
+  const searchParams = useSearchParams();
+  const defaultSubject = searchParams.get("subject") ?? "";
 
   return (
     <form action={formAction} className="space-y-4">
@@ -89,6 +92,7 @@ export function ContactForm({ userName, userEmail }: ContactFormProps) {
           id="subject"
           name="subject"
           required
+          defaultValue={subjects.includes(defaultSubject) ? defaultSubject : ""}
           className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <option value="">Sélectionnez un sujet</option>

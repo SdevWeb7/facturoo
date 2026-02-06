@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   Circle,
   Send,
+  Lightbulb,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -551,6 +552,29 @@ export default async function DashboardPage() {
           )}
         </Card>
       </div>
+
+      {/* CTA — Demande de fonctionnalité */}
+      <Card className="mt-8 card-hover-premium border-accent/20 bg-gradient-to-r from-accent/5 to-primary/5">
+        <CardContent>
+          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent/15 animate-pulse-subtle">
+              <Lightbulb className="h-6 w-6 text-accent-foreground" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-semibold">On a besoin de vous !</h3>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                Vous voulez une fonctionnalit&eacute; ? Aidez-nous &agrave; am&eacute;liorer Facturoo.
+              </p>
+            </div>
+            <Button variant="accent" asChild className="shrink-0">
+              <Link href="/aide?subject=Demande+de+fonctionnalit%C3%A9">
+                Je donne mon avis
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
     </div>
   );
