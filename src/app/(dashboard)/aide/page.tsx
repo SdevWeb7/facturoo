@@ -76,7 +76,7 @@ export default async function AideDashboardPage() {
       </Card>
 
       {/* Formulaire de contact */}
-      <Card>
+      <Card id="contact">
         <CardHeader>
           <CardTitle>Nous contacter</CardTitle>
           <CardDescription>

@@ -19,6 +19,7 @@ import {
   Crown,
   Sparkles,
   Lock,
+  User,
   CheckCircle2,
   Circle,
   Send,
@@ -45,7 +46,11 @@ export default async function DashboardPage() {
   const userId = session.user.id;
   const isPro = await hasActiveSubscription(userId);
 
-  const [clientCount, devisList, facturesList] = await Promise.all([
+  const [user, clientCount, devisList, facturesList] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { company: true, siret: true, address: true, phone: true },
+    }),
     prisma.client.count({ where: { userId } }),
     prisma.devis.findMany({
       where: { userId },
@@ -58,6 +63,8 @@ export default async function DashboardPage() {
       orderBy: { createdAt: "desc" },
     }),
   ]);
+
+  const hasProfile = !!(user?.company && user?.siret && user?.address);
 
   // Pro-only advanced stats
   const [monthlyRevenue, overdueFactures, conversionRate, topClients, previsionnel] = isPro
@@ -120,12 +127,18 @@ export default async function DashboardPage() {
         const hasDevis = devisList.length > 0;
         const hasSentDevis = devisList.some((d) => d.status === "SENT" || d.status === "INVOICED");
         const hasFacture = facturesList.length > 0;
-        const completedSteps = [hasClient, hasDevis, hasSentDevis, hasFacture].filter(Boolean).length;
-        const allDone = completedSteps === 4;
+        const completedSteps = [hasProfile, hasClient, hasDevis, hasSentDevis, hasFacture].filter(Boolean).length;
+        const allDone = completedSteps === 5;
 
         if (allDone) return null;
 
         const steps = [
+          {
+            done: hasProfile,
+            label: "Compléter mon profil",
+            href: "/settings",
+            icon: <User className="h-4 w-4" />,
+          },
           {
             done: hasClient,
             label: "Ajouter un client",
@@ -161,14 +174,14 @@ export default async function DashboardPage() {
                   Cr&eacute;ez votre premier devis en moins de 2 minutes.
                 </p>
               </div>
-              <Badge variant="sent">{completedSteps}/4</Badge>
+              <Badge variant="sent">{completedSteps}/5</Badge>
             </div>
             <CardContent>
               {/* Progress bar */}
               <div className="mb-5 h-2 rounded-full bg-muted overflow-hidden">
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-500"
-                  style={{ width: `${(completedSteps / 4) * 100}%` }}
+                  style={{ width: `${(completedSteps / 5) * 100}%` }}
                 />
               </div>
 
@@ -554,7 +567,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* CTA — Demande de fonctionnalité */}
-      <Card className="mt-8 card-hover-premium border-accent/20 bg-gradient-to-r from-accent/5 to-primary/5">
+      <Card className="mt-8 card-hover border-accent/20 bg-gradient-to-r from-accent/5 to-primary/5">
         <CardContent>
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent/15 animate-pulse-subtle">
@@ -567,7 +580,7 @@ export default async function DashboardPage() {
               </p>
             </div>
             <Button variant="accent" asChild className="shrink-0">
-              <Link href="/aide?subject=Demande+de+fonctionnalit%C3%A9">
+              <Link href="/aide?subject=Demande+de+fonctionnalit%C3%A9#contact">
                 Je donne mon avis
                 <ArrowRight className="h-4 w-4" />
               </Link>
