@@ -1,23 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function VerificationSuccess() {
-  const { update } = useSession();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   async function handleContinue() {
     setIsRedirecting(true);
-    // Update the session to refresh the JWT token with new emailVerified status
-    await update();
-    // Full page reload to ensure the JWT cookie is properly refreshed before proxy checks it
-    window.location.href = "/dashboard";
+    // Sign out to destroy the stale JWT, then redirect to login with fresh session
+    await signOut({ redirectTo: "/login?verified=true" });
   }
 
-  // Auto-redirect after a few seconds
+  // Auto-redirect after 3 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       handleContinue();
@@ -48,7 +45,7 @@ export function VerificationSuccess() {
             Redirection...
           </>
         ) : (
-          "Accéder à mon compte"
+          "Continuer"
         )}
       </Button>
     </div>

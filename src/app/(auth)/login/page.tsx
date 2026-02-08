@@ -18,6 +18,19 @@ const oauthErrors: Record<string, string> = {
   Default: "Une erreur est survenue lors de la connexion.",
 };
 
+function VerifiedBanner() {
+  const searchParams = useSearchParams();
+  if (searchParams.get("verified") !== "true") return null;
+
+  return (
+    <Alert variant="success">
+      <AlertDescription>
+        Email vérifié avec succès ! Connectez-vous pour accéder à votre compte.
+      </AlertDescription>
+    </Alert>
+  );
+}
+
 function OAuthError() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
@@ -106,6 +119,7 @@ function LoginForm() {
 
   return (
     <>
+      <VerifiedBanner />
       <OAuthError />
 
       <Button
