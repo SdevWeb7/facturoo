@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Shield } from "lucide-react";
+import { SessionProvider } from "@/components/providers/SessionProvider";
 
 export default function AuthLayout({
   children,
@@ -7,6 +8,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
+    <SessionProvider>
     <div className="flex min-h-screen">
       {/* Brand panel — desktop only */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-gradient-to-br from-primary via-primary to-primary-hover p-12 text-primary-foreground">
@@ -50,5 +52,6 @@ export default function AuthLayout({
         </div>
       </div>
     </div>
+    </SessionProvider>
   );
 }
