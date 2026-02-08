@@ -163,9 +163,9 @@ export default async function SettingsPage() {
                   const label = type.charAt(0).toUpperCase() + type.slice(1);
                   return (
                     <div key={type}>
-                      <div className="flex items-center justify-between text-sm mb-1">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm mb-1 gap-0.5">
                         <span>{label}</span>
-                        <span className={`text-sm font-medium ${pct >= 100 ? "text-destructive" : "text-muted-foreground"}`}>
+                        <span className={`text-xs sm:text-sm font-medium ${pct >= 100 ? "text-destructive" : "text-muted-foreground"}`}>
                           {remaining > 0
                             ? `Il vous reste ${remaining} ${label.toLowerCase()} gratuit${remaining > 1 ? "s" : ""}`
                             : `Limite atteinte (${limit}/${limit})`}
