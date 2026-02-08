@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
           number: devis.number,
           date: devis.date,
           status: devis.status,
+          notes: devis.notes,
           items: devis.items.map((item) => ({
             designation: item.designation,
             quantity: Number(item.quantity),
@@ -153,6 +154,7 @@ export async function POST(request: NextRequest) {
       facture: {
         number: facture.number,
         date: facture.date,
+        notes: facture.notes,
         items: facture.items.map((item) => ({
           designation: item.designation,
           quantity: Number(item.quantity),

@@ -18,6 +18,7 @@ interface ProfileFormProps {
     address: string;
     phone: string;
     businessEmail: string;
+    defaultNotes: string;
   };
   logoUrl: string | null;
 }
@@ -117,6 +118,21 @@ export function ProfileForm({ defaultValues, logoUrl }: ProfileFormProps) {
             defaultValue={defaultValues.phone}
           />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="defaultNotes">Notes par défaut</Label>
+        <textarea
+          id="defaultNotes"
+          name="defaultNotes"
+          rows={3}
+          defaultValue={defaultValues.defaultNotes}
+          placeholder="Notes affichées par défaut sur vos devis et factures..."
+          className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        />
+        <p className="text-xs text-muted-foreground">
+          Ces notes seront pré-remplies lors de la création d&apos;un nouveau devis
+        </p>
       </div>
 
       <div className="flex gap-3 pt-2">

@@ -50,6 +50,7 @@ model User {
   address        String?
   phone          String?
   businessEmail  String?   // Email affiché sur les PDFs (si différent de l'email de connexion)
+  defaultNotes   String?   @db.Text
 
   // Stripe
   stripeCustomerId       String?   @unique
@@ -107,6 +108,8 @@ model Devis {
   clientId String
   client   Client @relation(fields: [clientId], references: [id])
 
+  notes  String?     @db.Text
+
   items DevisItem[]
 
   factureId String?  @unique
@@ -161,6 +164,8 @@ model Facture {
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   clientId String
   client   Client @relation(fields: [clientId], references: [id])
+
+  notes  String?       @db.Text
 
   items FactureItem[]
 

@@ -21,6 +21,7 @@ interface DevisFormProps {
   defaultValues?: {
     clientId: string;
     items: LineItem[];
+    notes?: string;
   };
   submitLabel: string;
 }
@@ -72,6 +73,19 @@ export function DevisForm({
 
       {/* Line Items */}
       <LineItemsEditor items={items} onChange={setItems} />
+
+      {/* Notes */}
+      <div className="space-y-2">
+        <Label htmlFor="notes">Notes</Label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows={3}
+          defaultValue={defaultValues?.notes ?? ""}
+          placeholder="Conditions de paiement, mentions légales, remarques..."
+          className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        />
+      </div>
 
       {/* Totals */}
       <Card>

@@ -24,6 +24,7 @@ const DevisItemSchema = z.object({
 const DevisSchema = z.object({
   clientId: z.string().min(1, "Le client est requis"),
   items: z.array(DevisItemSchema).min(1, "Au moins une ligne est requise"),
+  notes: z.string().optional(),
 });
 
 async function generateDevisNumber(userId: string): Promise<string> {
@@ -74,9 +75,12 @@ export async function createDevis(
     i++;
   }
 
+  const notes = (formData.get("notes") as string) || undefined;
+
   const parsed = DevisSchema.safeParse({
     clientId: formData.get("clientId"),
     items,
+    notes,
   });
 
   if (!parsed.success) {
@@ -96,6 +100,7 @@ export async function createDevis(
       number,
       userId: session.user.id,
       clientId: parsed.data.clientId,
+      notes: parsed.data.notes || null,
       items: {
         create: parsed.data.items.map((item, idx) => ({
           designation: item.designation,
@@ -147,9 +152,12 @@ export async function updateDevis(
     i++;
   }
 
+  const notes = (formData.get("notes") as string) || undefined;
+
   const parsed = DevisSchema.safeParse({
     clientId: formData.get("clientId"),
     items,
+    notes,
   });
 
   if (!parsed.success) {
@@ -170,6 +178,7 @@ export async function updateDevis(
       where: { id },
       data: {
         clientId: parsed.data.clientId,
+        notes: parsed.data.notes || null,
         items: {
           create: parsed.data.items.map((item, idx) => ({
             designation: item.designation,

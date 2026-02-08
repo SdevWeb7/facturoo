@@ -26,6 +26,7 @@ export default async function SettingsPage() {
       address: true,
       phone: true,
       image: true,
+      defaultNotes: true,
       stripeSubscriptionId: true,
       stripePriceId: true,
       stripeCurrentPeriodEnd: true,
@@ -68,6 +69,7 @@ export default async function SettingsPage() {
               siret: user.siret || "",
               address: user.address || "",
               phone: user.phone || "",
+              defaultNotes: user.defaultNotes || "",
             }}
             logoUrl={user.image || null}
           />

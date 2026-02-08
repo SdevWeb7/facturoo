@@ -20,6 +20,7 @@ const FactureItemSchema = z.object({
 const FactureSchema = z.object({
   clientId: z.string().min(1, "Le client est requis"),
   items: z.array(FactureItemSchema).min(1, "Au moins une ligne est requise"),
+  notes: z.string().optional(),
 });
 
 async function generateFactureNumber(userId: string): Promise<string> {
@@ -78,6 +79,7 @@ export async function convertDevisToFacture(
         number,
         userId: session.user.id,
         clientId: devis.clientId,
+        notes: devis.notes,
         items: {
           create: devis.items.map((item) => ({
             designation: item.designation,
@@ -184,9 +186,12 @@ export async function updateFacture(
     i++;
   }
 
+  const notes = (formData.get("notes") as string) || undefined;
+
   const parsed = FactureSchema.safeParse({
     clientId: formData.get("clientId"),
     items,
+    notes,
   });
 
   if (!parsed.success) {
@@ -207,6 +212,7 @@ export async function updateFacture(
       where: { id },
       data: {
         clientId: parsed.data.clientId,
+        notes: parsed.data.notes || null,
         items: {
           create: parsed.data.items.map((item, idx) => ({
             designation: item.designation,

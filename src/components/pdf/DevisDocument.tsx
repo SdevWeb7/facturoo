@@ -7,6 +7,7 @@ interface DevisDocumentProps {
     number: string;
     date: Date;
     status: string;
+    notes?: string | null;
     items: {
       designation: string;
       quantity: number;
@@ -157,6 +158,14 @@ export function DevisDocument({ devis, client, emitter }: DevisDocumentProps) {
             </Text>
           </View>
         </View>
+
+        {/* Notes */}
+        {devis.notes && (
+          <View style={styles.notes}>
+            <Text style={styles.notesTitle}>Notes</Text>
+            <Text style={styles.notesText}>{devis.notes}</Text>
+          </View>
+        )}
 
         {/* Footer */}
         <Text style={styles.footer}>

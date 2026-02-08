@@ -11,6 +11,7 @@ interface EditDevisFormProps {
   defaultValues: {
     clientId: string;
     items: LineItem[];
+    notes?: string;
   };
 }
 

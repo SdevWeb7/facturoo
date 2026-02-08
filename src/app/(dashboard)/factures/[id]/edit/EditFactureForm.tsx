@@ -11,6 +11,7 @@ interface EditFactureFormProps {
   defaultValues: {
     clientId: string;
     items: LineItem[];
+    notes?: string;
   };
 }
 

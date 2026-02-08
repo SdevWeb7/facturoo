@@ -149,6 +149,24 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Helvetica-Bold",
   },
+  // Notes
+  notes: {
+    marginTop: 24,
+    padding: 12,
+    backgroundColor: "#f9fafb",
+    borderRadius: 4,
+  },
+  notesTitle: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+    marginBottom: 4,
+    color: "#333",
+  },
+  notesText: {
+    fontSize: 9,
+    color: "#555",
+    lineHeight: 1.5,
+  },
   // Footer
   footer: {
     position: "absolute",

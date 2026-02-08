@@ -157,23 +157,12 @@ export default async function FactureDetailPage({
 
             {/* Actions */}
             <div className="flex flex-wrap items-center gap-2 -ml-1">
-              {facture.status === "PENDING" && (
-                <>
-                  <MarkPaidAction factureId={facture.id} />
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={`/factures/${facture.id}/edit`}>
-                      <Pencil className="h-4 w-4" />
-                      Modifier
-                    </Link>
-                  </Button>
-                </>
-              )}
               <SendEmailButton
                 type="facture"
                 id={facture.id}
                 className="inline-flex items-center justify-center gap-1.5 rounded-md bg-secondary px-3 text-sm font-semibold text-secondary-foreground shadow-xs hover:bg-secondary/80 hover:text-secondary-foreground transition-all disabled:opacity-50 h-8"
               />
-              <Button size="sm" asChild>
+              <Button size="sm" variant="outline" asChild>
                 <a
                   href={`/api/pdf/facture/${facture.id}`}
                   target="_blank"
@@ -183,6 +172,17 @@ export default async function FactureDetailPage({
                   PDF
                 </a>
               </Button>
+              {facture.status === "PENDING" && (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/factures/${facture.id}/edit`}>
+                      <Pencil className="h-4 w-4" />
+                      Modifier
+                    </Link>
+                  </Button>
+                  <MarkPaidAction factureId={facture.id} />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -372,6 +372,18 @@ export default async function FactureDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Notes */}
+      {facture.notes && (
+        <div className="mt-4 sm:mt-6 bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-4 sm:p-6">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+            Notes
+          </h2>
+          <p className="text-sm text-foreground whitespace-pre-line">
+            {facture.notes}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

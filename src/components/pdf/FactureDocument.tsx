@@ -6,6 +6,7 @@ interface FactureDocumentProps {
   facture: {
     number: string;
     date: Date;
+    notes?: string | null;
     items: {
       designation: string;
       quantity: number;
@@ -160,6 +161,14 @@ export function FactureDocument({
             </Text>
           </View>
         </View>
+
+        {/* Notes */}
+        {facture.notes && (
+          <View style={styles.notes}>
+            <Text style={styles.notesTitle}>Notes</Text>
+            <Text style={styles.notesText}>{facture.notes}</Text>
+          </View>
+        )}
 
         {/* Footer */}
         <Text style={styles.footer}>

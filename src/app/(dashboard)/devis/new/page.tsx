@@ -19,7 +19,7 @@ export default async function NewDevisPage({
   const [user, clients] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { company: true, siret: true, address: true, phone: true },
+      select: { company: true, siret: true, address: true, phone: true, defaultNotes: true },
     }),
     prisma.client.findMany({
       where: { userId: session.user.id },
@@ -66,7 +66,7 @@ export default async function NewDevisPage({
         </div>
       ) : (
         <div className="mx-auto max-w-2xl rounded-lg border bg-card p-6 lg:mx-0">
-          <NewDevisForm clients={clients} defaultClientId={clientId} />
+          <NewDevisForm clients={clients} defaultClientId={clientId} defaultNotes={user?.defaultNotes || ""} />
         </div>
       )}
     </div>

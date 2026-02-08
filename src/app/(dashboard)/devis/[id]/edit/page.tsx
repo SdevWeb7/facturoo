@@ -52,6 +52,7 @@ export default async function EditDevisPage({
               unitPrice: item.unitPrice,
               tvaRate: item.tvaRate / 100, // Convert centièmes to percentage (2000 -> 20)
             })),
+            notes: devis.notes || "",
           }}
         />
       </div>

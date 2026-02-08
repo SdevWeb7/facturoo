@@ -16,6 +16,7 @@ import {
   MapPin,
   FileText,
   Clock,
+  Pencil,
   Send,
   CheckCircle2,
 } from "lucide-react";
@@ -157,6 +158,9 @@ export default async function DevisDetailPage({
             {/* Actions */}
             <div className="flex flex-wrap items-center gap-2 -ml-1">
               {!isLocked && (
+                <DevisDetailActions devisId={devis.id} status={devis.status} />
+              )}
+              {!isLocked && (
                 <SendEmailButton
                   type="devis"
                   id={devis.id}
@@ -174,7 +178,12 @@ export default async function DevisDetailPage({
                 </a>
               </Button>
               {!isLocked && (
-                <DevisDetailActions devisId={devis.id} status={devis.status} />
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/devis/${devis.id}/edit`}>
+                    <Pencil className="h-4 w-4" />
+                    Modifier
+                  </Link>
+                </Button>
               )}
             </div>
           </div>
@@ -329,6 +338,18 @@ export default async function DevisDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Notes */}
+      {devis.notes && (
+        <div className="mt-4 sm:mt-6 bg-card rounded-2xl border ring-1 ring-border/50 shadow-warm p-4 sm:p-6">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+            Notes
+          </h2>
+          <p className="text-sm text-foreground whitespace-pre-line">
+            {devis.notes}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
