@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
       siret: true,
       address: true,
       phone: true,
+      image: true,
     },
   });
 
@@ -65,6 +66,7 @@ export async function POST(request: NextRequest) {
     address: user.address,
     phone: user.phone,
     email: user.businessEmail || user.email,
+    logoUrl: user.image,
   };
 
   try {

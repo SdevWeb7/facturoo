@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { formatCurrency, computeTotals } from "@/lib/utils";
 import { SendEmailButton } from "@/components/SendEmailButton";
+import { MarkPaidAction } from "./MarkPaidAction";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
@@ -157,12 +158,15 @@ export default async function FactureDetailPage({
             {/* Actions */}
             <div className="flex flex-wrap items-center gap-2 -ml-1">
               {facture.status === "PENDING" && (
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/factures/${facture.id}/edit`}>
-                    <Pencil className="h-4 w-4" />
-                    Modifier
-                  </Link>
-                </Button>
+                <>
+                  <MarkPaidAction factureId={facture.id} />
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/factures/${facture.id}/edit`}>
+                      <Pencil className="h-4 w-4" />
+                      Modifier
+                    </Link>
+                  </Button>
+                </>
               )}
               <SendEmailButton
                 type="facture"
