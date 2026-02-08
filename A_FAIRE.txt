@@ -1,10 +1,5 @@
 
 
------------------------------
-
-couleurs dans cards dashboard
---------------------------------------------------
-
 une petite banderole par exemple sous le header dans la landing page (utilise le skill frontend-design pour confirmer le design)
 🎁 Offre de lancement
 

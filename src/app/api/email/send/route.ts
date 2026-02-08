@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendDocumentEmail } from "@/lib/email";
+import { sendDocumentEmail, buildDocumentEmailHtml } from "@/lib/email";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { DevisDocument } from "@/components/pdf/DevisDocument";
 import { FactureDocument } from "@/components/pdf/FactureDocument";
@@ -113,10 +113,18 @@ export async function POST(request: NextRequest) {
         createElement(DevisDocument, docProps) as ReactElement<any>
       );
 
+      const senderName = emitter.company || emitter.name || "Facturoo";
+
       await sendDocumentEmail({
         to: devis.client.email,
-        subject: `Devis ${devis.number} - ${emitter.company || emitter.name}`,
-        text: `Bonjour ${devis.client.name},\n\nVeuillez trouver ci-joint le devis ${devis.number}.\n\nCordialement,\n${emitter.company || emitter.name}`,
+        subject: `Devis ${devis.number} - ${senderName}`,
+        text: `Bonjour ${devis.client.name},\n\nVeuillez trouver ci-joint le devis ${devis.number}.\n\nCordialement,\n${senderName}`,
+        html: buildDocumentEmailHtml({
+          clientName: devis.client.name,
+          documentType: "devis",
+          documentNumber: devis.number,
+          senderName,
+        }),
         pdfBuffer: Buffer.from(pdfBuffer),
         pdfFilename: `${devis.number}.pdf`,
       });
@@ -172,10 +180,18 @@ export async function POST(request: NextRequest) {
       createElement(FactureDocument, docProps) as ReactElement<any>
     );
 
+    const senderName = emitter.company || emitter.name || "Facturoo";
+
     await sendDocumentEmail({
       to: facture.client.email,
-      subject: `Facture ${facture.number} - ${emitter.company || emitter.name}`,
-      text: `Bonjour ${facture.client.name},\n\nVeuillez trouver ci-joint la facture ${facture.number}.\n\nCordialement,\n${emitter.company || emitter.name}`,
+      subject: `Facture ${facture.number} - ${senderName}`,
+      text: `Bonjour ${facture.client.name},\n\nVeuillez trouver ci-joint la facture ${facture.number}.\n\nCordialement,\n${senderName}`,
+      html: buildDocumentEmailHtml({
+        clientName: facture.client.name,
+        documentType: "facture",
+        documentNumber: facture.number,
+        senderName,
+      }),
       pdfBuffer: Buffer.from(pdfBuffer),
       pdfFilename: `${facture.number}.pdf`,
     });
