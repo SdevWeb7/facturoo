@@ -33,7 +33,7 @@ export default function AuthLayout({
       </div>
 
       {/* Form panel */}
-      <div className="flex flex-1 flex-col items-center justify-center bg-muted bg-texture px-4 py-8">
+      <div className="flex flex-1 min-w-0 flex-col items-center justify-center bg-muted bg-texture px-6 py-8">
         <div className="mb-8 lg:hidden">
           <Link href="/" className="text-2xl font-bold text-primary font-display">
             Facturoo
