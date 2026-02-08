@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { sendContact } from "@/actions/contact";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,12 @@ export function ContactForm({ userName, userEmail }: ContactFormProps) {
   const [state, formAction, pending] = useActionState(sendContact, null);
   const searchParams = useSearchParams();
   const defaultSubject = searchParams.get("subject") ?? "";
+
+  useEffect(() => {
+    if (window.location.hash === "#contact") {
+      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <form action={formAction} className="space-y-4">
