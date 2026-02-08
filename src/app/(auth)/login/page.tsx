@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useActionState, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { login } from "@/actions/auth";
 import { signIn } from "next-auth/react";
@@ -102,17 +102,7 @@ function MagicLinkForm() {
 
 function LoginForm() {
   const [state, action, pending] = useActionState(login, null);
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const showPassword = searchParams.get("mode") === "password";
-
-  function togglePasswordMode() {
-    if (showPassword) {
-      router.push("/login");
-    } else {
-      router.push("/login?mode=password");
-    }
-  }
+  const [useMagicLink, setUseMagicLink] = useState(false);
 
   return (
     <>
@@ -153,74 +143,75 @@ function LoginForm() {
         </div>
       </div>
 
-      <MagicLinkForm />
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-card px-3 text-xs uppercase tracking-wider text-muted-foreground">ou</span>
-        </div>
-      </div>
-
-      {!showPassword ? (
-        <Button
-          variant="ghost"
-          className="w-full text-muted-foreground"
-          onClick={togglePasswordMode}
-        >
-          Se connecter avec un mot de passe
-        </Button>
+      {useMagicLink ? (
+        <>
+          <MagicLinkForm />
+          <button
+            type="button"
+            onClick={() => setUseMagicLink(false)}
+            className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Utiliser un mot de passe
+          </button>
+        </>
       ) : (
-        <form action={action} className="space-y-4">
-          {state?.success === false && (
-            <Alert variant="destructive">
-              <AlertDescription>{state.error}</AlertDescription>
-            </Alert>
-          )}
+        <>
+          <form action={action} className="space-y-4">
+            {state?.success === false && (
+              <Alert variant="destructive">
+                <AlertDescription>{state.error}</AlertDescription>
+              </Alert>
+            )}
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Mot de passe</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="current-password"
-            />
-          </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Mot de passe</Label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-primary hover:text-primary/80"
+                >
+                  Mot de passe oublié ?
+                </Link>
+              </div>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                autoComplete="current-password"
+              />
+            </div>
 
-          <div className="flex items-center justify-end">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:text-primary/80"
-            >
-              Mot de passe oublié ?
-            </Link>
-          </div>
+            <Button type="submit" disabled={pending} className="w-full">
+              {pending ? "Connexion..." : "Se connecter"}
+            </Button>
+          </form>
 
-          <Button type="submit" disabled={pending} className="w-full">
-            {pending ? "Connexion..." : "Se connecter"}
-          </Button>
-        </form>
+          <button
+            type="button"
+            onClick={() => setUseMagicLink(true)}
+            className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Se connecter par lien magique
+          </button>
+        </>
       )}
 
       <p className="text-center text-sm text-muted-foreground">
         Pas encore de compte ?{" "}
         <Link
-          href={showPassword ? "/register?mode=password" : "/register"}
+          href="/register"
           className="font-medium text-primary hover:text-primary/80"
         >
           Créer un compte
@@ -229,7 +220,7 @@ function LoginForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         <Link href="/" className="hover:text-primary/80">
-          ← Retour à l&apos;accueil
+          &larr; Retour &agrave; l&apos;accueil
         </Link>
       </p>
     </>

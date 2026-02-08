@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useActionState, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { register } from "@/actions/auth";
 import { signIn } from "next-auth/react";
@@ -68,25 +67,18 @@ function MagicLinkRegister() {
         />
       </div>
       <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Envoi..." : "Créer un compte avec un lien magique"}
+        {pending ? "Envoi..." : "Créer mon compte"}
       </Button>
+      <p className="text-center text-xs text-muted-foreground">
+        Vous recevrez un email pour activer votre compte.
+      </p>
     </form>
   );
 }
 
 function RegisterForm() {
   const [state, action, pending] = useActionState(register, null);
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const showPassword = searchParams.get("mode") === "password";
-
-  function togglePasswordMode() {
-    if (showPassword) {
-      router.push("/register");
-    } else {
-      router.push("/register?mode=password");
-    }
-  }
+  const [useMagicLink, setUseMagicLink] = useState(false);
 
   return (
     <>
@@ -125,78 +117,80 @@ function RegisterForm() {
         </div>
       </div>
 
-      <MagicLinkRegister />
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-card px-3 text-xs uppercase tracking-wider text-muted-foreground">ou</span>
-        </div>
-      </div>
-
-      {!showPassword ? (
-        <Button
-          variant="ghost"
-          className="w-full text-muted-foreground"
-          onClick={togglePasswordMode}
-        >
-          Créer un compte avec un mot de passe
-        </Button>
+      {useMagicLink ? (
+        <>
+          <MagicLinkRegister />
+          <button
+            type="button"
+            onClick={() => setUseMagicLink(false)}
+            className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Utiliser un mot de passe
+          </button>
+        </>
       ) : (
-        <form action={action} className="space-y-4">
-          {state?.success === false && (
-            <Alert variant="destructive">
-              <AlertDescription>{state.error}</AlertDescription>
-            </Alert>
-          )}
+        <>
+          <form action={action} className="space-y-4">
+            {state?.success === false && (
+              <Alert variant="destructive">
+                <AlertDescription>{state.error}</AlertDescription>
+              </Alert>
+            )}
 
-          <div className="space-y-2">
-            <Label htmlFor="name">Nom complet</Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              required
-              autoComplete="name"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Nom complet</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                required
+                autoComplete="name"
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Mot de passe</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              required
-              minLength={8}
-              autoComplete="new-password"
-            />
-            <p className="text-xs text-muted-foreground">8 caractères minimum</p>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                minLength={8}
+                autoComplete="new-password"
+              />
+              <p className="text-xs text-muted-foreground">8 caractères minimum</p>
+            </div>
 
-          <Button type="submit" disabled={pending} className="w-full">
-            {pending ? "Création..." : "Créer mon compte"}
-          </Button>
-        </form>
+            <Button type="submit" disabled={pending} className="w-full">
+              {pending ? "Création..." : "Créer mon compte"}
+            </Button>
+          </form>
+
+          <button
+            type="button"
+            onClick={() => setUseMagicLink(true)}
+            className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            S&apos;inscrire par lien magique
+          </button>
+        </>
       )}
 
       <p className="text-center text-sm text-muted-foreground">
         Déjà un compte ?{" "}
         <Link
-          href={showPassword ? "/login?mode=password" : "/login"}
+          href="/login"
           className="font-medium text-primary hover:text-primary/80"
         >
           Se connecter
