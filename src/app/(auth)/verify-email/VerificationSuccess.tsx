@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function VerificationSuccess() {
-  const router = useRouter();
   const { update } = useSession();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -15,9 +13,8 @@ export function VerificationSuccess() {
     setIsRedirecting(true);
     // Update the session to refresh the JWT token with new emailVerified status
     await update();
-    // Small delay to ensure token is refreshed
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    router.push("/dashboard");
+    // Full page reload to ensure the JWT cookie is properly refreshed before proxy checks it
+    window.location.href = "/dashboard";
   }
 
   // Auto-redirect after a few seconds
